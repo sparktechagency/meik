@@ -6,7 +6,7 @@ import '../../core/app_constants/app_colors.dart';
 
 class CustomText extends StatelessWidget {
 
-  CustomText(
+  const CustomText(
       {super.key,
         this.maxline,
         this.textOverflow,
@@ -53,10 +53,11 @@ class CustomText extends StatelessWidget {
         style: TextStyle(
             fontSize: fontSize ?? 14.h,
             fontFamily: fontName?? "Poppins",
-            fontWeight:fontWeight == null ? FontWeight.w400 : fontWeight ,
+            fontWeight:fontWeight ,
             color: color ?? AppColors.textColorA0A0A,
             letterSpacing: letterSpacing,
             decoration: textDecoration,
+          decorationColor: color ?? AppColors.textColorA0A0A,
         ),
       ),
     );

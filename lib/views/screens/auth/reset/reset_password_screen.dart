@@ -1,18 +1,21 @@
+import 'package:danceattix/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/app_constants/app_colors.dart';
+import 'package:get/get.dart';
 import '../../../../global/custom_assets/assets.gen.dart';
-import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_text.dart';
-import '../../../widgets/custom_text_field.dart';
+import '../../../widgets/widgets.dart';
 
-class ResetPasswordScreen extends StatelessWidget {
-  ResetPasswordScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
-  final TextEditingController newCtrl = TextEditingController();
-  final TextEditingController confirmPassCtrl = TextEditingController();
+  @override
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+}
+
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final AuthController _controller = Get.find<AuthController>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,33 +24,47 @@ class ResetPasswordScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            children: [
-              SizedBox(height: 62.h),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 62.h),
 
-              Assets.images.logo.image(height: 112.h, width: 133.w),
+                Assets.images.logo.image(height: 112.h, width: 133.w),
 
-              SizedBox(height: 60.h),
+                SizedBox(height: 60.h),
 
-              /// <<< ============><>>> Login text flied  << < ==============>>>
+                /// <<< ============><>>> Login text flied  << < ==============>>>
 
-              CustomTextField(
-                  controller: newCtrl,
-                  hintText: "New password",
-                  prefixIcon: Assets.icons.lock.svg(),
-                  isPassword: true),
-              CustomTextField(
-                  controller: confirmPassCtrl,
-                  hintText: "Confirm password",
-                  prefixIcon: Assets.icons.lock.svg(),
-                  isPassword: true),
+                CustomTextField(
+                    controller: _controller.resetPasswordController,
+                    hintText: "New password",
+                    prefixIcon: Assets.icons.lock.svg(),
+                    isPassword: true),
+                CustomTextField(
+                    controller: _controller.newResetPasswordController,
+                    hintText: "Confirm password",
+                    prefixIcon: Assets.icons.lock.svg(),
+                    isPassword: true),
 
-              SizedBox(height: 130.h),
+                SizedBox(height: 130.h),
 
-              CustomButton(title: "Confirm", onpress: () {}),
+                GetBuilder<AuthController>(
+                    builder: (controller) {
+                      return controller.isLoadingReset ? CustomLoader() : CustomButton(
+                          title: "Confirm",
+                          onpress: () {
+                            if (_formKey.currentState!.validate()) {
+                              controller.resetPassword();
+                            }
+                          });
+                    }
+                ),
 
-              SizedBox(height: 160.h)
-            ],
+
+                SizedBox(height: 160.h)
+              ],
+            ),
           ),
         ),
       ),

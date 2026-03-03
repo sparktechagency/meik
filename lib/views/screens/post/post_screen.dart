@@ -1,13 +1,12 @@
 
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
+import 'package:danceattix/views/widgets/custom_product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import '../../../core/config/app_route.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/custom_product_card.dart';
-import '../../widgets/custom_text.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});

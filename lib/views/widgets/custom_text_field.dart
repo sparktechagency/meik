@@ -79,11 +79,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
       padding:  EdgeInsets.only(bottom: 14.h),
       child: Container(
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.borderRadio?.r ?? 16.r),
           boxShadow: [
+            if(widget.shadowNeed)
             BoxShadow(
-              color: widget.shadowNeed ?  Colors.black12 : Colors.transparent ,
-              offset: Offset(-2, 3),
-              blurRadius: 5
+              color:   Colors.black.withOpacity(0.1),
+              offset: Offset(0, 4),
+              blurRadius: 4
             )
           ]
         ),

@@ -1,3 +1,4 @@
+import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,36 +29,44 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 60.h),
 
                 // Profile Image with border
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(AppRoutes.profileInformationScreen);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(3.r),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primaryColor,
-                        width: 2.w,
+                GetBuilder<UserController>(
+                  builder: (controller) {
+                    return GestureDetector(
+                      onTap: () {
+                        Get.toNamed(AppRoutes.profileInformationScreen);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(3.r),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.primaryColor,
+                            width: 2.w,
+                          ),
+                        ),
+                        child: CustomNetworkImage(
+                          imageUrl: controller.userData?.profileImage ?? '',
+                          height: 90.h,
+                          width: 90.w,
+                          boxShape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                    child: CustomNetworkImage(
-                      imageUrl: "https://i.pravatar.cc/150?img=3",
-                      height: 90.h,
-                      width: 90.w,
-                      boxShape: BoxShape.circle,
-                    ),
-                  ),
+                    );
+                  }
                 ),
 
                 SizedBox(height: 16.h),
 
                 // Name
-                CustomText(
-                  text: "Meik Karwot",
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                GetBuilder<UserController>(
+                  builder: (controller) {
+                    return CustomText(
+                      text: controller.userData?.fullName ?? 'N/A',
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    );
+                  }
                 ),
 
                 SizedBox(height: 12.h),

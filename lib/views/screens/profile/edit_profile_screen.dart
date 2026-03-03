@@ -1,19 +1,30 @@
+import 'package:danceattix/controllers/user_controller.dart';
+import 'package:danceattix/helper/photo_picker_helper.dart';
+import 'package:danceattix/views/widgets/custom_image_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../widgets/widgets.dart';
 
 
-import '../../widgets/cachanetwork_image.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_text_field.dart';
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
 
-class EditProfileScreen extends StatelessWidget {
-  EditProfileScreen({super.key});
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
 
-  TextEditingController nameCtrl = TextEditingController();
-  TextEditingController phoneCtrl = TextEditingController();
-  TextEditingController addressCtrl = TextEditingController();
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  final UserController _userController = Get.find<UserController>();
+
+  @override
+  void initState() {
+    _userController.firstNameCtrl.text = _userController.userData?.firstName ?? '';
+    _userController.lastNameCtrl.text = _userController.userData?.lastName ?? '';
+    _userController.addressCtrl.text = _userController.userData?.address ?? '';
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -26,27 +37,33 @@ class EditProfileScreen extends StatelessWidget {
           children: [
             SizedBox(height: 70.h),
 
-            SizedBox(
-              height: 86.h,
-              child: Stack(
-                children: [
+            GetBuilder<UserController>(
+              builder: (controller) {
+                return GestureDetector(
+                  onTap: () {
+                    // Handle profile picture change
+                    PhotoPickerHelper.showPicker(context: context, onImagePicked: (image) => controller.onImagePicked(image));
+                  },
+                  child: Stack(
+                    children: [
+                      CustomImageAvatar(
+                        showBorder: true,
+                        radius: 54.r,
+                        image: controller.userData?.image ?? '',
+                        fileImage: controller.profileImage,
+                      ),
 
-                  CustomNetworkImage(
-                    imageUrl: "https://i.pravatar.cc/150?img=3",
-                    height: 85.h,
-                    width: 85.w,
-                    boxShape: BoxShape.circle,
+                      Positioned(
+                        bottom: 7.h,
+                          left: 0,
+                          right: 0,
+                          child: Icon(Icons.camera_alt_outlined, color: Colors.white)
+
+                      )
+                    ],
                   ),
-
-
-                  Positioned(
-                    bottom: 7.h,
-                      left: 30.w,
-                      child: Icon(Icons.camera_alt_outlined, color: Colors.white)
-
-                  )
-                ],
-              ),
+                );
+              }
             ),
 
 
@@ -55,32 +72,29 @@ class EditProfileScreen extends StatelessWidget {
 
             CustomTextField(
               shadowNeed: false,
-              controller: nameCtrl,
-              hintText: "victor",
-              labelText: "Your Name",
+              controller: _userController.firstNameCtrl,
+              labelText: "Your First Name",
+              hintText: "your first name",
+              contentPaddingVertical: 10.h,
+              borderColor: Color(0xff592B00),
+              hintextColor: Colors.black,
+            ),
+
+            CustomTextField(
+              shadowNeed: false,
+              controller: _userController.lastNameCtrl,
+              labelText: "Your Last Name",
+              hintText: "your last name",
               contentPaddingVertical: 10.h,
               borderColor: Color(0xff592B00),
               hintextColor: Colors.black,
             ),
 
 
-
             CustomTextField(
               shadowNeed: false,
-              controller: phoneCtrl,
-              hintText: "54123545121",
-              labelText: "Phone No.",
-              borderColor: Color(0xff592B00),
-              hintextColor: Colors.black,
-              contentPaddingVertical: 10.h,
-            ),
-
-
-
-            CustomTextField(
-              shadowNeed: false,
-              controller: addressCtrl,
-              hintText: "USA, New york, post code-5212",
+              controller: _userController.addressCtrl,
+              hintText: "your address",
               labelText: "Address",
               borderColor: Color(0xff592B00),
               hintextColor: Colors.black,
@@ -92,10 +106,13 @@ class EditProfileScreen extends StatelessWidget {
             Spacer(),
 
 
-            CustomButton(title: "Update Profile", onpress: (){
-              Get.back();
-              Get.back();
-            }),
+            GetBuilder<UserController>(
+              builder: (controller) {
+                return controller.isLoadingUserUpdate ? CustomLoader() : CustomButton(title: "Update Profile", onpress: (){
+                controller.userUpdate();
+                });
+              }
+            ),
 
             SizedBox(height: 100.h)
 

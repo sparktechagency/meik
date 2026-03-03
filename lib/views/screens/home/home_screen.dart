@@ -1,9 +1,10 @@
+import 'package:danceattix/controllers/user_controller.dart';
+import 'package:danceattix/services/api_urls.dart';
 import 'package:danceattix/views/widgets/cachanetwork_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-
 import '../../../core/app_constants/app_colors.dart';
 import '../../../core/config/app_route.dart';
 import '../../../global/custom_assets/assets.gen.dart';
@@ -18,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final UserController _userController = Get.find<UserController>();
   final TextEditingController searchCtrl = TextEditingController();
   final PageController _bannerController = PageController();
   int _currentBannerIndex = 0;
@@ -136,48 +138,54 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () => Get.toNamed(AppRoutes.profileScreen),
-          child: CustomNetworkImage(
-            border: Border.all(color: AppColors.primaryColor, width: 2),
-            imageUrl: "https://i.pravatar.cc/150?img=3",
-            height: 48.h,
-            width: 48.w,
-            boxShape: BoxShape.circle,
-          ),
-        ),
-        SizedBox(width: 12.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return GetBuilder<UserController>(
+      builder: (controller) {
+
+        final user = controller.userData;
+        return Row(
           children: [
-            CustomText(
-              text: "Meik !",
-              color: Colors.black,
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
+            GestureDetector(
+              onTap: () => Get.toNamed(AppRoutes.profileScreen),
+              child: CustomNetworkImage(
+                border: Border.all(color: AppColors.primaryColor, width: 2),
+                imageUrl: user?.profileImage ?? '',
+                height: 48.h,
+                width: 48.w,
+                boxShape: BoxShape.circle,
+              ),
             ),
-            CustomText(
-              text: "welcome to bazario",
-              fontSize: 12.sp,
-              color: Colors.grey,
+            SizedBox(width: 12.w),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(
+                  text: '${user?.fullName ?? 'N/A'} !',
+                  color: Colors.black,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                CustomText(
+                  text: "welcome to bazario",
+                  fontSize: 12.sp,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+            const Spacer(),
+            _buildIconWithBadge(
+              icon: Assets.icons.card.svg(),
+              badgeCount: 1,
+              onTap: () => Get.toNamed(AppRoutes.progressScreen),
+            ),
+            SizedBox(width: 16.w),
+            _buildIconWithBadge(
+              icon: Assets.icons.notification.svg(),
+              badgeCount: 9,
+              onTap: () => Get.toNamed(AppRoutes.notificationScreen),
             ),
           ],
-        ),
-        const Spacer(),
-        _buildIconWithBadge(
-          icon: Assets.icons.card.svg(),
-          badgeCount: 1,
-          onTap: () => Get.toNamed(AppRoutes.progressScreen),
-        ),
-        SizedBox(width: 16.w),
-        _buildIconWithBadge(
-          icon: Assets.icons.notification.svg(),
-          badgeCount: 9,
-          onTap: () => Get.toNamed(AppRoutes.notificationScreen),
-        ),
-      ],
+        );
+      }
     );
   }
 

@@ -1,106 +1,218 @@
+import 'package:danceattix/controllers/user_controller.dart';
+import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/core/config/app_route.dart';
+import 'package:danceattix/views/widgets/custom_image_avatar.dart';
+import 'package:danceattix/views/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+class ProfileInformationScreen extends StatefulWidget {
+  const ProfileInformationScreen({super.key});
 
-import '../../../core/config/app_route.dart';
-import '../../widgets/cachanetwork_image.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_text_field.dart';
+  @override
+  State<ProfileInformationScreen> createState() => _ProfileInformationScreenState();
+}
 
-class ProfileInformationScreen extends StatelessWidget {
-  ProfileInformationScreen({super.key});
-
-  TextEditingController nameCtrl = TextEditingController();
-  TextEditingController emailCtrl = TextEditingController();
-  TextEditingController phoneCtrl = TextEditingController();
-  TextEditingController addressCtrl = TextEditingController();
+class _ProfileInformationScreenState extends State<ProfileInformationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: "Profile Information"),
-      body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 24.w),
-        child: Column(
-          children: [
-            SizedBox(height: 26.h),
+    return CustomScaffold(
+      appBar: CustomAppBar(title: 'Profile Information'),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: GetBuilder<UserController>(
+          builder: (controller) {
+            final user = controller.userData;
+            return Column(
+              children: [
+                SizedBox(height: 8.h),
+                CustomImageAvatar(
+                  showBorder: true,
+                  radius: 54.r,
+                  image: user?.image ?? '',
+                ),
+                SizedBox(height: 24.h),
+                _buildInfoCard(
+                  title: 'Personal Information',
+                  rows: [
+                    _buildInfoRow(label: 'Name', value: user?.fullName ?? 'N/A'),
+                    _buildInfoRow(label: 'Email', value: user?.email ?? 'N/A'),
+                    _buildInfoRow(label: 'Phone no', value: user?.phone ?? 'N/A'),
+                    _buildInfoRow(label: 'Address', value: user?.address ?? 'N/A'),
+                  ],
+                ),
+                SizedBox(height: 16.h),
 
-            CustomNetworkImage(
-              imageUrl: "https://i.pravatar.cc/150?img=3",
-              height: 85.h,
-              width: 85.w,
-              boxShape: BoxShape.circle,
-            ),
-
-
-            SizedBox(height: 16.h),
-
-
-            CustomTextField(
-              shadowNeed: false,
-              readOnly: true,
-              controller: nameCtrl,
-              hintText: "victor",
-              labelText: "Your Name",
-              borderColor: Color(0xff592B00),
-              hintextColor: Colors.black,
-              contentPaddingVertical: 10.h,
-            ),
-
-
-            CustomTextField(
-              shadowNeed: false,
-              readOnly: true,
-              controller: emailCtrl,
-              hintText: "sagorahammed@gmail.com",
-              labelText: "E-mail",
-              borderColor: Color(0xff592B00),
-              hintextColor: Colors.black,
-              contentPaddingVertical: 10.h,
-            ),
-
-
-
-            CustomTextField(
-              shadowNeed: false,
-              readOnly: true,
-              controller: phoneCtrl,
-              hintText: "54123545121",
-              labelText: "Phone No.",
-              borderColor: Color(0xff592B00),
-              hintextColor: Colors.black,
-              contentPaddingVertical: 10.h,
-            ),
-
-
-
-            CustomTextField(
-              shadowNeed: false,
-              readOnly: true,
-              controller: addressCtrl,
-              hintText: "USA, New york, post code-5212",
-              labelText: "Address",
-              hintextColor: Colors.black,
-              borderColor: Color(0xff592B00),
-              contentPaddingVertical: 10.h,
-            ),
-
-
-
-            Spacer(),
-
-
-            CustomButton(title: "Edit Profile", onpress: (){
-              Get.toNamed(AppRoutes.editProfileScreen);
-            }),
-
-            SizedBox(height: 100.h)
-
-
-          ],
+                _buildInfoCard(
+                  title: 'NID Information',
+                  rows: [
+                    _buildInfoRow(label: 'NID no', value: '3435434343'),
+                    _buildInfoRow(
+                      label: 'NID front',
+                      valueWidget: _buildFileChip('NidFront.jpg'),
+                    ),
+                    _buildInfoRow(
+                      label: 'NID back',
+                      valueWidget: _buildFileChip('Nidback.jpg'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                _buildInfoCard(
+                  title: 'Passport Information',
+                  rows: [
+                    _buildInfoRow(label: 'Passport no', value: '3435434343'),
+                    _buildInfoRow(
+                      label: 'Passport front',
+                      valueWidget: _buildFileChip('PassFront.jpg'),
+                    ),
+                    _buildInfoRow(
+                      label: 'Passport back',
+                      valueWidget: _buildUploadChip(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 32.h),
+              ],
+            );
+          }
         ),
+      ),
+    );
+  }
+
+  // ── Info Card Base ─────────────────────────────────────────────────────────
+  Widget _buildInfoCard({required String title, required List<Widget> rows}) {
+    return CustomContainer(
+      color: AppColors.bgColor,
+      bordersColor: AppColors.borderColor,
+      radiusAll: 12.r,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 0, 0, 0),
+            child: Row(
+              children: [
+                Container(
+                  width: 4,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                SizedBox(width: 8.h),
+                CustomText(text: title),
+                Spacer(),
+                TextButton(onPressed: (){
+                  Get.toNamed(AppRoutes.editProfileScreen);
+                }, child: CustomText(
+                  textDecoration: TextDecoration.underline,
+                  text: 'Edit', fontSize: 12.sp, color: AppColors.primaryColor, fontWeight: FontWeight.w600,
+                )),
+              ],
+            ),
+          ),
+          //const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+            child: Column(spacing: 8.h, children: rows),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Row Helpers ────────────────────────────────────────────────────────────
+  Widget _buildInfoRow({
+    required String label,
+    String? value,
+    Widget? valueWidget,
+  }) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 100.w,
+          child: CustomText(
+            text: label,
+            fontSize: 12.sp,
+            textAlign: TextAlign.start,
+          ),
+        ),
+        CustomText(text: ':', fontSize: 12.sp),
+        SizedBox(width: 32.w),
+        Expanded(
+          child:
+              valueWidget ??
+              CustomText(
+                text: value ?? '',
+                fontSize: 12.sp,
+                textAlign: TextAlign.start,
+              ),
+        ),
+      ],
+    );
+  }
+
+  // ── File Chip ──────────────────────────────────────────────────────────────
+  Widget _buildFileChip(String filename) {
+    return Container(
+      padding:  EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor,
+        borderRadius: BorderRadius.circular(24.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+           Icon(
+            Icons.insert_drive_file_rounded,
+            size: 12.r,
+            color: Colors.white,
+          ),
+           SizedBox(width: 5.w),
+          CustomText(text:
+            filename,
+              color: Colors.white,
+              fontSize: 12.sp,
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ── Upload Chip ────────────────────────────────────────────────────────────
+  Widget _buildUploadChip() {
+    return Container(
+      padding:  EdgeInsets.symmetric( vertical: 7.h,horizontal: 12.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24.r),
+        border: Border.all(color: AppColors.primaryColor.withOpacity(0.4)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.cloud_upload_rounded,
+            size: 12.r,
+            color: AppColors.primaryColor,
+          ),
+           SizedBox(width: 5.h),
+          FittedBox(
+            child: CustomText(text:
+              'Upload now',
+                color: AppColors.primaryColor,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
+              ),
+          ),
+
+        ],
       ),
     );
   }

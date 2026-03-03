@@ -1,8 +1,8 @@
+/*
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import 'custom_text.dart';
 
 class NoInterNetScreen extends StatelessWidget {
@@ -35,13 +35,13 @@ class NoInterNetScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Assets.lottie.noInternet.lottie(),
+                  Assets.lottie.noInternet.lottie(),
 
                   SizedBox(height: 30.h),
 
                   CustomText(
                       text: "Oops!",
-                      fontSize: 30.h,
+                      fontsize: 30.h,
                       color: Colors.red,
                       top: 10.h,
                       fontWeight: FontWeight.w800,
@@ -102,14 +102,10 @@ class ConnectivityService extends GetxController {
   final RxBool isConnected = true.obs;
 
   ConnectivityService() {
+    // Initialize connectivity status and set up a listener for connectivity changes.
     _initializeConnectivity();
-
-    _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> resultList) {
-      if (resultList.isNotEmpty) {
-        _updateConnectionStatus(resultList.first);
-      } else {
-        _updateConnectionStatus(ConnectivityResult.none);
-      }
+    _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      _updateConnectionStatus(result);
     });
   }
 
@@ -123,4 +119,4 @@ class ConnectivityService extends GetxController {
     // Update the connectivity status based on the result
     isConnected.value = result != ConnectivityResult.none;
   }
-}
+}*/

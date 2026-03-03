@@ -1,3 +1,4 @@
+import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/app_constants/app_colors.dart';
@@ -18,7 +19,7 @@ class CustomButton extends StatelessWidget {
   final bool loaderIgnore;
   final Widget? leftIcon;
 
-  CustomButton({
+  const CustomButton({
     super.key,
     required this.title,
     required this.onpress,
@@ -69,12 +70,12 @@ class CustomButton extends StatelessWidget {
             loaderIgnore ? const SizedBox() :  SizedBox(width: 20.w),
 
 
-            // loaderIgnore ? const SizedBox() :  loading  ?
-            //     SizedBox(
-            //         height: 25.h,
-            //         width: 25.w,
-            //         child: Assets.lottie.buttonLoading.lottie(fit: BoxFit.cover)
-            //     ) :  SizedBox(width: 25.w)
+            loaderIgnore ? const SizedBox() :  loading  ?
+                SizedBox(
+                    height: 25.h,
+                    width: 25.w,
+                    child: Assets.lottie.loading.lottie(fit: BoxFit.cover)
+                ) :  SizedBox(width: 25.w)
           ],
         ),
       ),

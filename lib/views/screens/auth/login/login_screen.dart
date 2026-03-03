@@ -1,3 +1,8 @@
+import 'package:danceattix/controllers/auth_controller.dart';
+import 'package:danceattix/views/widgets/custom_button.dart';
+import 'package:danceattix/views/widgets/custom_loader.dart';
+import 'package:danceattix/views/widgets/custom_text.dart';
+import 'package:danceattix/views/widgets/custom_text_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,15 +10,17 @@ import 'package:get/get.dart';
 import '../../../../core/app_constants/app_colors.dart';
 import '../../../../core/config/app_route.dart';
 import '../../../../global/custom_assets/assets.gen.dart';
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_text.dart';
-import '../../../widgets/custom_text_field.dart';
 
-class LogInScreen extends StatelessWidget {
-  LogInScreen({super.key});
 
-  final TextEditingController emailCtrl = TextEditingController();
-  final TextEditingController passWordCtrl = TextEditingController();
+class LogInScreen extends StatefulWidget {
+  const LogInScreen({super.key});
+
+  @override
+  State<LogInScreen> createState() => _LogInScreenState();
+}
+
+class _LogInScreenState extends State<LogInScreen> {
+  final AuthController _controller = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +87,7 @@ class LogInScreen extends StatelessWidget {
 
                 // Email TextField
                 CustomTextField(
-                  controller: emailCtrl,
+                  controller: _controller.loginEmailController,
                   hintText: "Enter email",
                   prefixIcon: Assets.icons.email.svg(
                     width: 20.w,
@@ -92,7 +99,7 @@ class LogInScreen extends StatelessWidget {
 
                 // Password TextField
                 CustomTextField(
-                  controller: passWordCtrl,
+                  controller: _controller.loginPasswordController,
                   hintText: "Enter Password",
                   prefixIcon: Assets.icons.password.svg(
                     width: 20.w,
@@ -124,11 +131,15 @@ class LogInScreen extends StatelessWidget {
                 SizedBox(height: 60.h),
 
                 // Login Button
-                CustomButton(
-                  title: "Lets go !!",
-                  onpress: () {
-                    Get.toNamed(AppRoutes.bottomNavBar);
-                  },
+                GetBuilder<AuthController>(
+                  builder: (controller) {
+                    return controller.isLoadingLogin ?
+                    const CustomLoader() :
+                         CustomButton(
+                      title: "Lets go !!",
+                      onpress: () => controller.login()
+                    );
+                  }
                 ),
 
                 SizedBox(height: 24.h),
@@ -165,5 +176,12 @@ class LogInScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.loginEmailController.dispose();
+    _controller.loginPasswordController.dispose();
+    super.dispose();
   }
 }

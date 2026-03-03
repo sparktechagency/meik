@@ -1,9 +1,9 @@
 
+import 'package:danceattix/core/dependancy_injaction.dart';
 import 'package:danceattix/views/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import 'core/config/app_route.dart';
 import 'core/config/light_themes.dart';
 
@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       builder: (context, child) {
         return GetMaterialApp(
+          initialBinding: DependencyInjection(),
           title: 'Droke',
           debugShowCheckedModeBanner: false,
           initialRoute: AppRoutes.splashScreen,

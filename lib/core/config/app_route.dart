@@ -43,7 +43,7 @@ class AppRoutes {
   static const String signUpScreen = "/SignUpScreen";
   static const String logInScreen = "/LogInScreen";
   static const String forgotScreen = "/ForgotScreen";
-  static const String optScreen = "/OptScreen";
+  static const String otpScreen = "/OptScreen";
   static const String resetPasswordScreen = "/ResetPasswordScreen";
   static const String enableLocationScreen = "/EnableLocationScreen";
   static const String uploadNIDScreen = "/UploadNIDScreen";
@@ -80,7 +80,7 @@ class AppRoutes {
     GetPage(name: signUpScreen, page: () =>  SignUpScreen()),
     GetPage(name: logInScreen, page: () =>  LogInScreen()),
     GetPage(name: forgotScreen, page: () =>  ForgotScreen()),
-    GetPage(name: optScreen, page: () =>  OptScreen()),
+    GetPage(name: otpScreen, page: () =>  OptScreen()),
     GetPage(name: resetPasswordScreen, page: () =>  ResetPasswordScreen()),
     GetPage(name: enableLocationScreen, page: () =>  EnableLocationScreen()),
     GetPage(name: uploadNIDScreen, page: () => const UploadNIDScreen()),
