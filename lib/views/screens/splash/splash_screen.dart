@@ -1,3 +1,5 @@
+import 'package:danceattix/core/app_constants/app_constants.dart';
+import 'package:danceattix/helper/prefs_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -17,11 +19,21 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+      goToNextScreen();
     super.initState();
-    // Navigate to onboarding after 3 seconds
+
+  }
+
+
+  void goToNextScreen() async {
+    final token = await PrefsHelper.getString(AppConstants.bearerToken);
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        Get.offAllNamed(AppRoutes.onboardingScreen);
+        if(token.isNotEmpty) {
+          Get.offAllNamed(AppRoutes.bottomNavBar);
+        } else {
+          Get.offAllNamed(AppRoutes.onboardingScreen);
+        }
       }
     });
   }

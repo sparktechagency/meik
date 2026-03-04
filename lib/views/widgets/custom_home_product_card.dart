@@ -8,7 +8,7 @@ import '../../global/custom_assets/assets.gen.dart';
 import 'cachanetwork_image.dart';
 import 'custom_text.dart';
 
-class CustomHomeProductCard extends StatelessWidget {
+class CustomProductCard extends StatelessWidget {
   final String? title;
   final String? description;
   final String? price;
@@ -23,7 +23,7 @@ class CustomHomeProductCard extends StatelessWidget {
   final VoidCallback? onOfferTap;
   final VoidCallback? onMessageTap;
 
-  const CustomHomeProductCard({
+  const CustomProductCard({
     super.key,
     this.title,
     this.description,
@@ -118,7 +118,7 @@ class CustomHomeProductCard extends StatelessWidget {
                     text: description ?? "Product description goes here",
                     fontSize: 10.sp,
                     color: Colors.grey,
-                    maxline: 2,
+                    maxline: 1,
                     textAlign: TextAlign.start,
                   ),
                   SizedBox(height: 6.h),

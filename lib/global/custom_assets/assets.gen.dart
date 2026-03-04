@@ -37,6 +37,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/card.svg
   SvgGenImage get card => const SvgGenImage('assets/icons/card.svg');
 
+  /// File path: assets/icons/clean.svg
+  SvgGenImage get clean => const SvgGenImage('assets/icons/clean.svg');
+
   /// File path: assets/icons/email.svg
   SvgGenImage get email => const SvgGenImage('assets/icons/email.svg');
 
@@ -141,42 +144,43 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<dynamic> get values => [
-        aboutUs,
-        arrowTop,
-        attachfileIcon,
-        blockUserIcon,
-        buyerProtection,
-        card,
-        email,
-        emailIcon,
-        filterIcon,
-        home,
-        homeUnselected,
-        lock,
-        logout,
-        mediaIcon,
-        meneyIcon,
-        message,
-        moneyIconCard,
-        notification,
-        password,
-        personalInfoIcon,
-        phoneNo,
-        plus,
-        privacyPolicyIcon,
-        profile,
-        profileSelected,
-        reportUserIcon,
-        rightArrow,
-        searhIcon,
-        settingIco,
-        termandConditionIcon,
-        titleIcon,
-        uploadPlusIcon,
-        user,
-        walletIcon,
-        wishListIcon
-      ];
+    aboutUs,
+    arrowTop,
+    attachfileIcon,
+    blockUserIcon,
+    buyerProtection,
+    card,
+    clean,
+    email,
+    emailIcon,
+    filterIcon,
+    home,
+    homeUnselected,
+    lock,
+    logout,
+    mediaIcon,
+    meneyIcon,
+    message,
+    moneyIconCard,
+    notification,
+    password,
+    personalInfoIcon,
+    phoneNo,
+    plus,
+    privacyPolicyIcon,
+    profile,
+    profileSelected,
+    reportUserIcon,
+    rightArrow,
+    searhIcon,
+    settingIco,
+    termandConditionIcon,
+    titleIcon,
+    uploadPlusIcon,
+    user,
+    walletIcon,
+    wishListIcon,
+  ];
 }
 
 class $AssetsImagesGen {
@@ -215,15 +219,15 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-        confirmImage,
-        logo,
-        onboarding1,
-        onboarding2,
-        onboarding3,
-        splashBgImage,
-        uploadImage,
-        walletBg
-      ];
+    confirmImage,
+    logo,
+    onboarding1,
+    onboarding2,
+    onboarding3,
+    splashBgImage,
+    uploadImage,
+    walletBg,
+  ];
 }
 
 class $AssetsLottieGen {
@@ -246,11 +250,7 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
 
@@ -310,15 +310,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;
@@ -327,17 +320,11 @@ class AssetGenImage {
 }
 
 class SvgGenImage {
-  const SvgGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = false;
+  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}})
+    : _isVecFormat = false;
 
-  const SvgGenImage.vec(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = true;
+  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}})
+    : _isVecFormat = true;
 
   final String _assetName;
   final Size? size;
@@ -391,7 +378,8 @@ class SvgGenImage {
       placeholderBuilder: placeholderBuilder,
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
-      colorFilter: colorFilter ??
+      colorFilter:
+          colorFilter ??
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
@@ -404,10 +392,7 @@ class SvgGenImage {
 }
 
 class LottieGenImage {
-  const LottieGenImage(
-    this._assetName, {
-    this.flavors = const {},
-  });
+  const LottieGenImage(this._assetName, {this.flavors = const {}});
 
   final String _assetName;
   final Set<String> flavors;
@@ -424,11 +409,8 @@ class LottieGenImage {
     _lottie.LottieImageProviderFactory? imageProviderFactory,
     Key? key,
     AssetBundle? bundle,
-    Widget Function(
-      BuildContext,
-      Widget,
-      _lottie.LottieComposition?,
-    )? frameBuilder,
+    Widget Function(BuildContext, Widget, _lottie.LottieComposition?)?
+    frameBuilder,
     ImageErrorWidgetBuilder? errorBuilder,
     double? width,
     double? height,

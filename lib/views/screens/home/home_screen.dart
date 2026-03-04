@@ -490,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen> {
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.55,
+          childAspectRatio: 170.w / 263.h,
           crossAxisSpacing: 12.w,
           mainAxisSpacing: 12.h,
         ),
@@ -503,7 +503,7 @@ class _HomeScreenState extends State<HomeScreen> {
               duration: const Duration(milliseconds: 375),
               child: ScaleAnimation(
                 child: FadeInAnimation(
-                  child: CustomHomeProductCard(
+                  child: CustomProductCard(
                     title: product["title"],
                     description: product["description"],
                     price: product["price"],

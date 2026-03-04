@@ -14,5 +14,17 @@ class ApiUrls {
   static const String userMe = '/users/me';
   static const String userUpdate = '/users/profile';
 
+  /// ================= products ===========>>>
+  static String products({
+    int page = 1,
+    int limit = 10,
+    String term = '',
+    String size = '',
+    String category = '',
+    String price = '',
+    String type = '',
+  }) =>
+      '/products?term=$term&size=$size&category=$category&price=$price&page=$page&limit=$limit&type=$type';
 
+  static String productDetails(String id) => '/products/$id';
 }
