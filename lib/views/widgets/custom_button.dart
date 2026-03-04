@@ -30,33 +30,29 @@ class CustomButton extends StatelessWidget {
     this.fontSize,
     this.titlecolor,
     this.leftIcon,
-    this.loading=false,
-    this.loaderIgnore = false, this.fontWeight, this.borderRadius,
+    this.loading = false,
+    this.loaderIgnore = false,
+    this.fontWeight,
+    this.borderRadius,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: loading?(){} : onpress,
+      onTap: loading ? null : onpress,
       child: Container(
-        width:width?.w ?? double.infinity,
+        width: width ?? double.infinity,
         height: height ?? 50.h,
-        padding:  EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
         decoration: BoxDecoration(
-          borderRadius:BorderRadius.circular(borderRadius ?? 16.r),
+          borderRadius: BorderRadius.circular(borderRadius ?? 16.r),
           border: Border.all(color: boderColor ?? AppColors.primaryColor),
           color: color ?? AppColors.primaryColor,
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-
-           loaderIgnore ? const SizedBox() : SizedBox(width: 30.w),
-
-            SizedBox(child: leftIcon ?? SizedBox.shrink()),
-
+            // ✅ Title always perfectly centered
             Center(
               child: CustomText(
                 text: title,
@@ -66,16 +62,25 @@ class CustomButton extends StatelessWidget {
               ),
             ),
 
+            // Left icon
+            if (leftIcon != null)
+              Positioned(
+                left: 8.w,
+                child: leftIcon!,
+              ),
 
-            loaderIgnore ? const SizedBox() :  SizedBox(width: 20.w),
-
-
-            loaderIgnore ? const SizedBox() :  loading  ?
-                SizedBox(
-                    height: 25.h,
-                    width: 25.w,
-                    child: Assets.lottie.loading.lottie(fit: BoxFit.cover)
-                ) :  SizedBox(width: 25.w)
+            // Loader on the right
+            if (!loaderIgnore)
+              Positioned(
+                right: 4.w,
+                child: SizedBox(
+                  height: 25.h,
+                  width: 25.w,
+                  child: loading
+                      ? Assets.lottie.loading.lottie(fit: BoxFit.cover)
+                      : const SizedBox.shrink(),
+                ),
+              ),
           ],
         ),
       ),

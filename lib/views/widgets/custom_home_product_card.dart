@@ -10,6 +10,7 @@ import 'custom_text.dart';
 
 class CustomProductCard extends StatelessWidget {
   final String? title;
+  final int? index;
   final String? description;
   final String? price;
   final String? oldPrice;
@@ -32,12 +33,12 @@ class CustomProductCard extends StatelessWidget {
     this.image,
     this.reviews,
     this.rating,
-    this.isFavorite,
+    this.isFavorite = false,
     this.onTap,
     this.onFavoriteTap,
     this.onBuyNowTap,
     this.onOfferTap,
-    this.onMessageTap,
+    this.onMessageTap, this.index,
   });
 
   @override
@@ -45,6 +46,9 @@ class CustomProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ?? () => Get.toNamed(AppRoutes.productDetailsScreen),
       child: Container(
+        margin: EdgeInsets.only(left: index == 0 ? 10.w : 0 ,right: index == null ? 0 :  10.w,bottom: 10.r),
+        width: 170.w,
+        height: 263.h,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),

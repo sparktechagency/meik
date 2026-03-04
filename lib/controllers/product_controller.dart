@@ -9,10 +9,11 @@ class ProductController extends GetxController {
   /// <======================= products ===========================>
 
   bool isLoadingProduct = false;
-  bool isLoadingProductMoreCrop = false;
+  bool isLoadingProductMore = false;
   int productLimit = 10;
   int productPage = 1;
   int productTotalPage = -1;
+  int totalProduct = 0;
   List<ProductModelData> productsData = [];
 
   // Filter options
@@ -31,7 +32,22 @@ class ProductController extends GetxController {
   List<String> sizes = ["S", "M", "L", "XL", "XXL", "XXXL"];
   String selectedSizes = '';
 
-  String priceLimit = '';
+  double minPrice = 10;
+  double maxPrice = 1000;
+
+
+  void clearFilters(){
+    selectedCondition = '';
+    selectedProductFor = '';
+    selectedBrand = '';
+    selectedCategory = '';
+    selectedSizes = '';
+    minPrice = 10;
+    maxPrice = 1000;
+    update();
+    productsGet();
+  }
+
 
   Future<void> productsGet({
     String type = '',
@@ -42,7 +58,7 @@ class ProductController extends GetxController {
       productPage = 1;
       productTotalPage = -1;
       isLoadingProduct = true;
-      isLoadingProductMoreCrop = false;
+      isLoadingProductMore = false;
       update();
     }
 
@@ -52,7 +68,7 @@ class ProductController extends GetxController {
         limit: productLimit,
         term: selectedProductFor,
         category: selectedCategory,
-        price: priceLimit,
+        price: '$minPrice-$maxPrice',
         size: selectedSizes,
         type: type,
       ),
@@ -68,23 +84,23 @@ class ProductController extends GetxController {
           .toList();
 
       productsData.addAll(product);
-      productTotalPage =
-          responseBody['pagination']?['totalPages'] ?? productTotalPage;
+      productTotalPage = responseBody['pagination']?['totalPages'] ?? productTotalPage;
+      totalProduct = responseBody['pagination']?['total'] ?? totalProduct;
     } else {
       showToast(responseBody['message']);
     }
 
     isLoadingProduct = false;
-    isLoadingProductMoreCrop = false;
+    isLoadingProductMore = false;
     update();
   }
 
   void productsMore(String type) async {
     debugPrint('============> Page $productPage');
 
-    if (productPage < productTotalPage && !isLoadingProductMoreCrop) {
+    if (productPage < productTotalPage && !isLoadingProductMore) {
       productPage += 1;
-      isLoadingProductMoreCrop = true;
+      isLoadingProductMore = true;
       update();
 
       await productsGet(type: type, isInitialLoad: false);

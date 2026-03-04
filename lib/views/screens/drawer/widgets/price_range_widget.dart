@@ -8,9 +8,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class RangeSliderScreen extends StatefulWidget {
-  const RangeSliderScreen({super.key, this.onRangeChanged});
+  const RangeSliderScreen({super.key, this.onRangeChanged, required this.initialRangeValues});
 
   final void Function(RangeValues)? onRangeChanged;
+  final RangeValues initialRangeValues;
 
 
   @override
@@ -20,7 +21,13 @@ class RangeSliderScreen extends StatefulWidget {
 
 
 class _RangeSliderScreenState extends State<RangeSliderScreen> {
-  RangeValues _currentRangeValues = const RangeValues(100, 1000);
+  late  RangeValues _currentRangeValues;
+
+  @override
+  void initState() {
+    _currentRangeValues = widget.initialRangeValues;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

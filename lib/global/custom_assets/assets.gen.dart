@@ -26,6 +26,9 @@ class $AssetsIconsGen {
   SvgGenImage get attachfileIcon =>
       const SvgGenImage('assets/icons/attachfileIcon.svg');
 
+  /// File path: assets/icons/back.svg
+  SvgGenImage get back => const SvgGenImage('assets/icons/back.svg');
+
   /// File path: assets/icons/blockUserIcon.svg
   SvgGenImage get blockUserIcon =>
       const SvgGenImage('assets/icons/blockUserIcon.svg');
@@ -147,6 +150,7 @@ class $AssetsIconsGen {
     aboutUs,
     arrowTop,
     attachfileIcon,
+    back,
     blockUserIcon,
     buyerProtection,
     card,
@@ -186,6 +190,10 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/boost_banner.png
+  AssetGenImage get boostBanner =>
+      const AssetGenImage('assets/images/boost_banner.png');
+
   /// File path: assets/images/confirmImage.png
   AssetGenImage get confirmImage =>
       const AssetGenImage('assets/images/confirmImage.png');
@@ -219,6 +227,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+    boostBanner,
     confirmImage,
     logo,
     onboarding1,
@@ -233,12 +242,16 @@ class $AssetsImagesGen {
 class $AssetsLottieGen {
   const $AssetsLottieGen();
 
+  /// File path: assets/lottie/empty data.json
+  LottieGenImage get emptyData =>
+      const LottieGenImage('assets/lottie/empty data.json');
+
   /// File path: assets/lottie/loading.json
   LottieGenImage get loading =>
       const LottieGenImage('assets/lottie/loading.json');
 
   /// List of all assets
-  List<LottieGenImage> get values => [loading];
+  List<LottieGenImage> get values => [emptyData, loading];
 }
 
 class Assets {

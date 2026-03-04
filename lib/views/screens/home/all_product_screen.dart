@@ -1,12 +1,15 @@
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/global/custom_assets/assets.gen.dart';
+import 'package:danceattix/helper/shimmer_helper.dart';
 import 'package:danceattix/views/screens/drawer/drawer_screen.dart';
+import 'package:danceattix/views/widgets/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import '../../widgets/custom_home_product_card.dart';
-import '../../widgets/custom_text.dart';
 
 class AllProductScreen extends StatefulWidget {
   const AllProductScreen({super.key});
@@ -18,11 +21,13 @@ class AllProductScreen extends StatefulWidget {
 class _AllProductScreenState extends State<AllProductScreen> {
   final TextEditingController searchCtrl = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
 
   final ProductController _productController = Get.find<ProductController>();
 
   @override
   void initState() {
+    _addScrollListener();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _productController.productsGet();
     });
@@ -63,123 +68,150 @@ class _AllProductScreenState extends State<AllProductScreen> {
           SizedBox(width: 20.w),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12.h),
-                _buildSearchBar(),
-                SizedBox(height: 16.h),
-                CustomText(
-                  text: "Products (86)",
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
-                SizedBox(height: 12.h),
-              ],
-            ),
-          ),
-          Expanded(
-            child: _buildProductGrid(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      height: 50.h,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: searchCtrl,
-              decoration: InputDecoration(
-                hintText: "Search by products name",
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-              ),
-            ),
-          ),
-          Container(
-            height: 50.h,
-            width: 50.w,
-            decoration: BoxDecoration(
-              color: AppColors.primaryColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.search, color: Colors.white, size: 24.sp),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProductGrid() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: AnimationLimiter(
-        child: GetBuilder<ProductController>(
-          builder: (controller) {
-            return GridView.builder(
-              padding: EdgeInsets.only(bottom: 20.h),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.60,
-                crossAxisSpacing: 12.w,
-                mainAxisSpacing: 12.h,
-              ),
-              itemCount: controller.productsData.length,
-              itemBuilder: (context, index) {
-                final product = controller.productsData[index];
-                return AnimationConfiguration.staggeredGrid(
-                  position: index,
-                  columnCount: 2,
-                  duration: const Duration(milliseconds: 375),
-                  child: ScaleAnimation(
-                    child: FadeInAnimation(
-                      child: CustomProductCard(
-                        title: product.productName ?? 'N/A',
-                        description: product.description ?? 'N/A',
-                        price: product.price.toString() ?? '',
-                        oldPrice: '',
-                        rating: product.user?.rating?.toDouble() ?? 0.0,
-                        reviews: '',
-                        image: product.images?.isNotEmpty == true
-                            ? product.images!.first.image ?? ''
-                            : '',
-                        isFavorite: false,
-                        onFavoriteTap: () {},
-                        onBuyNowTap: () {},
-                        onOfferTap: () {},
-                        onMessageTap: () {},
-                      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _productController.productsGet();
+          });        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 12.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: CustomTextField(
+                  hintextSize: 16.sp,
+                  borderRadio: 50.r,
+                  contentPaddingVertical: 0,
+                  borderColor: Colors.transparent,
+                  validator: (_) => null,
+                  hintText: 'Search by products name',
+                  suffixIcon: CustomContainer(
+                    marginAll: 2.r,
+                    paddingAll: 8.r,
+                    shape: BoxShape.circle,
+                    color: AppColors.primaryColor,
+                    child: Icon(
+                      Icons.search,
+                      //size: 20.sp,
+                      color: Colors.white,
+                    ),
                   ),
-                ));
-              },
-            );
-          }
+                  controller: searchCtrl,
+                ),
+              ),
+              GetBuilder<ProductController>(
+                builder: (controller) {
+                  return CustomText(
+                    left: 16.w,
+                    right: 16.w,
+                    top: 8.h,
+                    text: "Products (${controller.totalProduct})",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  );
+                },
+              ),
+              SizedBox(height: 12.h),
+
+              AnimationLimiter(
+                child: GetBuilder<ProductController>(
+                  builder: (controller) {
+                    if (controller.isLoadingProduct) {
+                      return ShimmerHelper.instance.showProductShimmer();
+                    } else if (controller.productsData.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Assets.lottie.emptyData.lottie(),
+                            CustomText(
+                              text: 'No Data Found',
+                              color: AppColors.hitTextColorA5A5A5,
+                              fontSize: 16.sp,
+                            ),
+                            SizedBox(height: 16.h),
+
+                            /// 🔄 Refresh Button
+                            CustomButton(
+                              fontSize: 14.sp,
+                              height: 34.h,
+                              width: 100.w,
+                              title: 'Refresh',
+                              onpress: () async {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  controller.productsGet();
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return GridView.builder(
+                      controller: _scrollController,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.symmetric(horizontal: 16.h),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 170.w / 263.h,
+                        crossAxisSpacing: 10.w,
+                        mainAxisSpacing: 0.h,
+                      ),
+                      itemCount: controller.productsData.length + (controller.isLoadingProductMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == controller.productsData.length) {
+                          return  Padding(
+                            padding: EdgeInsets.all(16.r),
+                            child: Center(child: CupertinoActivityIndicator()),
+                          );
+                        }
+                        final product = controller.productsData[index];
+                        return AnimationConfiguration.staggeredGrid(
+                          position: index,
+                          columnCount: 2,
+                          duration: const Duration(milliseconds: 375),
+                          child: ScaleAnimation(
+                            child: FadeInAnimation(
+                              child: CustomProductCard(
+                                title: product.productName ?? 'N/A',
+                                description: product.description ?? 'N/A',
+                                price: product.price.toString() ?? '',
+                                rating: product.rating?.toDouble() ?? 0.0,
+                                reviews: product.reviewCount.toString() ?? '0',
+                                image: product.image,
+                                onFavoriteTap: () {},
+                                onBuyNowTap: () {},
+                                onOfferTap: () {},
+                                onMessageTap: () {},
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
 
+  void _addScrollListener() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _productController.productsGet();
+        print("load more true");
+      }
+    });
+  }
 }

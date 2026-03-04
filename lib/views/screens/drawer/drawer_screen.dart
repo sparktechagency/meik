@@ -18,7 +18,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bgColorWhite,
       width: 320.w,
       child: SafeArea(
         child: Column(
@@ -61,10 +61,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
                         RangeSliderScreen(
                           onRangeChanged: (range) {
-                            controller.priceLimit =
-                                '${range.start.toInt()}-${range.end.toInt()}';
+                            controller.minPrice = range.start;
+                              controller.maxPrice = range.end;
                             controller.update();
                           },
+
+                          initialRangeValues: RangeValues(
+                            controller.minPrice.toDouble(),
+                            controller.maxPrice.toDouble(),
+                          ),
                         ),
                         SizedBox(height: 20.h),
 
@@ -140,14 +145,37 @@ class _DrawerScreenState extends State<DrawerScreen> {
               padding: EdgeInsets.all(20.r),
               child: GetBuilder<ProductController>(
                 builder: (controller) {
-                  return CustomButton(
-                    title: "Buy now",
-                    onpress: () {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        controller.productsGet();
-                      });
-                      Navigator.pop(context);
-                    },
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          title: "Clear",
+                          color: Colors.white,
+                          boderColor: Colors.grey,
+                          titlecolor: Colors.grey,
+                          onpress: () {
+                            controller.clearFilters();
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+
+                      SizedBox(width: 10.w),
+
+
+                      Expanded(
+                        child: CustomButton(
+                          title: "Apply",
+                          onpress: () {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              controller.productsGet();
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+
+                    ],
                   );
                 }
               ),
