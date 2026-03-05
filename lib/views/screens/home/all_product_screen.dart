@@ -37,6 +37,7 @@ class _AllProductScreenState extends State<AllProductScreen> {
   @override
   void dispose() {
     searchCtrl.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -69,10 +70,12 @@ class _AllProductScreenState extends State<AllProductScreen> {
         ],
       ),
       body: RefreshIndicator(
+        elevation: 0,
         onRefresh: () async {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _productController.productsGet();
-          });        },
+          });
+        },
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -162,10 +165,12 @@ class _AllProductScreenState extends State<AllProductScreen> {
                         crossAxisSpacing: 10.w,
                         mainAxisSpacing: 0.h,
                       ),
-                      itemCount: controller.productsData.length + (controller.isLoadingProductMore ? 1 : 0),
+                      itemCount:
+                          controller.productsData.length +
+                          (controller.isLoadingProductMore ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == controller.productsData.length) {
-                          return  Padding(
+                          return Padding(
                             padding: EdgeInsets.all(16.r),
                             child: Center(child: CupertinoActivityIndicator()),
                           );
@@ -204,13 +209,12 @@ class _AllProductScreenState extends State<AllProductScreen> {
     );
   }
 
-
   void _addScrollListener() {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         _productController.productsGet();
-        print("load more true");
+        debugPrint("load more true");
       }
     });
   }
