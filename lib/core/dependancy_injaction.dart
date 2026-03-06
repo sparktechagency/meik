@@ -1,3 +1,4 @@
+import 'package:danceattix/controllers/add_product_controller.dart';
 import 'package:danceattix/controllers/auth_controller.dart';
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/controllers/user_controller.dart';
@@ -8,6 +9,7 @@ class DependencyInjection implements Bindings {
     Get.put(AuthController());
     Get.put(UserController());
     Get.put(ProductController());
+    Get.put(AddProductController());
 
 
   }}

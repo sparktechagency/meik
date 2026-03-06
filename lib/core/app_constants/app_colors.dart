@@ -12,6 +12,7 @@ class AppColors{
   static const Color textColorSecondary5EAAA8 = Color(0xff994901);
   static const Color hitTextColorA5A5A5 = Color(0xffA5A5A5);
   static const Color borderColor = Color(0xffEBEBEB);
+  static const Color dividerColor = Color(0xffB0B0B0);
   static const Color errorColor = Color(0xffFF3333);
 
 

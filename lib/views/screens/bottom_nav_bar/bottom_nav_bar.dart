@@ -33,7 +33,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         children: screens,
       ),
       bottomNavigationBar: Container(
-        margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         height: 65.h,
         decoration: BoxDecoration(
           color: AppColors.primaryColor,
@@ -47,10 +47,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(
             4,
-            (index) => _buildNavItem(index),
+            (index) => Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              child: _buildNavItem(index),
+            ),
           ),
         ),
       ),
@@ -87,13 +90,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           );
         case 3:
-          return selected
-              ? Assets.icons.profileSelected.svg(
-                  width: 26.sp,
-                  height: 26.sp,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                )
-              : Assets.icons.profile.svg(
+          return  Assets.icons.profile.svg(
                   width: 26.sp,
                   height: 26.sp,
                   colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),

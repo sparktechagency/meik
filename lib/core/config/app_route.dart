@@ -1,5 +1,6 @@
 
 
+import 'package:danceattix/views/screens/product/add_product_variant_screen.dart';
 import 'package:get/get.dart';
 
 import '../../views/screens/auth/enable_location/enable_location_screen.dart';
@@ -71,6 +72,7 @@ class AppRoutes {
   static const String profileScreen = "/ProfileScreen";
   static const String createProductScreen = "/CreateProductScreen";
   static const String boostScreen = "/BoostScreen";
+  static const String addProductVariantScreen = "/addProductVariantScreen";
 
 
 
@@ -106,7 +108,8 @@ class AppRoutes {
     GetPage(name: bottomNavBar, page: () => const BottomNavBar()),
     GetPage(name: progressScreen, page: () =>  ProgressScreen()),
     GetPage(name: profileScreen, page: () =>  ProfileScreen()),
-    GetPage(name: createProductScreen, page: () =>  CreateProductScreen()),
+    GetPage(name: createProductScreen, page: () =>  AddProductScreen()),
+    GetPage(name: addProductVariantScreen, page: () =>  AddProductVariantScreen()),
     GetPage(name: boostScreen, page: () => const BoostScreen()),
   ];
 }

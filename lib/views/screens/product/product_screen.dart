@@ -6,11 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import '../../../core/config/app_route.dart';
-import '../../widgets/cachanetwork_image.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_text.dart';
-import '../../widgets/custom_text_field.dart';
+import '../../widgets/widgets.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -34,122 +30,122 @@ class _ProductScreenState extends State<ProductScreen> {
           onTap: () {
             Get.toNamed(AppRoutes.createProductScreen);
           },
-          child: Container(
-             margin: EdgeInsets.only(bottom: 100.h),
-            height: 44.h,
-            width: 53.w,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4.r),
-              color: AppColors.primaryColor
+          child: Padding(
+            padding:  EdgeInsets.only(bottom: 80.h),
+            child: Container(
+              height: 53.h,
+              width: 53.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primaryColor
+              ),
+              child: Icon(Icons.add, color: Colors.white,size: 24.r),
             ),
-            child: Icon(Icons.add, color: Colors.white),
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18.w),
-          child: ContainedTabBarView(
-            tabBarProperties: TabBarProperties(
-              height: 45.h,
-              indicatorColor: Colors.black,
-              indicatorWeight: 3,
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.black,
-              labelStyle:
-              TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
-              unselectedLabelStyle: TextStyle(fontSize: 14.sp),
-            ),
-            tabs: const [
-              Text('        Listed: 5         '),
-              Text('         Pending: 2        '),
-              Text('         Sold: 3       '),
-            ],
-            views: [
-              AnimationLimiter(
-                child: ListView.builder(
-                  itemCount: 3,
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  itemBuilder: (context, index) {
-                    return CustomMyProductCard(
-                      index: index,
-                      leftBtnName: "Buy now",
-                      isBookMarkNeed: true,
-                      isFavorite: true,
-                      boast: index == 0 ? "Boosted on 22 Nov" : "Boost now",
-                      title: "Shift Dress",
-                      price: "30",
-                      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO4tTg47BvvepOyh9V-dEmXe0b65R_jFkWX0RV1u3hHisNTVPXqk3h0HiyKynTVoso0X0&usqp=CAU",
-                      onTap: () {
-                        Get.toNamed(AppRoutes.productDetailsScreen);
-                      },
-                      boostOnTap: () {
-                        Get.toNamed(AppRoutes.boostScreen);
-                      },
-                    );
-                  },
-                ),
-              ),
-
-
-
-
-
-              AnimationLimiter(
-                child: ListView.builder(
-                  itemCount: purchasedList.length,
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  itemBuilder: (context, index) {
-                    return CustomMyProductCard(
-                      index: index,
-                      isBookMarkNeed: true,
-                      isFavorite: false,
-                      progressStatus: "${purchasedList[index]}",
-                      title: "Shift Dress",
-                      price: "30",
-                      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO4tTg47BvvepOyh9V-dEmXe0b65R_jFkWX0RV1u3hHisNTVPXqk3h0HiyKynTVoso0X0&usqp=CAU",
-                      onTap: () {
-                        Get.toNamed(AppRoutes.productDetailsScreen);
-                      },
-                    );
-                  },
-                ),
-              ),
-
-
-
-
-
-
-
-
-              AnimationLimiter(
-                child: ListView.builder(
-                  itemCount: historyList.length,
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  itemBuilder: (context, index) {
-                    return CustomMyProductCard(
-                      index: index,
-                      isBookMarkNeed: true,
-                      isFavorite: false,
-                      isHistory: true,
-                      progressStatus: "${historyList[index]}",
-                      title: "Shift Dress",
-                      price: "30",
-                      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO4tTg47BvvepOyh9V-dEmXe0b65R_jFkWX0RV1u3hHisNTVPXqk3h0HiyKynTVoso0X0&usqp=CAU",
-                      onTap: () {
-                        Get.toNamed(AppRoutes.productDetailsScreen);
-                      },
-                    );
-                  },
-                ),
-              ),
-
-
-
-
-
-            ],
-            onChange: (index) => print("Tab index changed to $index"),
+        body: ContainedTabBarView(
+          tabBarProperties: TabBarProperties(
+            height: 40.h,
+            indicatorColor: AppColors.primaryColor,
+            indicatorWeight: 3,
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelColor: AppColors.primaryColor,
+            unselectedLabelColor: Colors.black,
+            labelStyle:
+            TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontSize: 14.sp,color: AppColors.dividerColor),
           ),
+          tabs: const [
+            Text('Listed: 5'),
+            Text('Pending: 2'),
+            Text('Sold: 3'),
+          ],
+          views: [
+            AnimationLimiter(
+              child: ListView.builder(
+                itemCount: 3,
+                padding: EdgeInsets.symmetric(vertical: 12.h,horizontal: 16.w),
+                itemBuilder: (context, index) {
+                  return CustomMyProductCard(
+                    index: index,
+                    leftBtnName: "Buy now",
+                    isBookMarkNeed: true,
+                    isFavorite: true,
+                    boast: index == 0 ? "Boosted on 22 Nov" : "Boost now",
+                    title: "Shift Dress",
+                    price: "30",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO4tTg47BvvepOyh9V-dEmXe0b65R_jFkWX0RV1u3hHisNTVPXqk3h0HiyKynTVoso0X0&usqp=CAU",
+                    onTap: () {
+                      Get.toNamed(AppRoutes.productDetailsScreen);
+                    },
+                    boostOnTap: () {
+                      Get.toNamed(AppRoutes.boostScreen);
+                    },
+                  );
+                },
+              ),
+            ),
+
+
+
+
+
+            AnimationLimiter(
+              child: ListView.builder(
+                itemCount: purchasedList.length,
+                padding: EdgeInsets.symmetric(vertical: 12.h,horizontal: 16.w),
+                itemBuilder: (context, index) {
+                  return CustomMyProductCard(
+                    index: index,
+                    isBookMarkNeed: true,
+                    isFavorite: false,
+                    progressStatus: "${purchasedList[index]}",
+                    title: "Shift Dress",
+                    price: "30",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO4tTg47BvvepOyh9V-dEmXe0b65R_jFkWX0RV1u3hHisNTVPXqk3h0HiyKynTVoso0X0&usqp=CAU",
+                    onTap: () {
+                      Get.toNamed(AppRoutes.productDetailsScreen);
+                    },
+                  );
+                },
+              ),
+            ),
+
+
+
+
+
+
+
+
+            AnimationLimiter(
+              child: ListView.builder(
+                itemCount: historyList.length,
+                padding: EdgeInsets.symmetric(vertical: 12.h,horizontal: 16.w),
+                itemBuilder: (context, index) {
+                  return CustomMyProductCard(
+                    index: index,
+                    isBookMarkNeed: true,
+                    isFavorite: false,
+                    isHistory: true,
+                    progressStatus: "${historyList[index]}",
+                    title: "Shift Dress",
+                    price: "30",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO4tTg47BvvepOyh9V-dEmXe0b65R_jFkWX0RV1u3hHisNTVPXqk3h0HiyKynTVoso0X0&usqp=CAU",
+                    onTap: () {
+                      Get.toNamed(AppRoutes.productDetailsScreen);
+                    },
+                  );
+                },
+              ),
+            ),
+
+
+
+
+
+          ],
+          onChange: (index) => print("Tab index changed to $index"),
         ));
   }
 }

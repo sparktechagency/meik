@@ -1,10 +1,12 @@
+
+import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/core/app_constants/app_constants.dart';
+import 'package:danceattix/global/custom_assets/fonts.gen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../core/app_constants/app_colors.dart';
-import '../../core/app_constants/app_constants.dart';
-import 'custom_text.dart';
+import '../widgets/widgets.dart';
 
 
 class CustomTextField extends StatefulWidget {
@@ -20,45 +22,61 @@ class CustomTextField extends StatefulWidget {
   final String? hintText;
   final double? contentPaddingHorizontal;
   final double? contentPaddingVertical;
-  final int? maxLine;
   final double? hintextSize;
   final Widget? suffixIcon;
   final FormFieldValidator? validator;
   final bool isPassword;
   final bool? isEmail;
-  final bool shadowNeed;
   final bool? readOnly;
   final double? borderRadio;
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
+  final Color? cursorColor;
   final int? maxLength;
-  final List<TextInputFormatter>? inputFormatters;
-
+  final int? maxLines;
+  final bool? enabled;
+  final FocusNode? focusNode;
+  final bool autofocus;
+  final bool isDatePicker;
+  final String? fontFamily;
+  final TextInputAction? textInputAction;
+  final List<TextInputFormatter>? inputFormatter;
+  final int? minLines;
+  final bool showShadow;
 
   const CustomTextField(
       {super.key,
-        this.contentPaddingHorizontal,
-        this.contentPaddingVertical,
-        this.hintText,
-        this.prefixIcon,
-        this.suffixIcon,
-        this.maxLine,
-        this.validator,
-        this.hintextColor,
-        this.borderColor,
-        this.isEmail = false,
-        required this.controller,
-        this.keyboardType = TextInputType.text,
-        this.isObscureText = false,
-        this.obscure = '*',
-        this.filColor,
-        this.hintextSize,
-        this.labelText,
-        this.isPassword = false,
-        this.readOnly = false, this.borderRadio, this.onTap, this.onChanged,
-        this.maxLength,
-        this.inputFormatters, this.shadowNeed = true,
-      });
+      this.contentPaddingHorizontal,
+      this.contentPaddingVertical,
+      this.hintText,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.validator,
+      this.hintextColor,
+      this.borderColor,
+      this.isEmail = false,
+      required this.controller,
+      this.keyboardType = TextInputType.text,
+      this.isObscureText = false,
+      this.obscure = '*',
+      this.filColor,
+      this.hintextSize,
+      this.labelText,
+      this.isPassword = false,
+      this.readOnly = false,
+      this.borderRadio,
+      this.onTap,
+      this.onChanged,
+      this.cursorColor,
+      this.maxLength,
+      this.enabled,
+      this.focusNode,
+      this.autofocus = false,
+      this.isDatePicker = false,
+      this.fontFamily,
+      this.textInputAction,
+      this.inputFormatter,
+      this.minLines, this.maxLines, this.showShadow = true});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -73,55 +91,84 @@ class _CustomTextFieldState extends State<CustomTextField> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:  EdgeInsets.only(bottom: 14.h),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(widget.borderRadio?.r ?? 16.r),
-          boxShadow: [
-            if(widget.shadowNeed)
-            BoxShadow(
-              color:   Colors.black.withOpacity(0.1),
-              offset: Offset(0, 4),
-              blurRadius: 4
-            )
-          ]
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if(widget.labelText != null)
-            CustomText(text: widget.labelText ?? '',bottom: 6.h,left: 2.w,color: Colors.black,),
-            TextFormField(
+    return Column(
+
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.labelText != null)
+          CustomText(
+            text: widget.labelText ?? '',
+            fontName: FontFamily.poppins,
+            color: Colors.black,
+            bottom: 6.h,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+
+        Material(
+          color: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.bgColorWhite,
+              borderRadius: BorderRadius.circular(widget.borderRadio ?? 10.r),
+              boxShadow: widget.showShadow ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: Offset(0, 3), ),
+
+              ] : null,
+            ),
+            child: TextFormField(
+              autofocus: widget.autofocus,
+              enabled: widget.enabled,
+              maxLength: widget.maxLength,
               onChanged: widget.onChanged,
-              onTap:widget. onTap,
-              readOnly: widget.readOnly!,
-              controller: widget.controller,
+              onTap: () {
+                if (widget.isDatePicker) {
+                 // _selectDate(context);
+                } else {
+                  widget.onTap?.call();
+                }
+              },
+              readOnly: widget.readOnly ?? false,
+              controller: widget.controller ?? TextEditingController(),
               keyboardType: widget.keyboardType,
+              inputFormatters: widget.inputFormatter,
+              textInputAction: widget.textInputAction,
               obscuringCharacter: widget.obscure!,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              maxLines: widget.maxLine ?? 1,
-              maxLength: widget.maxLength,
-              inputFormatters: widget.inputFormatters,
-              // validator: widget.validator,
+              minLines: widget.isPassword ? 1 : (widget.minLines ?? 1),
+              maxLines: widget.isPassword ? 1 : (widget.maxLines ?? 8),
+
+              contextMenuBuilder: (context, editableTextState) {
+                if (widget.readOnly == true) {
+                  return const SizedBox.shrink();
+                }
+                return AdaptiveTextSelectionToolbar.editableText(
+                  editableTextState: editableTextState,
+                );
+              },
+
               validator: widget.validator ??
-                      (value) {
+                  (value) {
                     if (widget.isEmail == false) {
                       if (value!.isEmpty) {
-                        return "Please enter ${widget.hintText?.toLowerCase()}";
+                        return "Please  ${widget.hintText!.toLowerCase()}";
                       } else if (widget.isPassword) {
                         if (value.isEmpty) {
-                          return "Please enter ${widget.hintText?.toLowerCase()}";
-                        } else if (value.length < 8 || !AppConstants.validatePassword(value)) {
-                          return "Password: 8 characters min, letters & digits \nrequired";
+                          return "Please  ${widget.hintText!.toLowerCase()}";
+                        } else if (value.length < 8) {
+                          return "Password: 8 characters min!";
                         }
                       }
                     } else {
                       bool data = AppConstants.emailValidate.hasMatch(value!);
                       if (value.isEmpty) {
-                        return "Please enter ${widget.hintText!.toLowerCase()}";
+                        return "Please  ${widget.hintText!.toLowerCase()}";
                       } else if (!data) {
                         return "Please check your email!";
                       }
@@ -129,72 +176,86 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     return null;
                   },
 
-          cursorColor: Colors.black,
-          obscureText: widget.isPassword ? obscureText : false,
-          style: TextStyle(color: widget.hintextColor ?? Colors.black, fontSize: widget.hintextSize ?? 12.h),
-          decoration: InputDecoration(
-              counterText: '',
-              contentPadding: EdgeInsets.symmetric(
-                  horizontal: widget.contentPaddingHorizontal ?? 20.w,
-                  vertical: widget.contentPaddingVertical ?? 20.h),
-              fillColor: widget.filColor ?? Colors.white,
-              filled: true,
-              prefixIcon: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 12.w),
-                child: widget.prefixIcon,
-              ),
-              suffixIcon: widget.isPassword
-                  ? GestureDetector(
-                onTap: toggle,
-                child: _suffixIcon(
-                    obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-              )
-                  : widget.suffixIcon,
-              prefixIconConstraints: BoxConstraints(minHeight: 24.w, minWidth: 24.w),
-              hintText: widget.hintText,
-              hintStyle: TextStyle(color: widget.hintextColor ?? AppColors.hitTextColorA5A5A5, fontSize: widget.hintextSize ?? 12.h,fontWeight: FontWeight.w400),
-              focusedBorder: focusedBorder(),
-              enabledBorder: enabledBorder(),
-              errorBorder: errorBorder(),
-              border: focusedBorder(),
-              errorStyle: TextStyle(fontSize: 12.h, fontWeight: FontWeight.w400)
-          ),
-
+              cursorColor: widget.cursorColor ?? Colors.black,
+              obscureText: widget.isPassword ? obscureText : false,
+              style: TextStyle(
+                  color: widget.hintextColor ?? Colors.black,
+                  fontSize: widget.hintextSize ?? 12.h,
+                  fontFamily: widget.fontFamily),
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
+                      horizontal: widget.contentPaddingHorizontal ?? 20.w,
+                      vertical: widget.contentPaddingVertical ?? 14.h),
+                  fillColor: widget.filColor ?? Colors.transparent,
+                  filled: true,
+                  prefixIcon: widget.prefixIcon != null ? Padding(
+                    padding:  EdgeInsets.symmetric(horizontal: 16.w),
+                    child: widget.prefixIcon,
+                  ) : null,
+                  suffixIcon: widget.isPassword
+                      ? GestureDetector(
+                          onTap: toggle,
+                          child: _suffixIcon(obscureText
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined),
+                        )
+                      : widget.suffixIcon,
+                  prefixIconConstraints:
+                      BoxConstraints(minHeight: 24.w, minWidth: 24.w),
+                  hintText: widget.hintText,
+                  hintStyle: TextStyle(
+                      color: widget.hintextColor ?? Colors.grey,
+                      fontSize: widget.hintextSize ?? 12.h,
+                      fontWeight: FontWeight.w400),
+                  focusedBorder: focusedBorder(),
+                  enabledBorder: enabledBorder(),
+                  errorBorder: errorBorder(),
+                  border: focusedBorder(),
+                  focusedErrorBorder: errorBorder(),
+                  errorStyle:
+                      TextStyle(fontSize: 12.h, fontWeight: FontWeight.w400)),
             ),
-          ],
+          ),
         ),
-      ),
+        SizedBox(height: 6.h),
+      ],
     );
   }
 
   _suffixIcon(IconData icon) {
-    return Padding(padding: const EdgeInsets.all(12.0), child: Icon(icon,color:AppColors.textColorA0A0A));
+    return Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Icon(icon, color: Colors.grey));
   }
 
-  OutlineInputBorder focusedBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular( widget.borderRadio?.r ?? 16.r),
-      borderSide:BorderSide(
-          color: widget.borderColor ??AppColors.borderColor
+  UnderlineInputBorder focusedBorder() {
+    return UnderlineInputBorder(
+      borderRadius: BorderRadius.circular(widget.borderRadio ?? 10.r),
+      borderSide: BorderSide(
+        width: 1,
+        color: widget.borderColor ?? AppColors.primaryColor,
       ),
     );
   }
 
-  OutlineInputBorder enabledBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(widget.borderRadio?.r ?? 16.r),
-      borderSide:BorderSide(
-          color: widget.borderColor ?? AppColors.borderColor
+  UnderlineInputBorder enabledBorder() {
+    return UnderlineInputBorder(
+      borderRadius: BorderRadius.circular(widget.borderRadio ?? 10.r),
+      borderSide: BorderSide(
+        width: 1,
+        color: widget.borderColor ?? AppColors.primaryColor,
       ),
     );
   }
 
-  OutlineInputBorder errorBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(widget.borderRadio?.r ?? 16.r),
-      borderSide: const BorderSide(
-          color: Colors.red,width: 0.5
+  UnderlineInputBorder errorBorder() {
+    return UnderlineInputBorder(
+      borderRadius: BorderRadius.circular(widget.borderRadio ?? 10.r),
+      borderSide: BorderSide(
+        width: 1,
+        color: Colors.red,
       ),
     );
   }
+
 }

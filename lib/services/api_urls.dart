@@ -1,7 +1,8 @@
 class ApiUrls {
   /// ============= base urls ===========>>>
   static const String baseUrl = "https://attendance.merinasib.shop/api/v1";
-  static const String imageBaseUrl = "https://attendance.merinasib.shop/api/v1/";
+  static const String imageBaseUrl =
+      "https://attendance.merinasib.shop/api/v1/";
   static const String socketUrl = "https://attendance.merinasib.shop";
 
   /// ============= all urls ===========>>>
@@ -27,4 +28,11 @@ class ApiUrls {
       '/products?term=$term&size=$size&category=$category&price=$price&page=$page&limit=$limit&type=$type';
 
   static String productDetails(String id) => '/products/$id';
+
+  static String categories({int page = 1, int limit = 10}) => '/sub-categories?page=$page&limit=$limit';
+  static String fvrtProduct({int page = 1, int limit = 10}) => '/sub-categories?page=$page&limit=$limit';
+  static const String productsAdd = '/products';
+  static const String sizes = '/sizes';
+  static const String colors = '/colors';
+  static const String imageURL = 'https://jidian.merinasib.shop/api/v1/s3/pre-signed-url?fileName=newimage.png&primaryPath=UserUploads&field=User_Profile&expiresIn=900';
 }

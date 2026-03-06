@@ -22,7 +22,6 @@ class _AllProductScreenState extends State<AllProductScreen> {
   final TextEditingController searchCtrl = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
-
   final ProductController _productController = Get.find<ProductController>();
 
   @override
@@ -47,27 +46,14 @@ class _AllProductScreenState extends State<AllProductScreen> {
       key: _scaffoldKey,
       backgroundColor: AppColors.bgColor,
       endDrawer: DrawerScreen(),
-      appBar: AppBar(
-        backgroundColor: AppColors.bgColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
-        title: CustomText(
-          text: "All Products",
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
-        ),
-        centerTitle: true,
+      appBar: CustomAppBar(
         actions: [
-          GestureDetector(
-            onTap: () => _scaffoldKey.currentState?.openEndDrawer(),
-            child: Icon(Icons.tune, color: Colors.black, size: 24.sp),
+          IconButton(
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+            icon: Icon(Icons.tune, color: Colors.black, size: 24.sp),
           ),
-          SizedBox(width: 20.w),
         ],
+        title: 'All Products',
       ),
       body: RefreshIndicator(
         elevation: 0,
@@ -145,7 +131,9 @@ class _AllProductScreenState extends State<AllProductScreen> {
                               width: 100.w,
                               title: 'Refresh',
                               onpress: () async {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
                                   controller.productsGet();
                                 });
                               },

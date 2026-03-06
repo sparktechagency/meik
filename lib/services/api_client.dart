@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:danceattix/core/app_constants/app_constants.dart';
+import 'package:danceattix/core/config/app_route.dart';
 import 'package:danceattix/helper/prefs_helper.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
@@ -35,6 +36,30 @@ class ApiClient extends GetxService {
 
       http.Response response = await client.get(
         Uri.parse(ApiUrls.baseUrl + uri),
+        headers: headers ?? mainHeaders,
+      ).timeout(const Duration(seconds: timeoutInSeconds));
+
+      return handleResponse(response, uri);
+    } catch (e, s) {
+      log.e('🐞🐞🐞 Error in getData: ${e.toString()}');
+      log.e('Stacktrace: ${s.toString()}');
+      return const Response(statusCode: 1, statusText: noInternetMessage);
+    }
+  }
+  static Future<Response> getDataRaw(String uri, {Map<String, String>? headers}) async {
+    bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
+
+    var mainHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $bearerToken'
+    };
+    try {
+      log.i(
+          '|📍📍📍|-----------------[[ GET ]] method details start -----------------|📍📍📍|');
+      log.i('URL: $uri \n Headers: ${headers ?? mainHeaders}');
+
+      http.Response response = await client.get(
+        Uri.parse(uri),
         headers: headers ?? mainHeaders,
       ).timeout(const Duration(seconds: timeoutInSeconds));
 
@@ -291,6 +316,38 @@ class ApiClient extends GetxService {
     }
   }
 
+
+  //==========================================> Put Binary to Presigned URL <======================================
+  static Future<Response> putBinaryToUrl(String fullUrl, File file) async {
+    try {
+      final fileBytes = await file.readAsBytes();
+      final mimeType = mime(file.path) ?? 'image/png';
+
+      log.i('|📍📍📍|-----------------[[ PUT BINARY ]] method details start -----------------|📍📍📍|');
+      log.i('URL: $fullUrl');
+      log.i('MimeType: $mimeType | Size: ${fileBytes.length} bytes');
+
+      http.Response response = await client.put(
+        Uri.parse(fullUrl), // ⚠️ baseUrl যোগ করা হচ্ছে না
+        body: fileBytes,
+        headers: {
+          'Content-Type': mimeType,
+        },
+      ).timeout(const Duration(seconds: timeoutInSeconds));
+
+      log.i('====> PUT BINARY Response: [${response.statusCode}] $fullUrl');
+
+      return Response(
+        statusCode: response.statusCode,
+        statusText: response.statusCode == 200 ? 'Success' : 'Upload failed',
+        body: response.body.isNotEmpty ? response.body : null,
+      );
+    } catch (e, s) {
+      log.e('🐞🐞🐞 Error in putBinaryToUrl: ${e.toString()}');
+      log.e('Stacktrace: ${s.toString()}');
+      return const Response(statusCode: 1, statusText: noInternetMessage);
+    }
+  }
   //==========================================> Patch Multipart Data <======================================
   static Future<Response> patchMultipartData(
       String uri, Map<String, String> body,
@@ -389,6 +446,10 @@ class ApiClient extends GetxService {
       statusCode: response.statusCode,
       statusText: response.reasonPhrase,
     );
+     if(response0.statusCode == 401){
+       bearerToken = '';
+        PrefsHelper.remove(AppConstants.bearerToken);
+       Get.offAllNamed(AppRoutes.logInScreen);     }
     if (response0.statusCode != 200 &&
         response0.body != null &&
         response0.body is! String) {
@@ -397,7 +458,9 @@ class ApiClient extends GetxService {
           statusCode: response0.statusCode,
           body: response0.body,
           statusText: errorResponse.message);
-    } else if (response0.statusCode != 200 && response0.body == null) {
+
+    }
+    else if (response0.statusCode != 200 && response0.body == null) {
       response0 = const Response(statusCode: 0, statusText: noInternetMessage);
     }
 

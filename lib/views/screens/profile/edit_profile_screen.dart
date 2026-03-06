@@ -71,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
 
             CustomTextField(
-              shadowNeed: false,
+              showShadow: false,
               controller: _userController.firstNameCtrl,
               labelText: "Your First Name",
               hintText: "your first name",
@@ -81,7 +81,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
 
             CustomTextField(
-              shadowNeed: false,
+              showShadow: false,
               controller: _userController.lastNameCtrl,
               labelText: "Your Last Name",
               hintText: "your last name",
@@ -92,7 +92,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
 
             CustomTextField(
-              shadowNeed: false,
+              showShadow: false,
               controller: _userController.addressCtrl,
               hintText: "your address",
               labelText: "Address",

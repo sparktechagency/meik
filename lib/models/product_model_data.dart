@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class ProductModelData {
   int? id;
   String? productName;
@@ -26,4 +28,23 @@ class ProductModelData {
     rating = json['rating'];
     reviewCount = json['reviewCount'];
   }
+}
+
+
+
+
+
+
+
+/// ======================== products add ===========================>
+class ColorEntry {
+  final Color color;
+  final int imageIndex;
+  final String hex;
+
+  const ColorEntry({
+    required this.color,
+    required this.imageIndex,
+    required this.hex,
+  });
 }

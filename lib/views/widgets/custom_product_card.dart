@@ -164,10 +164,10 @@ class CustomProductCard extends StatelessWidget {
 
                                                    SizedBox(height: 12.h),
                                                    CustomTextField(
-                                                     maxLine: 3,
+                                                     minLines: 3,
                                                      filColor: Colors.white,
                                                      borderColor: AppColors.primaryColor,
-                                                     shadowNeed: false,
+                                                     showShadow: false,
                                                       labelText: "Add Comments",
                                                        controller: amonCtrl,
                                                        hintText: "Write here"),

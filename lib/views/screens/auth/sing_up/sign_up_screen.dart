@@ -92,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       // Name Field
                       CustomTextField(
-                        shadowNeed: false,
+                        showShadow: false,
                         controller: _controller.firstNameController,
                         hintText: "First Name",
                         prefixIcon: Assets.icons.user.svg(
@@ -103,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
 
                       CustomTextField(
-                        shadowNeed: false,
+                        showShadow: false,
                         controller: _controller.lastNameController,
                         hintText: "Last Name",
                         prefixIcon: Assets.icons.user.svg(
@@ -115,7 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Email Field
                       CustomTextField(
-                        shadowNeed: false,
+                        showShadow: false,
                         controller: _controller.emailController,
                         hintText: "Enter E-mail",
                         prefixIcon: Assets.icons.email.svg(
@@ -131,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Address Field
                       CustomTextField(
-                        shadowNeed: false,
+                        showShadow: false,
                         controller: _controller.locationController,
                         hintText: "Address",
                         prefixIcon: Assets.icons.phoneNo.svg(
@@ -143,7 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Password Field
                       CustomTextField(
-                        shadowNeed: false,
+                        showShadow: false,
                         controller: _controller.passwordController,
                         hintText: "Enter Password",
                         prefixIcon: Assets.icons.lock.svg(
@@ -156,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Confirm Password Field
                       CustomTextField(
-                        shadowNeed: false,
+                        showShadow: false,
                         controller: _controller.confirmPassController,
                         hintText: "Confirm Password",
                         prefixIcon: Assets.icons.lock.svg(
