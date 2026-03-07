@@ -11,72 +11,64 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bgColorWhite,
       appBar: CustomAppBar(title: "Notifications"),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: 15,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.all(6.h),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                          color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 3,
-                            offset: Offset(-1, 2)
-                          )
-                        ]
-                      ),
-                      padding: EdgeInsets.all(12.h),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 50.h,
-                              width: 50.w,
-                              decoration: BoxDecoration(
-                                color: Color(0xffE7E7E7),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(Icons.notifications_outlined)),
-                          SizedBox(width: 12.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: 250.w,
-                                child: CustomText(
-                                    maxline: 3,
-                                    textAlign: TextAlign.start,
-                                    color: Colors.black,
-                                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-                                    fontSize: 12.h),
-                              ),
-
-
-                              CustomText(
-                                  text: "11:58 PM", fontSize: 9.h),
-                            ],
-                          ),
-
-
-                        ],
-                      ),
-                    ),
-                  );
-                },
+      body: ListView.builder(
+        padding: EdgeInsets.all(16.h),
+        itemCount: 15,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical:  8.h),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.r),
+                  color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 3,
+                    offset: Offset(-1, 2)
+                  )
+                ]
               ),
-            )
-          ],
-        ),
+              padding: EdgeInsets.all(12.h),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 50.h,
+                      width: 50.w,
+                      decoration: BoxDecoration(
+                        color: Color(0xffE7E7E7),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.notifications_outlined)),
+                  SizedBox(width: 12.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 250.w,
+                        child: CustomText(
+                            maxline: 3,
+                            textAlign: TextAlign.start,
+                            color: Colors.black,
+                            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+                            fontSize: 12.h),
+                      ),
+
+
+                      CustomText(
+                          text: "11:58 PM", fontSize: 9.h),
+                    ],
+                  ),
+
+
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
