@@ -10,7 +10,7 @@ import '../../widgets/custom_text.dart';
 
 
 class MessageScreen extends StatefulWidget {
-  const MessageScreen({Key? key}) : super(key: key);
+  const MessageScreen({super.key});
 
   @override
   State<MessageScreen> createState() => _ChatScreenState();

@@ -93,7 +93,7 @@ class _ProductScreenState extends State<ProductScreen> {
             AnimationLimiter(
               child: ListView.builder(
                 itemCount: purchasedList.length,
-                padding: EdgeInsets.symmetric(vertical: 12.h,horizontal: 16.w),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
                 itemBuilder: (context, index) {
                   return CustomMyProductCard(
                     index: index,
@@ -121,7 +121,7 @@ class _ProductScreenState extends State<ProductScreen> {
             AnimationLimiter(
               child: ListView.builder(
                 itemCount: historyList.length,
-                padding: EdgeInsets.symmetric(vertical: 12.h,horizontal: 16.w),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
                 itemBuilder: (context, index) {
                   return CustomMyProductCard(
                     index: index,

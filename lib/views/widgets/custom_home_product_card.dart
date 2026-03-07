@@ -1,3 +1,4 @@
+import 'package:danceattix/controllers/product_details_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,13 +12,14 @@ import 'custom_text.dart';
 class CustomProductCard extends StatelessWidget {
   final String? title;
   final int? index;
+  final int productID;
   final String? description;
   final String? price;
   final String? oldPrice;
   final String? image;
   final String? reviews;
   final double? rating;
-  final bool? isFavorite;
+  final bool isFavorite;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteTap;
   final VoidCallback? onBuyNowTap;
@@ -38,13 +40,13 @@ class CustomProductCard extends StatelessWidget {
     this.onFavoriteTap,
     this.onBuyNowTap,
     this.onOfferTap,
-    this.onMessageTap, this.index,
+    this.onMessageTap, this.index, required this.productID,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ?? () => Get.toNamed(AppRoutes.productDetailsScreen),
+      onTap: onTap ?? () => Get.toNamed(AppRoutes.productDetailsScreen,arguments: productID),
       child: Container(
         margin: EdgeInsets.only(left: index == 0 ? 10.w : 0 ,right: index == null ? 0 :  10.w,bottom: 10.r),
         width: 170.w,
@@ -75,28 +77,54 @@ class CustomProductCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 8.h,
-                  right: 8.w,
-                  child: GestureDetector(
-                    onTap: onFavoriteTap,
-                    child: Container(
-                      padding: EdgeInsets.all(6.r),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        isFavorite == true ? Icons.favorite : Icons.favorite_border,
-                        size: 18.sp,
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
+                  top: 0.h,
+                  right: 0.w,
+                  child: GetBuilder<ProductDetailsController>(
+                    builder: (ctrl) {
+                      final isFav = isFavorite ?? false;
+                      return IconButton(
+                        onPressed: ctrl.isLoadingFvrt
+                            ? null
+                            : () => ctrl.toggleFavourite(productID),
+                        icon: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Favorite Icon (always visible)
+                            GestureDetector(
+                              child: Container(
+                                padding: EdgeInsets.all(6.r),
+                                decoration: BoxDecoration(
+                                  color:  Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  isFavorite == true ? Icons.favorite : Icons.favorite_border,
+                                  size: 18.sp,
+                                  color: AppColors.primaryColor,
+                                ),
+                              ),
+                            ),
+
+                            // Circular loader on top when loading
+                            if (ctrl.isLoadingFvrt)
+                              SizedBox(
+                                height: 32.h,
+                                width: 32.w,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 1,
+                                  color: Colors.red,
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
@@ -177,7 +205,7 @@ class CustomProductCard extends StatelessWidget {
                         child: GestureDetector(
                           onTap: onBuyNowTap,
                           child: Container(
-                            height: 32.h,
+                            height: 26.h,
                             decoration: BoxDecoration(
                               color: AppColors.primaryColor,
                               borderRadius: BorderRadius.circular(12.r),
@@ -199,7 +227,7 @@ class CustomProductCard extends StatelessWidget {
                         child: GestureDetector(
                           onTap: onOfferTap,
                           child: Container(
-                            height: 32.h,
+                            height: 26.h,
                             decoration: BoxDecoration(
                               color: Colors.transparent,
                               borderRadius: BorderRadius.circular(12.r),
@@ -227,7 +255,7 @@ class CustomProductCard extends StatelessWidget {
                             border: Border.all(color: Colors.grey),
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(8.r),
+                            padding: EdgeInsets.all(6.r),
                             child: Assets.icons.message.svg(
                               colorFilter: const ColorFilter.mode(
                                 Colors.black54,

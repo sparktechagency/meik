@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:danceattix/models/user_model_data.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
-import 'package:danceattix/views/widgets/custom_tost_message.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';

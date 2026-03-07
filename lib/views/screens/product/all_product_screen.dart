@@ -73,7 +73,7 @@ class _AllProductScreenState extends State<AllProductScreen> {
                 child: CustomTextField(
                   hintextSize: 16.sp,
                   borderRadio: 50.r,
-                  contentPaddingVertical: 0,
+                  //contentPaddingVertical: 0,
                   borderColor: Colors.transparent,
                   validator: (_) => null,
                   hintText: 'Search by products name',
@@ -149,7 +149,7 @@ class _AllProductScreenState extends State<AllProductScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 16.h),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 170.w / 263.h,
+                        childAspectRatio: 170.w / 258.h,
                         crossAxisSpacing: 10.w,
                         mainAxisSpacing: 0.h,
                       ),
@@ -171,6 +171,7 @@ class _AllProductScreenState extends State<AllProductScreen> {
                           child: ScaleAnimation(
                             child: FadeInAnimation(
                               child: CustomProductCard(
+                                productID: product.id ?? 0,
                                 title: product.productName ?? 'N/A',
                                 description: product.description ?? 'N/A',
                                 price: product.price.toString() ?? '',

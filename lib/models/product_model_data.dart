@@ -32,10 +32,6 @@ class ProductModelData {
 
 
 
-
-
-
-
 /// ======================== products add ===========================>
 class ColorEntry {
   final Color color;
@@ -48,3 +44,7 @@ class ColorEntry {
     required this.hex,
   });
 }
+
+
+
+

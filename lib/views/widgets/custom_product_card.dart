@@ -71,6 +71,7 @@ class CustomProductCard extends StatelessWidget {
                       // Image Section
 
                       CustomNetworkImage(
+
                           borderRadius: BorderRadius.circular(8.r),
                           imageUrl: "$image",
                           height: 142.h,
