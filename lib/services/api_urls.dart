@@ -24,8 +24,9 @@ class ApiUrls {
     String category = '',
     String price = '',
     String type = '',
+    String status = '',
   }) =>
-      '/products?term=$term&size=$size&category=$category&price=$price&page=$page&limit=$limit&type=$type';
+      '/products?term=$term&size=$size&category=$category&price=$price&page=$page&limit=$limit&type=$type&status=$status';
 
   static String productDetails(int id) => '/products/$id';
 

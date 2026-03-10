@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: CustomTextField(
                 hintextSize: 16.sp,
                 borderRadio: 50.r,
-              //  contentPaddingVertical: 0,
+               contentPaddingVertical: 0,
                 borderColor: Colors.transparent,
                 validator: (_) => null,
                 hintText: 'Search by products name',
@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 16.h),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 170.w / 258.h,
+                      childAspectRatio: 170.w / 263.h,
                       crossAxisSpacing: 10.w,
                       mainAxisSpacing: 0.h,
                     ),

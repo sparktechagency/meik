@@ -185,8 +185,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(
                       horizontal: widget.contentPaddingHorizontal ?? 20.w,
-                      vertical: widget.contentPaddingVertical ?? 14.h),
-                  fillColor: widget.filColor ?? Colors.transparent,
+                      vertical: widget.contentPaddingVertical ?? 18.h),
+                  fillColor: widget.filColor ?? Colors.white,
                   filled: true,
                   prefixIcon: widget.prefixIcon != null ? Padding(
                     padding:  EdgeInsets.symmetric(horizontal: 16.w),
@@ -228,28 +228,28 @@ class _CustomTextFieldState extends State<CustomTextField> {
         child: Icon(icon, color: Colors.grey));
   }
 
-  UnderlineInputBorder focusedBorder() {
-    return UnderlineInputBorder(
+  OutlineInputBorder focusedBorder() {
+    return OutlineInputBorder(
       borderRadius: BorderRadius.circular(widget.borderRadio ?? 10.r),
       borderSide: BorderSide(
         width: 1,
-        color: widget.borderColor ?? AppColors.primaryColor,
+        color: widget.borderColor ?? Colors.grey.shade200,
       ),
     );
   }
 
-  UnderlineInputBorder enabledBorder() {
-    return UnderlineInputBorder(
+  OutlineInputBorder enabledBorder() {
+    return OutlineInputBorder(
       borderRadius: BorderRadius.circular(widget.borderRadio ?? 10.r),
       borderSide: BorderSide(
         width: 1,
-        color: widget.borderColor ?? AppColors.primaryColor,
+        color: widget.borderColor ?? Colors.grey.shade200,
       ),
     );
   }
 
-  UnderlineInputBorder errorBorder() {
-    return UnderlineInputBorder(
+  OutlineInputBorder errorBorder() {
+    return OutlineInputBorder(
       borderRadius: BorderRadius.circular(widget.borderRadio ?? 10.r),
       borderSide: BorderSide(
         width: 1,

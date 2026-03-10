@@ -37,7 +37,7 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
               child: CustomTextField(
                 hintextSize: 16.sp,
                 borderRadio: 50.r,
-                //  contentPaddingVertical: 0,
+                contentPaddingVertical: 0,
                 borderColor: Colors.transparent,
                 validator: (_) => null,
                 hintText: 'Search ny name',

@@ -15,6 +15,8 @@ class ProductController extends GetxController {
   int productTotalPage = -1;
   int totalProduct = 0;
   List<ProductModelData> productsData = [];
+  List<ProductModelData> listedProductsData = [];
+  List<ProductModelData> pendingProductsData = [];
 
   // Filter options
   List<String> conditions = ["Brand new", "Used"];
@@ -51,6 +53,7 @@ class ProductController extends GetxController {
 
   Future<void> productsGet({
     String type = '',
+    String status = '',
     bool isInitialLoad = true,
   }) async {
     if (isInitialLoad) {
@@ -71,6 +74,7 @@ class ProductController extends GetxController {
         price: '$minPrice-$maxPrice',
         size: selectedSizes,
         type: type,
+        status: status
       ),
     );
 
@@ -83,11 +87,18 @@ class ProductController extends GetxController {
           .map((json) => ProductModelData.fromJson(json))
           .toList();
 
-      productsData.addAll(product);
+      if (status == 'available') {
+        listedProductsData.addAll(product);
+      } else if (status == 'pending') {
+        pendingProductsData.addAll(product);
+      }else{
+        productsData.addAll(product);
+      }
+
       productTotalPage = responseBody['pagination']?['totalPages'] ?? productTotalPage;
       totalProduct = responseBody['pagination']?['total'] ?? totalProduct;
     } else {
-      showToast(responseBody['message']);
+      //showToast(responseBody['message']);
     }
 
     isLoadingProduct = false;

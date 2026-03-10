@@ -25,7 +25,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-
   bool isChecked = false;
   String selectedCountryCode = "+1";
   String selectedCountryFlag = "US";
@@ -33,7 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgColorWhiteFFFFFF,
+      backgroundColor: AppColors.bgColorWhite,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Form(
@@ -74,7 +73,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40.w),
                   child: CustomText(
-                    text: "Enter this information properly and get excited service properly !!!",
+                    text:
+                        "Enter this information properly and get excited service properly !!!",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.hitTextColorA5A5A5,
@@ -87,7 +87,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // Form Fields Container
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 16.h,
+                  ),
                   child: Column(
                     children: [
                       // Name Field
@@ -191,7 +194,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             child: Transform.translate(
                               offset: const Offset(-12, 0),
                               child: Padding(
-                                padding:  EdgeInsets.only(top: 5.h),
+                                padding: EdgeInsets.only(top: 5.h),
                                 child: RichText(
                                   text: TextSpan(
                                     style: TextStyle(
@@ -238,16 +241,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       // Register Button
                       GetBuilder<AuthController>(
                         builder: (controller) {
-                          return controller.isLoadingRegister ? CustomLoader() : CustomButton(
-                            title: "Register",
-                            onpress: () {
-                              if(_formKey.currentState!.validate()){
-                                controller.register();
-                              }
-                              //_showSuccessDialog(context);
-                            },
-                          );
-                        }
+                          return controller.isLoadingRegister
+                              ? CustomLoader()
+                              : CustomButton(
+                                  title: "Register",
+                                  onpress: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      controller.register();
+                                    }
+                                    //_showSuccessDialog(context);
+                                  },
+                                );
+                        },
                       ),
 
                       SizedBox(height: 20.h),
@@ -273,7 +278,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ..onTap = () {
                                   Get.toNamed(AppRoutes.logInScreen);
                                 },
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -387,7 +392,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ...List.generate(6, (index) {
                       return Positioned(
                         top: (index % 2 == 0) ? 10.h : 60.h,
-                        left: (index % 3 == 0) ? 20.w : (index % 3 == 1) ? 80.w : 140.w,
+                        left: (index % 3 == 0)
+                            ? 20.w
+                            : (index % 3 == 1)
+                            ? 80.w
+                            : 140.w,
                         child: Container(
                           width: 8.w,
                           height: 8.h,
@@ -430,7 +439,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
                   child: CustomText(
-                    text: "Your account create successfully. Are you want to setup profile now ?",
+                    text:
+                        "Your account create successfully. Are you want to setup profile now ?",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.hitTextColorA5A5A5,
@@ -506,16 +516,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-
   @override
   void dispose() {
-      _controller.firstNameController.clear();
-      _controller.lastNameController.clear();
-      _controller.emailController.clear();
-      _controller.phoneController.clear();
-      _controller.locationController.clear();
-      _controller.passwordController.clear();
-      _controller.confirmPassController.clear();
+    _controller.firstNameController.clear();
+    _controller.lastNameController.clear();
+    _controller.emailController.clear();
+    _controller.phoneController.clear();
+    _controller.locationController.clear();
+    _controller.passwordController.clear();
+    _controller.confirmPassController.clear();
     super.dispose();
   }
 }

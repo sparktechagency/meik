@@ -123,6 +123,74 @@ class ShimmerHelper {
     );
   }
 
+  Widget showMyProductShimmer() {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: 5,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      itemBuilder: (context, index) {
+        return _buildMyProductCardShimmer();
+      },
+    );
+  }
+
+  Widget _buildMyProductCardShimmer() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6.h, horizontal: 3.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.4),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(6.r),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image shimmer
+            _shimmerBox(width: 102.w, height: 142.h, borderRadius: 8),
+            SizedBox(width: 7.w),
+
+            // Info shimmer
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8.h),
+                  // Title
+                  _shimmerBox(width: 120.w, height: 14.h, borderRadius: 4),
+                  SizedBox(height: 10.h),
+                  // Price
+                  _shimmerBox(width: 80.w, height: 12.h, borderRadius: 4),
+                  SizedBox(height: 10.h),
+                  // Description line 1
+                  _shimmerBox(width: double.infinity, height: 10.h, borderRadius: 4),
+                  SizedBox(height: 5.h),
+                  // Description line 2
+                  _shimmerBox(width: double.infinity, height: 10.h, borderRadius: 4),
+                  SizedBox(height: 5.h),
+                  // Description line 3
+                  _shimmerBox(width: 100.w, height: 10.h, borderRadius: 4),
+                  SizedBox(height: 14.h),
+                  // Boost button
+                  _shimmerBox(width: 140.w, height: 30.h, borderRadius: 8),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ─── Single Product Card Shimmer (CustomProductCard এর exact copy) ─────────
   Widget _buildProductCardShimmer() {
     return Container(

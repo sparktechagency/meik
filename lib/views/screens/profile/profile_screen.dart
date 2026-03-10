@@ -1,5 +1,7 @@
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/views/widgets/custom_app_bar.dart';
+import 'package:danceattix/views/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -18,118 +20,113 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgColorWhiteFFFFFF,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: Column(
-              children: [
-                SizedBox(height: 60.h),
+    return CustomScaffold(
+      appBar: CustomAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 24.h),
 
-                // Profile Image with border
-                GetBuilder<UserController>(
-                  builder: (controller) {
-                    return GestureDetector(
-                      onTap: () {
-                        Get.toNamed(AppRoutes.profileInformationScreen);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(3.r),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppColors.primaryColor,
-                            width: 2.w,
-                          ),
-                        ),
-                        child: CustomNetworkImage(
-                          imageUrl: controller.userData?.profileImage ?? '',
-                          height: 90.h,
-                          width: 90.w,
-                          boxShape: BoxShape.circle,
-                        ),
-                      ),
-                    );
-                  }
-                ),
-
-                SizedBox(height: 16.h),
-
-                // Name
-                GetBuilder<UserController>(
-                  builder: (controller) {
-                    return CustomText(
-                      text: controller.userData?.fullName ?? 'N/A',
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    );
-                  }
-                ),
-
-                SizedBox(height: 12.h),
-
-                // Verified/Verify Now Badge
-                _buildVerificationBadge(),
-
-                SizedBox(height: 40.h),
-
-                // Menu Items
-                _buildMenuItem(
-                  icon: Icons.person_outline,
-                  title: "Profile Information",
+            // Profile Image with border
+            GetBuilder<UserController>(
+              builder: (controller) {
+                return GestureDetector(
                   onTap: () {
                     Get.toNamed(AppRoutes.profileInformationScreen);
                   },
-                ),
-
-                _buildMenuItem(
-                  icon: Icons.translate,
-                  title: "Translation",
-                  onTap: () {
-                    // Navigate to translation screen
-                  },
-                ),
-
-                _buildMenuItem(
-                  icon: Icons.account_balance_wallet_outlined,
-                  title: "Wallet",
-                  onTap: () {
-                    Get.toNamed(AppRoutes.walletScreen);
-                  },
-                ),
-
-                _buildMenuItem(
-                  icon: Icons.headset_mic_outlined,
-                  title: "Admin Support",
-                  onTap: () {
-                    // Navigate to admin support
-                  },
-                ),
-
-                _buildMenuItem(
-                  icon: Icons.settings_outlined,
-                  title: "Settings",
-                  onTap: () {
-                    Get.toNamed(AppRoutes.settingScreen);
-                  },
-                ),
-
-                _buildMenuItem(
-                  icon: Icons.logout_outlined,
-                  title: "Logout",
-                  showDivider: false,
-                  onTap: () {
-                    _showLogoutDialog(context);
-                  },
-                ),
-
-                SizedBox(height: 40.h),
-              ],
+                  child: Container(
+                    padding: EdgeInsets.all(3.r),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.primaryColor,
+                        width: 2.w,
+                      ),
+                    ),
+                    child: CustomNetworkImage(
+                      imageUrl: controller.userData?.profileImage ?? '',
+                      height: 90.h,
+                      width: 90.w,
+                      boxShape: BoxShape.circle,
+                    ),
+                  ),
+                );
+              }
             ),
-          ),
+
+            SizedBox(height: 16.h),
+
+            // Name
+            GetBuilder<UserController>(
+              builder: (controller) {
+                return CustomText(
+                  text: controller.userData?.fullName ?? 'N/A',
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                );
+              }
+            ),
+
+            SizedBox(height: 12.h),
+
+            // Verified/Verify Now Badge
+            _buildVerificationBadge(),
+
+            SizedBox(height: 40.h),
+
+            // Menu Items
+            _buildMenuItem(
+              icon: Icons.person_outline,
+              title: "Profile Information",
+              onTap: () {
+                Get.toNamed(AppRoutes.profileInformationScreen);
+              },
+            ),
+
+            _buildMenuItem(
+              icon: Icons.translate,
+              title: "Translation",
+              onTap: () {
+                // Navigate to translation screen
+              },
+            ),
+
+            _buildMenuItem(
+              icon: Icons.account_balance_wallet_outlined,
+              title: "Wallet",
+              onTap: () {
+                Get.toNamed(AppRoutes.walletScreen);
+              },
+            ),
+
+            _buildMenuItem(
+              icon: Icons.headset_mic_outlined,
+              title: "Admin Support",
+              onTap: () {
+                // Navigate to admin support
+              },
+            ),
+
+            _buildMenuItem(
+              icon: Icons.settings_outlined,
+              title: "Settings",
+              onTap: () {
+                Get.toNamed(AppRoutes.settingScreen);
+              },
+            ),
+
+            _buildMenuItem(
+              icon: Icons.logout_outlined,
+              title: "Logout",
+              showDivider: false,
+              onTap: () {
+                _showLogoutDialog(context);
+              },
+            ),
+
+            SizedBox(height: 40.h),
+          ],
         ),
       ),
     );
