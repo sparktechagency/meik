@@ -22,9 +22,12 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   void initState() {
     super.initState();
-    if(_controller.listedProductsData.isEmpty){
-      _controller.productsGet(type: 'own', status: 'available');
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(_controller.listedProductsData.isEmpty){
+        _controller.productsGet(type: 'own', status: 'available');
+      }
+    });
+
   }
 
   @override
@@ -73,28 +76,33 @@ class _ProductScreenState extends State<ProductScreen> {
                   : controller.listedProductsData.isEmpty
                   ? Center(child: Text('No listed products found.'))
                   : AnimationLimiter(
-                child: ListView.builder(
-                  itemCount: controller.listedProductsData.length,
-                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                  itemBuilder: (context, index) {
-                    final product = controller.listedProductsData[index];
-                    return CustomMyProductCard(
-                      index: index,
-                      leftBtnName: "Buy now",
-                      boast: "Boost now",
-                      title: product.productName,
-                      price: product.price,
-                      image: product.image,
-                      onTap: () => Get.toNamed(
-                        AppRoutes.productDetailsScreen,
-                        arguments: product,
-                      ),
-                      boostOnTap: () => Get.toNamed(
-                        AppRoutes.boostScreen,
-                        arguments: product,
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: ()async {
+                  await  _controller.productsGet(type: 'own', status: 'available');
                   },
+                  child: ListView.builder(
+                    itemCount: controller.listedProductsData.length,
+                    padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                    itemBuilder: (context, index) {
+                      final product = controller.listedProductsData[index];
+                      return CustomMyProductCard(
+                        index: index,
+                        leftBtnName: "Buy now",
+                        boast: "Boost now",
+                        title: product.productName,
+                        price: product.price,
+                        image: product.image,
+                        onTap: () => Get.toNamed(
+                          AppRoutes.productDetailsScreen,
+                          arguments: product.id,
+                        ),
+                        boostOnTap: () => Get.toNamed(
+                          AppRoutes.boostScreen,
+                          arguments: product,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
 
@@ -104,22 +112,27 @@ class _ProductScreenState extends State<ProductScreen> {
                   : controller.pendingProductsData.isEmpty
                   ? Center(child: Text('No pending products found.'))
                   : AnimationLimiter(
-                child: ListView.builder(
-                  itemCount: controller.pendingProductsData.length,
-                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                  itemBuilder: (context, index) {
-                    final product = controller.pendingProductsData[index];
-                    return CustomMyProductCard(
-                      index: index,
-                      title: product.productName,
-                      price: product.price,
-                      image: product.image,
-                      onTap: () => Get.toNamed(
-                        AppRoutes.productDetailsScreen,
-                        arguments: product,
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                   await controller.productsGet(type: 'own', status: 'pending');
                   },
+                  child: ListView.builder(
+                    itemCount: controller.pendingProductsData.length,
+                    padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                    itemBuilder: (context, index) {
+                      final product = controller.pendingProductsData[index];
+                      return CustomMyProductCard(
+                        index: index,
+                        title: product.productName,
+                        price: product.price,
+                        image: product.image,
+                        onTap: () => Get.toNamed(
+                          AppRoutes.productDetailsScreen,
+                          arguments: product.id,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

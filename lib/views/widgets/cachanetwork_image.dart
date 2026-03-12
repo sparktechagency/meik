@@ -1,3 +1,4 @@
+import 'package:danceattix/services/api_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
@@ -30,7 +31,7 @@ class CustomNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       fit: BoxFit.cover,
-      imageUrl: imageUrl,
+      imageUrl: '${ApiUrls.imageBaseUrl}/$imageUrl',
       imageBuilder: (context, imageProvider) => Container(
         height: height,
         width: width,

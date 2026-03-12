@@ -4,7 +4,7 @@ class ProductDetailsModelData {
   String? productName;
   String? status;
   int? subCategoryId;
-  int? price;
+  double? price;
   String? description;
   String? condition;
   String? brand;
@@ -63,7 +63,8 @@ class ProductDetailsModelData {
     productName = json['product_name'];
     status = json['status'];
     subCategoryId = json['subCategoryId'];
-    price = json['price'];
+    price = (json['price'] as num?)?.toDouble();
+    buyerProtection = (json['buyer_protection'] as num?)?.toDouble();
     description = json['description'];
     condition = json['condition'];
     brand = json['brand'];
@@ -93,7 +94,6 @@ class ProductDetailsModelData {
       });
     }
     collectionAddress = json['collectionAddress'];
-    buyerProtection = json['buyer_protection'];
     isFavorite = json['isFavorite'];
   }
 }

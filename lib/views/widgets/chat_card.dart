@@ -1,6 +1,7 @@
 import 'package:chat_bubbles/bubbles/bubble_normal_image.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/services/api_urls.dart';
+import 'package:danceattix/views/widgets/custom_image_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -34,18 +35,19 @@ class ChatBubbleMessage extends StatelessWidget {
         isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
-              // if(!isMe)
-              //   CustomImageAvatar(
-              //     right: 8.w,
-              //     radius: 15.r,
-              //   ),
+              if(!isMe)
+                CustomImageAvatar(
+                  right: 8.w,
+                  radius: 15.r,
+                ),
               Flexible(
                 child: CustomContainer(
                   paddingAll: 10.r,
-                  color: isMe ? const Color(0xffCC7108) : const Color(0xffECECEC),
+                  color: isMe ? Colors.white : Colors.white,
                   bottomRight: 10.r,
                   bottomLeft: 10.r,
                   topLeftRadius: isMe ? 10.r : 0,
@@ -85,7 +87,7 @@ class ChatBubbleMessage extends StatelessWidget {
         fontSize: 14.sp,
         textAlign: TextAlign.left,
         fontWeight: FontWeight.w400,
-        color: isMe ? Colors.white : Color(0xff1B1B1B),
+        color: isMe ? Color(0xff1B1B1B) : Color(0xff1B1B1B),
         text: text!,
       );
     } else if (images != null && images!.isNotEmpty) {

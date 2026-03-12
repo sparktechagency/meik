@@ -45,131 +45,139 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.bgColorWhite,
       appBar: _customAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: CustomTextField(
-                hintextSize: 16.sp,
-                borderRadio: 50.r,
-               contentPaddingVertical: 0,
-                borderColor: Colors.transparent,
-                validator: (_) => null,
-                hintText: 'Search by products name',
-                suffixIcon: CustomContainer(
-                  marginAll: 2.r,
-                  paddingAll: 8.r,
-                  shape: BoxShape.circle,
-                  color: AppColors.primaryColor,
-                  child: Icon(
-                    Icons.search,
-                    //size: 20.sp,
-                    color: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          await  _productController.productsGet();
+        },
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: CustomTextField(
+                  hintextSize: 16.sp,
+                  borderRadio: 50.r,
+                 contentPaddingVertical: 0,
+                  borderColor: Colors.transparent,
+                  validator: (_) => null,
+                  hintText: 'Search by products name',
+                  suffixIcon: CustomContainer(
+                    marginAll: 2.r,
+                    paddingAll: 8.r,
+                    shape: BoxShape.circle,
+                    color: AppColors.primaryColor,
+                    child: Icon(
+                      Icons.search,
+                      //size: 20.sp,
+                      color: Colors.white,
+                    ),
+                  ),
+                  controller: searchCtrl,
+                ),
+              ),
+              SizedBox(height: 10.h),
+
+              GestureDetector(
+                onTap: () => Get.toNamed(AppRoutes.boostScreen),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Assets.images.boostBanner.image(
+                    // height: 120.h,
+                    // width: double.infinity,
+                    // fit: BoxFit.cover,
                   ),
                 ),
-                controller: searchCtrl,
               ),
-            ),
-            SizedBox(height: 10.h),
+              SizedBox(height: 10.h),
 
-            GestureDetector(
-              onTap: () => Get.toNamed(AppRoutes.boostScreen),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Assets.images.boostBanner.image(
-                  // height: 120.h,
-                  // width: double.infinity,
-                  // fit: BoxFit.cover,
-                ),
+              _buildSectionTitle(
+                title: 'All Products',
+                onSeeAllTap: () => Get.toNamed(AppRoutes.allProductScreen),
               ),
-            ),
-            SizedBox(height: 10.h),
 
-            _buildSectionTitle(
-              title: 'All Products',
-              onSeeAllTap: () => Get.toNamed(AppRoutes.allProductScreen),
-            ),
-
-            AnimationLimiter(
-              child: GetBuilder<ProductController>(
-                builder: (controller) {
-                  if (controller.isLoadingProduct) {
-                    return ShimmerHelper.instance.showProductShimmer();
-                  } else if (controller.productsData.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Assets.lottie.emptyData.lottie(),
-                          CustomText(
-                            text: 'No Data Found',
-                            color: AppColors.hitTextColorA5A5A5,
-                            fontSize: 16.sp,
-                          ),
-                          SizedBox(height: 16.h),
-
-                          /// 🔄 Refresh Button
-                          CustomButton(
-                            fontSize: 14.sp,
-                            height: 34.h,
-                            width: 100.w,
-                            title: 'Refresh',
-                            onpress: () async {
-                              WidgetsBinding.instance.addPostFrameCallback((
-                                _,
-                              ) {
-                                controller.productsGet();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: EdgeInsets.symmetric(horizontal: 16.h),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 170.w / 263.h,
-                      crossAxisSpacing: 10.w,
-                      mainAxisSpacing: 0.h,
-                    ),
-                    itemCount: controller.productsData.length,
-                    itemBuilder: (context, index) {
-                      final product = controller.productsData[index];
-                      return AnimationConfiguration.staggeredGrid(
-                        position: index,
-                        columnCount: 2,
-                        duration: const Duration(milliseconds: 375),
-                        child: ScaleAnimation(
-                          child: FadeInAnimation(
-                            child: CustomProductCard(
-                              isFavorite: true,
-                              productID: product.id ?? 0,
-                              title: product.productName ?? 'N/A',
-                              description: product.description ?? 'N/A',
-                              price: product.price.toString() ?? '',
-                              rating: product.rating?.toDouble() ?? 0.0,
-                              reviews: product.reviewCount.toString() ?? '0',
-                              image: product.image,
-                              onBuyNowTap: () {},
-                              onOfferTap: () {},
-                              onMessageTap: () {},
+              AnimationLimiter(
+                child: GetBuilder<ProductController>(
+                  builder: (controller) {
+                    if (controller.isLoadingProduct) {
+                      return ShimmerHelper.instance.showProductShimmer();
+                    } else if (controller.productsData.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Assets.lottie.emptyData.lottie(),
+                            CustomText(
+                              text: 'No Data Found',
+                              color: AppColors.hitTextColorA5A5A5,
+                              fontSize: 16.sp,
                             ),
-                          ),
+                            SizedBox(height: 16.h),
+
+                            /// 🔄 Refresh Button
+                            CustomButton(
+                              fontSize: 14.sp,
+                              height: 34.h,
+                              width: 100.w,
+                              title: 'Refresh',
+                              onpress: () async {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  controller.productsGet();
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       );
-                    },
-                  );
-                },
+                    }
+                    return GridView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.symmetric(horizontal: 16.h),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 170.w / 263.h,
+                        crossAxisSpacing: 10.w,
+                        mainAxisSpacing: 0.h,
+                      ),
+                      itemCount: controller.productsData.length,
+                      itemBuilder: (context, index) {
+                        final product = controller.productsData[index];
+                        return AnimationConfiguration.staggeredGrid(
+                          position: index,
+                          columnCount: 2,
+                          duration: const Duration(milliseconds: 375),
+                          child: ScaleAnimation(
+                            child: FadeInAnimation(
+                              child: CustomProductCard(
+                                isFavorite: true,
+                                productID: product.id ?? 0,
+                                title: product.productName ?? 'N/A',
+                                description: product.description ?? 'N/A',
+                                price: product.price.toString() ?? '',
+                                rating: product.rating?.toDouble() ?? 0.0,
+                                reviews: product.reviewCount.toString() ?? '0',
+                                image: product.image,
+                                onBuyNowTap: () {},
+                                onOfferTap: () {},
+                                onMessageTap: () {},
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+
+              SizedBox(height: 100.h),
+            ],
+          ),
         ),
       ),
     );

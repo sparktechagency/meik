@@ -1,5 +1,7 @@
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/core/app_constants/app_constants.dart';
+import 'package:danceattix/helper/prefs_helper.dart';
 import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -278,6 +280,7 @@ class ProfileScreen extends StatelessWidget {
                       height: 48.h,
                       title: "Logout",
                       onpress: () {
+                        PrefsHelper.remove(AppConstants.bearerToken);
                         Get.offAllNamed(AppRoutes.logInScreen);
                       },
                       color: Colors.red,

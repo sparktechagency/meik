@@ -1,4 +1,5 @@
 import 'package:danceattix/controllers/auth_controller.dart';
+import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_button.dart';
 import 'package:danceattix/views/widgets/custom_loader.dart';
 import 'package:danceattix/views/widgets/custom_text.dart';
@@ -25,6 +26,7 @@ class _LogInScreenState extends State<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(),
       backgroundColor: AppColors.bgColor,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -32,26 +34,7 @@ class _LogInScreenState extends State<LogInScreen> {
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
               children: [
-                SizedBox(height: 20.h),
-
-                // Back Button
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    onTap: () => Get.back(),
-                    child: Container(
-                      padding: EdgeInsets.all(8.w),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        size: 20.sp,
-                        color: AppColors.textColorA0A0A,
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 40.h),
-
+SizedBox(height: 24.h),
                 // Logo
                 Container(
                   padding: EdgeInsets.all(16.w),

@@ -65,7 +65,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget _buildBody(ProductDetailsModelData product) {
     // Build image list from API
     final List<String> images = product.images
-        ?.map((img) => '${ApiUrls.baseUrl}/${img.image ?? ''}')
+        ?.map((img) => img.image ?? '')
         .toList() ??
         [];
 

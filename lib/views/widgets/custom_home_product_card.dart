@@ -76,57 +76,57 @@ class CustomProductCard extends StatelessWidget {
                     width: double.infinity,
                   ),
                 ),
-                Positioned(
-                  top: 0.h,
-                  right: 0.w,
-                  child: GetBuilder<ProductDetailsController>(
-                    builder: (ctrl) {
-                      final isFav = isFavorite ?? false;
-                      return IconButton(
-                        onPressed: ctrl.isLoadingFvrt
-                            ? null
-                            : () => ctrl.toggleFavourite(productID),
-                        icon: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Favorite Icon (always visible)
-                            GestureDetector(
-                              child: Container(
-                                padding: EdgeInsets.all(6.r),
-                                decoration: BoxDecoration(
-                                  color:  Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 4,
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  isFavorite == true ? Icons.favorite : Icons.favorite_border,
-                                  size: 18.sp,
-                                  color: AppColors.primaryColor,
-                                ),
-                              ),
-                            ),
-
-                            // Circular loader on top when loading
-                            if (ctrl.isLoadingFvrt)
-                              SizedBox(
-                                height: 32.h,
-                                width: 32.w,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 1,
-                                  color: Colors.red,
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                // Positioned(
+                //   top: 0.h,
+                //   right: 0.w,
+                //   child: GetBuilder<ProductDetailsController>(
+                //     builder: (ctrl) {
+                //       final isFav = isFavorite ?? false;
+                //       return IconButton(
+                //         onPressed: ctrl.isLoadingFvrt
+                //             ? null
+                //             : () => ctrl.toggleFavourite(productID),
+                //         icon: Stack(
+                //           alignment: Alignment.center,
+                //           children: [
+                //             // Favorite Icon (always visible)
+                //             GestureDetector(
+                //               child: Container(
+                //                 padding: EdgeInsets.all(6.r),
+                //                 decoration: BoxDecoration(
+                //                   color:  Colors.white,
+                //                   shape: BoxShape.circle,
+                //                   boxShadow: [
+                //                     BoxShadow(
+                //                       color: Colors.grey.withOpacity(0.2),
+                //                       blurRadius: 4,
+                //                     ),
+                //                   ],
+                //                 ),
+                //                 child: Icon(
+                //                   isFavorite == true ? Icons.favorite : Icons.favorite_border,
+                //                   size: 18.sp,
+                //                   color: AppColors.primaryColor,
+                //                 ),
+                //               ),
+                //             ),
+                //
+                //             // Circular loader on top when loading
+                //             if (ctrl.isLoadingFvrt)
+                //               SizedBox(
+                //                 height: 32.h,
+                //                 width: 32.w,
+                //                 child: const CircularProgressIndicator(
+                //                   strokeWidth: 1,
+                //                   color: Colors.red,
+                //                 ),
+                //               ),
+                //           ],
+                //         ),
+                //       );
+                //     },
+                //   ),
+                // ),
               ],
             ),
             // Product Info

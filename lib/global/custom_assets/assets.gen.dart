@@ -19,6 +19,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/aboutUs.svg
   SvgGenImage get aboutUs => const SvgGenImage('assets/icons/aboutUs.svg');
 
+  /// File path: assets/icons/add_image.svg
+  SvgGenImage get addImage => const SvgGenImage('assets/icons/add_image.svg');
+
   /// File path: assets/icons/arrowTop.svg
   SvgGenImage get arrowTop => const SvgGenImage('assets/icons/arrowTop.svg');
 
@@ -65,6 +68,10 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/logout.svg
   SvgGenImage get logout => const SvgGenImage('assets/icons/logout.svg');
+
+  /// File path: assets/icons/massege_send.svg
+  SvgGenImage get massegeSend =>
+      const SvgGenImage('assets/icons/massege_send.svg');
 
   /// File path: assets/icons/mediaIcon.svg
   SvgGenImage get mediaIcon => const SvgGenImage('assets/icons/mediaIcon.svg');
@@ -148,6 +155,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<dynamic> get values => [
     aboutUs,
+    addImage,
     arrowTop,
     attachfileIcon,
     back,
@@ -162,6 +170,7 @@ class $AssetsIconsGen {
     homeUnselected,
     lock,
     logout,
+    massegeSend,
     mediaIcon,
     meneyIcon,
     message,

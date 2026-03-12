@@ -104,7 +104,7 @@ class AuthController extends GetxController {
     text: kDebugMode ? 'ikramulhasantanvir@gmail.com' : '',
   );
   final TextEditingController loginPasswordController = TextEditingController(
-    text: kDebugMode ? '1Qazxsw@22' : '',
+    text: kDebugMode ? '1Qazxsw2@@' : '',
   );
 
   void cleanFieldLogin() {

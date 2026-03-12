@@ -57,7 +57,14 @@ class ProductController extends GetxController {
     bool isInitialLoad = true,
   }) async {
     if (isInitialLoad) {
-      productsData.clear();
+      if (status == 'available') {
+        listedProductsData.clear();
+      } else if (status == 'pending') {
+        pendingProductsData.clear();
+      } else {
+        productsData.clear();
+      }
+
       productPage = 1;
       productTotalPage = -1;
       isLoadingProduct = true;

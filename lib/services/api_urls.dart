@@ -2,7 +2,7 @@ class ApiUrls {
   /// ============= base urls ===========>>>
   static const String baseUrl = "https://attendance.merinasib.shop/api/v1";
   static const String imageBaseUrl =
-      "https://attendance.merinasib.shop/api/v1/";
+      "https://minio.merinasib.shop/ebfmart";
   static const String socketUrl = "https://attendance.merinasib.shop";
 
   /// ============= all urls ===========>>>
@@ -24,15 +24,23 @@ class ApiUrls {
     String category = '',
     String price = '',
     String type = '',
-    String status = '',
-  }) =>
-      '/products?term=$term&size=$size&category=$category&price=$price&page=$page&limit=$limit&type=$type&status=$status';
+    String? status,
+  }) {
+    String url = '/products?term=$term&size=$size&category=$category&price=$price&page=$page&limit=$limit&type=$type';
+
+    if (status != null && status.isNotEmpty) {
+      url += '&status=$status';
+    }
+
+    return url;
+  }
 
   static String productDetails(int id) => '/products/$id';
 
   static String categories({int page = 1, int limit = 10}) => '/sub-categories?page=$page&limit=$limit';
   static String fvrtProduct({int page = 1, int limit = 10}) => '/favourites?page=$page&limit=$limit';
   static String notification({int page = 1, int limit = 10}) => '/notifications?page=$page&limit=$limit';
+  static String conversations({int page = 1, int limit = 50}) => '/conversations?page=$page&limit=$limit';
   static const String productsAdd = '/products';
   static const String sizes = '/sizes';
   static const String colors = '/colors';
