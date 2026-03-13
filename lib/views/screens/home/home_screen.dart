@@ -188,6 +188,10 @@ class _HomeScreenState extends State<HomeScreen> {
       titleWidget: GetBuilder<UserController>(
         builder: (controller) {
           final user = controller.userData;
+          if (user == null) {
+            return const SizedBox();
+          }
+
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
@@ -196,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () => Get.toNamed(AppRoutes.profileScreen),
                   child: CustomNetworkImage(
                     border: Border.all(color: AppColors.primaryColor, width: 2),
-                    imageUrl: user?.profileImage ?? '',
+                    imageUrl: user.profileImage ?? '',
                     height: 48.h,
                     width: 48.w,
                     boxShape: BoxShape.circle,
@@ -207,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: '${user?.fullName ?? 'N/A'} !',
+                      text: '${user.fullName ?? 'N/A'} !',
                       color: Colors.black,
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,

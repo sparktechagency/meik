@@ -12,9 +12,7 @@ class AppThemeData {
         backgroundColor: AppColors.bgColor,
       ),
 
-
-      bottomSheetTheme: BottomSheetThemeData(
-      ),
+      bottomSheetTheme: BottomSheetThemeData(),
     );
   }
 

@@ -82,7 +82,7 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
                       final data = controller.conversationsData[index];
                        return GestureDetector(
                          onTap: () {
-                           Get.toNamed(AppRoutes.messageScreen);
+                           Get.toNamed(AppRoutes.messageScreen,arguments: "${data.id}" ?? '');
                          },
                          child: Container(
                             margin: EdgeInsets.all(3.r),

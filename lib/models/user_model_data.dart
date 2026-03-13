@@ -37,7 +37,7 @@ class UserModelData {
     this.deletedAt,
   });
 
-   String get fullName => "${firstName!} ${lastName!}";
+   String get fullName => "${firstName ?? ''} ${lastName ?? ''}";
    String get profileImage => "${ApiUrls.imageBaseUrl}${image ?? ""}";
 
   UserModelData.fromJson(Map<String, dynamic> json) {
@@ -52,7 +52,7 @@ class UserModelData {
     currency = json['currency'];
     fcm = json['fcm'];
     phone = json['phone'];
-    roles = json['roles'].cast<String>();
+    roles = json['roles'] != null ? List<String>.from(json['roles']) : [];
     isActive = json['isActive'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];

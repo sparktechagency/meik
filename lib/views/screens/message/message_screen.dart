@@ -1,10 +1,14 @@
+import 'package:danceattix/controllers/chat_controller.dart';
+import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
+import 'package:danceattix/views/widgets/chat_card.dart';
 import 'package:danceattix/views/widgets/custom_list_tile.dart';
+import 'package:danceattix/views/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../widgets/chat_card.dart';
-import '../../widgets/widgets.dart';
+import 'package:get/get.dart';
+
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({super.key});
@@ -14,7 +18,25 @@ class MessageScreen extends StatefulWidget {
 }
 
 class _MessageScreenState extends State<MessageScreen> {
+
+
+  final String conversationID = Get.arguments as String;
+
+
+  final ChatController _chatController = Get.find<ChatController>();
+
   final TextEditingController _messageController = TextEditingController();
+
+
+
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _chatController.inboxGet(conID: conversationID);
+    });
+    super.initState();
+  }
 
   // Dummy Chat List
   final List<Map<String, dynamic>> _dummyMessages = [
@@ -36,12 +58,20 @@ class _MessageScreenState extends State<MessageScreen> {
     return CustomScaffold(
       paddingSide: 0.w,
       appBar: CustomAppBar(
-        titleWidget: CustomListTile(
-          contentPaddingHorizontal: 0,
-          imageRadius: 24.r,
-          image:
-          'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg',
-          title: 'Tanvir Hridoy',
+        titleWidget: GetBuilder<ChatController>(
+          builder: (controller) {
+            if(controller.inboxData?.conversation == null){
+              return const SizedBox();
+            }
+            final conversation = controller.inboxData?.conversation;
+
+            return CustomListTile(
+              contentPaddingHorizontal: 0,
+              imageRadius: 24.r,
+              image: conversation?.image ?? 'N/A',
+              title: conversation?.name ?? 'N/A',
+            );
+          }
         ),
         actions: [
           IconButton(
@@ -55,17 +85,31 @@ class _MessageScreenState extends State<MessageScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
-              itemCount: _dummyMessages.length,
-              itemBuilder: (context, index) {
-                final message = _dummyMessages[index];
-                return ChatBubbleMessage(
-                  text: message["text"],
-                  time: message["time"],
-                  isMe: message["isMe"],
+            child: GetBuilder<ChatController>(
+              builder: (controller) {
+                if(controller.inboxData?.messages == null && controller.inboxData!.messages!.isEmpty){
+                  return const SizedBox();
+                }
+
+                final chat = controller.inboxData?.messages;
+
+                return ListView.builder(
+                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+                  itemCount: chat?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    final message = chat?[index];
+                    final isMe = message?.senderId == Get.find<UserController>().userData?.id;
+
+                    final List<String> images = message!.attachments!.map((e) => e.fileUrl ?? '').toList();
+                    return ChatBubbleMessage(
+                      images: images,
+                      text: message.msg,
+                      time: message.createdAt ?? '',
+                      isMe: isMe,
+                    );
+                  },
                 );
-              },
+              }
             ),
           ),
           _buildMessageSender(),
@@ -91,32 +135,30 @@ class _MessageScreenState extends State<MessageScreen> {
               validator: (_) => null,
               controller: _messageController,
               hintText: 'Type message...',
-              suffixIcon: IconButton(
-                onPressed: () {},
-                icon: Assets.icons.massegeSend.svg(),
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  if (_messageController.text.isNotEmpty) {
+                    setState(() {
+                      _dummyMessages.add({
+                        "text": _messageController.text,
+                        "time": "Now",
+                        "isMe": true,
+                      });
+                    });
+                    _messageController.clear();
+                  }
+                },
+                child: Assets.icons.massegeSend.svg(),
               ),
             ),
           ),
           SizedBox(width: 10.w),
-          CustomContainer(
-            onTap: () {
-              if (_messageController.text.isNotEmpty) {
-                setState(() {
-                  _dummyMessages.add({
-                    "text": _messageController.text,
-                    "time": "Now",
-                    "isMe": true,
-                  });
-                });
-                _messageController.clear();
-              }
-            },
-            paddingVertical: 12.r,
-            paddingHorizontal: 12.r,
-            shape: BoxShape.circle,
-            color: AppColors.primaryColor,
-            child: Assets.icons.massegeSend.svg(),
-          ),
+          CustomButton(
+            borderRadius: 44.r,
+            width: 110.w,
+              title: 'Make offer', onpress: (){
+
+          })
         ],
       ),
     );
