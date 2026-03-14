@@ -75,7 +75,7 @@ class ChatController extends GetxController {
   bool isLoadingInboxMore = false;
 
   int inboxPage = 1;
-  int inboxLimit = 50;
+  int inboxLimit = 100;
   int inboxTotalPage = -1;
   InboxModelData? inboxData;
 

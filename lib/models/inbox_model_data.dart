@@ -326,4 +326,6 @@ class Offer {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
+
+  void operator [](String other) {}
 }

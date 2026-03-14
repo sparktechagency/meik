@@ -23,7 +23,9 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.conversationGet();
+      if(_controller.conversationsData.isEmpty){
+        _controller.conversationGet();
+      }
     });
     super.initState();
   }
@@ -39,44 +41,44 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
     return Scaffold(
       backgroundColor: AppColors.bgColorWhite,
       appBar: CustomAppBar(title: "Messages"),
-      body: RefreshIndicator(
-        onRefresh: () async{
-          await _controller.conversationGet();
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: CustomTextField(
-                  hintextSize: 16.sp,
-                  borderRadio: 50.r,
-                  contentPaddingVertical: 0,
-                  borderColor: Colors.transparent,
-                  validator: (_) => null,
-                  hintText: 'Search ny name',
-                  suffixIcon: CustomContainer(
-                    marginAll: 2.r,
-                    paddingAll: 8.r,
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryColor,
-                    child: Icon(
-                      Icons.search,
-                      //size: 20.sp,
-                      color: Colors.white,
-                    ),
-                  ),
-                  controller: searchCtrl,
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: CustomTextField(
+              hintextSize: 16.sp,
+              borderRadio: 50.r,
+              contentPaddingVertical: 0,
+              borderColor: Colors.transparent,
+              validator: (_) => null,
+              hintText: 'Search ny name',
+              suffixIcon: CustomContainer(
+                marginAll: 2.r,
+                paddingAll: 8.r,
+                shape: BoxShape.circle,
+                color: AppColors.primaryColor,
+                child: Icon(
+                  Icons.search,
+                  //size: 20.sp,
+                  color: Colors.white,
                 ),
               ),
+              controller: searchCtrl,
+            ),
+          ),
 
-              GetBuilder<ChatController>(
-                builder: (controller) {
-                  return ListView.builder(
+          Expanded(
+            child: GetBuilder<ChatController>(
+              builder: (controller) {
+                return RefreshIndicator(
+                    onRefresh: () async{
+                  await _controller.conversationGet();
+                },
+                  child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 10.h),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics()
+                      ),
                       itemCount: controller.conversationsData.length,
                       itemBuilder: (context, index) {
                       final data = controller.conversationsData[index];
@@ -127,12 +129,12 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
                             ),
                           ),
                        );
-                      });
-                }
-              )
-            ],
-          ),
-        ),
+                      }),
+                );
+              }
+            ),
+          )
+        ],
       ),
     );
   }

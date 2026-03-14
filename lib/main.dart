@@ -1,5 +1,7 @@
-
+import 'package:danceattix/core/app_constants/app_constants.dart';
 import 'package:danceattix/core/dependancy_injaction.dart';
+import 'package:danceattix/helper/prefs_helper.dart';
+import 'package:danceattix/services/socket_services.dart';
 import 'package:danceattix/views/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,10 +9,15 @@ import 'package:get/get.dart';
 import 'core/config/app_route.dart';
 import 'core/config/light_themes.dart';
 
-
-
-void main() {
+void main() async {
   runApp(const MyApp());
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  String token = await PrefsHelper.getString(AppConstants.bearerToken);
+  if (token.isNotEmpty) {
+    await SocketServices.init();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -37,5 +44,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
