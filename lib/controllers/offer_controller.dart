@@ -17,9 +17,14 @@ class OfferController extends GetxController {
         "product_id": productID,
         "price": price,
       });
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
+        showToast(response.body['message']);
+        await Future.delayed(const Duration(milliseconds: 300));
+        Get.back();
       } else {
         showToast(response.body['message']);
+        await Future.delayed(const Duration(milliseconds: 300));
+        Get.back();
       }
     } catch (e) {
       debugPrint(e.toString());

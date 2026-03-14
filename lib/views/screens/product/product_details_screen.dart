@@ -1,4 +1,6 @@
+import 'package:danceattix/controllers/offer_controller.dart';
 import 'package:danceattix/controllers/product_details_controller.dart';
+import 'package:danceattix/core/config/app_route.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/models/product_details_model_data.dart';
 import 'package:danceattix/services/api_urls.dart';
@@ -129,7 +131,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             flexibleSpace: ProductImageSection(
               images: images.isNotEmpty
                   ? images
-                  : ['https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600'],
+                  : [],
             ),
           ),
         ];
@@ -492,7 +494,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   void _showMakeOfferDialog(ProductDetailsModelData product) {
     final imageUrl = (product.images?.isNotEmpty ?? false)
-        ? '${ApiUrls.baseUrl}/${product.images!.first.image}'
+        ? '${product.images!.first.image}'
         : '';
 
     showDialog(
@@ -572,13 +574,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               SizedBox(height: 24.h),
 
               // Make Offer Button
-              CustomButton(
-                loaderIgnore: true,
-                title: "Make offer",
-                onpress: () {
-                  Navigator.pop(context);
-                  // TODO: submit offer API
-                },
+              GetBuilder<OfferController>(
+                builder: (controller) {
+                  return CustomButton(
+                    loading: controller.isLoadingSend,
+                    title: "Make offer",
+                    onpress: () {
+                      if(offerPriceCtrl.text.isEmpty) return;
+                      controller.send(product.id ?? 0, double.parse(offerPriceCtrl.text));
+                    },
+                  );
+                }
               ),
             ],
           ),

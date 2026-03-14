@@ -20,10 +20,12 @@ class MessageScreen extends StatefulWidget {
 class _MessageScreenState extends State<MessageScreen> {
   final String conversationID = Get.arguments as String;
   final ChatController _chatController = Get.find<ChatController>();
+  final SocketChatController _socketChatController = Get.find<SocketChatController>();
   final TextEditingController _messageController = TextEditingController();
 
   @override
   void initState() {
+    _socketChatController.listenMessage(conversationID);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _chatController.inboxGet(conID: conversationID);
     });
@@ -154,6 +156,13 @@ class _MessageScreenState extends State<MessageScreen> {
         ],
       ),
     );
+  }
+
+
+  @override
+  void dispose() {
+    _socketChatController.removeListeners(conversationID);
+    super.dispose();
   }
 
 }

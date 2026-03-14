@@ -250,23 +250,44 @@ class Messages {
 
   Messages.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    senderId = json['sender_id'];
+    senderId = json['sender_id']?.toString();
     offerId = json['offer_id'];
     conversationId = json['conversation_id'];
-    msg = json['msg'];
-    type = json['type'];
+    msg = json['msg']?.toString();
+    type = json['type']?.toString();
     isRead = json['isRead'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
     if (json['attachments'] != null) {
       attachments = <Attachments>[];
       json['attachments'].forEach((v) {
-        attachments!.add(new Attachments.fromJson(v));
+        attachments!.add(Attachments.fromJson(v));
       });
     }
-    offer = json['offer'] != null ? new Offer.fromJson(json['offer']) : null;
+    offer = json['offer'] != null ? Offer.fromJson(json['offer']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['sender_id'] = senderId;
+    data['offer_id'] = offerId;
+    data['conversation_id'] = conversationId;
+    data['msg'] = msg;
+    data['type'] = type;
+    data['isRead'] = isRead;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (attachments != null) {
+      data['attachments'] = attachments!.map((v) => v.toJson()).toList();
+    }
+    if (offer != null) {
+      data['offer'] = offer!.toJson();
+    }
+    return data;
   }
 }
+
 
 class Attachments {
   int? id;
@@ -285,12 +306,23 @@ class Attachments {
 
   Attachments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    fileUrl = json['file_url'];
-    fileType = json['file_type'];
-    fileName = json['file_name'];
-    uploadedAt = json['uploaded_at'];
+    fileUrl = json['file_url']?.toString();
+    fileType = json['file_type']?.toString();
+    fileName = json['file_name']?.toString();
+    uploadedAt = json['uploaded_at']?.toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['file_url'] = fileUrl;
+    data['file_type'] = fileType;
+    data['file_name'] = fileName;
+    data['uploaded_at'] = uploadedAt;
+    return data;
   }
 }
+
 
 class Offer {
   int? id;
@@ -317,14 +349,28 @@ class Offer {
 
   Offer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    sellerId = json['seller_id'];
-    buyerId = json['buyer_id'];
-    orderId = json['order_id'];
+    sellerId = json['seller_id']?.toString();
+    buyerId = json['buyer_id']?.toString();
+    orderId = json['order_id']?.toString();
     productId = json['product_id'];
-    price = json['price'];
-    status = json['status'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    price = json['price']?.toString();
+    status = json['status']?.toString();
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['seller_id'] = sellerId;
+    data['buyer_id'] = buyerId;
+    data['order_id'] = orderId;
+    data['product_id'] = productId;
+    data['price'] = price;
+    data['status'] = status;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
   }
 
   void operator [](String other) {}

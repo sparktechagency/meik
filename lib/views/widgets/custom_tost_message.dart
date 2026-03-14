@@ -1,88 +1,64 @@
-import 'dart:ui';
-import 'package:danceattix/core/app_constants/app_colors.dart';
-import 'package:danceattix/global/custom_assets/fonts.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-// Global variables to track last toast
 String? _lastMessage;
 DateTime? _lastShownTime;
 
 void showToast(String message, {int? seconds}) {
   final now = DateTime.now();
+  final duration = seconds ?? 3;
 
-  // Check if the same message was shown in last 3 seconds
+  // Debounce duplicate toasts
   if (_lastMessage == message &&
       _lastShownTime != null &&
-      now.difference(_lastShownTime!).inSeconds < (seconds ?? 3)) {
-    return; // Don't show duplicate toast
+      now.difference(_lastShownTime!).inSeconds < duration) {
+    return;
   }
 
   _lastMessage = message;
   _lastShownTime = now;
 
-  Get.snackbar(
-    "System Notification",
-    message,
-    snackPosition: SnackPosition.TOP,
-    backgroundColor: Colors.transparent,
-    colorText: Colors.white,
-    duration: Duration(seconds: seconds ?? 3),
-    margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-    borderRadius: 16.r,
-    isDismissible: true,
-    dismissDirection: DismissDirection.horizontal,
-    forwardAnimationCurve: Curves.easeOutBack,
-    titleText: Padding(
-      padding: EdgeInsets.only(left: 16.w, top: 8.h),
-      child: Text(
-        "System Notification",
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w400,
-          shadows: [
-            Shadow(
-              color: Colors.black.withOpacity(0.4),
-              blurRadius: 4,
-            ),
-          ],
-        ),
-      ),
-    ),
-    messageText: ClipRRect(
-      borderRadius: BorderRadius.circular(16.r),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primaryColor.withOpacity(0.15),
-                blurRadius: 10,
-                spreadRadius: 2,
-                offset: Offset(0, 8),
+  final context = Get.context;
+  if (context == null) return;
+
+  // Clear any existing snackbar first to avoid queue buildup
+  ScaffoldMessenger.of(context).clearSnackBars();
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                height: 1.4,
               ),
-            ],
-          ),
-          child: Text(
-            message,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14.sp,
-              fontFamily: FontFamily.poppins,
             ),
           ),
-        ),
+          GestureDetector(
+            onTap: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+            child: Text(
+              "×",
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 20,
+                height: 1,
+              ),
+            ),
+          ),
+        ],
       ),
+      backgroundColor: const Color(0xFF1F1F1F),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      duration: Duration(seconds: duration),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
     ),
-    padding: EdgeInsets.zero,
   );
 }

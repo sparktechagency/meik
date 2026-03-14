@@ -5,7 +5,9 @@ import 'package:danceattix/controllers/notification_controller.dart';
 import 'package:danceattix/controllers/offer_controller.dart';
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/controllers/product_details_controller.dart';
+import 'package:danceattix/controllers/socket_chat_controller.dart';
 import 'package:danceattix/controllers/user_controller.dart';
+import 'package:danceattix/services/socket_services.dart';
 import 'package:get/get.dart';
 class DependencyInjection implements Bindings {
   @override
@@ -18,6 +20,8 @@ class DependencyInjection implements Bindings {
     Get.put(NotificationController());
     Get.put(ChatController());
     Get.put(OfferController());
+    Get.put(SocketChatController());
+    Get.put(SocketServices());
 
 
   }}
