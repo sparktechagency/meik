@@ -16,7 +16,7 @@ void main() async {
 
   String token = await PrefsHelper.getString(AppConstants.bearerToken);
   if (token.isNotEmpty) {
-    await SocketServices.init();
+   // await SocketServices.init();
   }
 }
 

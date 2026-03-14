@@ -2,7 +2,7 @@ class ApiUrls {
   /// ============= base urls ===========>>>
   static const String baseUrl = "https://attendance.merinasib.shop/api/v1";
   static const String imageBaseUrl = "https://minio.merinasib.shop/ebfmart";
-  static const String socketUrl = "https://attendance.merinasib.shop";
+  static const String socketUrl = "https://attendance.merinasib.shop/";
 
   /// ============= all urls ===========>>>
 

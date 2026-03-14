@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 
 class SocketChatController extends GetxController {
-  SocketServices socketService = SocketServices();
+  //SocketServices socketService = SocketServices();
   final ChatController _chatController = Get.find<ChatController>();
 
 
@@ -13,15 +13,15 @@ class SocketChatController extends GetxController {
 
   /// ===============> Listen for new messages via socket.
   void listenMessage(String conversationId) async {
-    SocketServices.socket?.on("conversation-$conversationId", (data) {
-
-      debugPrint("=========> Response Message : $data -------------------------");
-
-      if(data != null){
-
-      }
-
-    });
+    // SocketServices.socket?.on("conversation-$conversationId", (data) {
+    //
+    //   debugPrint("=========> Response Message : $data -------------------------");
+    //
+    //   if(data != null){
+    //
+    //   }
+    //
+    // });
   }
 
 
@@ -33,12 +33,12 @@ class SocketChatController extends GetxController {
       "conversation_id" : conversationId,
       "msg": message
     };
-    socketService.emit('send-message', body);
+   // socketService.emit('send-message', body);
 
   }
 
   void removeListeners(String conversationId) {
-    SocketServices.socket?.off("conversation-$conversationId");
+   // SocketServices.socket?.off("conversation-$conversationId");
   }
 
 
