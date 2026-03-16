@@ -18,7 +18,7 @@ class DependencyInjection implements Bindings {
     Get.put(AddProductController());
     Get.put(ProductDetailsController());
     Get.put(NotificationController());
-    Get.put(ChatController());
+    Get.put(ChatsController());
     Get.put(OfferController());
     Get.put(SocketChatController());
     Get.put(SocketServices());

@@ -1,3 +1,5 @@
+import 'package:chatview/chatview.dart';
+import 'package:danceattix/controllers/chat_controller.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
 import 'package:danceattix/views/widgets/custom_tost_message.dart';
@@ -20,6 +22,7 @@ class OfferController extends GetxController {
       if (response.statusCode == 201) {
         showToast(response.body['message']);
         await Future.delayed(const Duration(milliseconds: 300));
+        Get.find<ChatsController>().conversationGet();
         Get.back();
       } else {
         showToast(response.body['message']);

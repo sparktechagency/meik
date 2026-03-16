@@ -16,7 +16,7 @@ class MessageUserScreen extends StatefulWidget {
 
 class _MessageUserScreenState extends State<MessageUserScreen> {
   final TextEditingController searchCtrl = TextEditingController();
-  final ChatController _controller = Get.find<ChatController>();
+  final ChatsController _controller = Get.find<ChatsController>();
 
 
 
@@ -68,7 +68,7 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
           ),
 
           Expanded(
-            child: GetBuilder<ChatController>(
+            child: GetBuilder<ChatsController>(
               builder: (controller) {
                 return RefreshIndicator(
                     onRefresh: () async{

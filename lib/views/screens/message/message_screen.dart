@@ -19,7 +19,7 @@ class MessageScreen extends StatefulWidget {
 
 class _MessageScreenState extends State<MessageScreen> {
   final String conversationID = Get.arguments as String;
-  final ChatController _chatController = Get.find<ChatController>();
+  final ChatsController _chatController = Get.find<ChatsController>();
   final SocketChatController _socketChatController = Get.find<SocketChatController>();
   final TextEditingController _messageController = TextEditingController();
 
@@ -37,7 +37,7 @@ class _MessageScreenState extends State<MessageScreen> {
     return CustomScaffold(
       paddingSide: 0.w,
       appBar: CustomAppBar(
-        titleWidget: GetBuilder<ChatController>(
+        titleWidget: GetBuilder<ChatsController>(
           builder: (controller) {
             final conversation = controller.inboxData?.conversation;
             if (conversation == null) return const SizedBox();
@@ -60,7 +60,7 @@ class _MessageScreenState extends State<MessageScreen> {
       body: Column(
         children: [
           Expanded(
-            child: GetBuilder<ChatController>(
+            child: GetBuilder<ChatsController>(
               builder: (controller) {
                 final messages = controller.inboxData?.messages;
 
@@ -114,47 +114,58 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   Widget _buildMessageSender() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      child: Row(
-        children: [
-          Assets.icons.addImage.svg(),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: CustomTextField(
-              borderRadio: 24.r,
-              contentPaddingVertical: 0,
-              borderColor: AppColors.primaryColor,
-              showShadow: false,
-              validator: (_) => null,
-              controller: _messageController,
-              hintText: 'Type message...',
-              suffixIcon: GetBuilder<SocketChatController>(
-                builder: (controller) {
-                  return GestureDetector(
-                    onTap: (){
-                      final text = _messageController.text.trim();
-                      if (text.isEmpty) return;
-                      controller.sendMessage(message: _messageController.text.trim(), conversationId: conversationID);
+    return GetBuilder<ChatsController>(
+      builder: (controller) {
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: (){
+                  
+                },
+                  child: Assets.icons.addImage.svg()),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: CustomTextField(
+                  borderRadio: 24.r,
+                  contentPaddingVertical: 0,
+                  borderColor: AppColors.primaryColor,
+                  showShadow: false,
+                  validator: (_) => null,
+                  controller: _messageController,
+                  hintText: 'Type message...',
+                  suffixIcon: GetBuilder<SocketChatController>(
+                    builder: (controller) {
+                      return GestureDetector(
+                        onTap: (){
+                          final text = _messageController.text.trim();
+                          if (text.isEmpty) return;
+                          controller.sendMessage(message: _messageController.text.trim(), conversationId: conversationID);
 
-                      _messageController.clear();
-                    },
-                    child: Assets.icons.massegeSend.svg(),
-                  );
-                }
+                          _messageController.clear();
+                        },
+                        child: Assets.icons.massegeSend.svg(),
+                      );
+                    }
+                  ),
+                ),
               ),
-            ),
+              if(controller.inboxData?.conversation?.product?.user?.id == Get.find<UserController>().userData?.id )...[
+                SizedBox(width: 10.w),
+                CustomButton(
+                  borderRadius: 44.r,
+                  width: 110.w,
+                  title: 'Make offer',
+                  onpress: () {},
+                ),
+              ],
+
+            ],
           ),
-          SizedBox(width: 10.w),
-          CustomButton(
-            borderRadius: 44.r,
-            width: 110.w,
-            title: 'Make offer',
-            onpress: () {},
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 class SocketChatController extends GetxController {
   final SocketServices _socketService = SocketServices();
-  final ChatController _chatController = Get.find<ChatController>();
+  final ChatsController _chatController = Get.find<ChatsController>();
 
   final Set<String> _activeListeners = {};
 
