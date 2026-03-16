@@ -1,3 +1,7 @@
+import 'package:danceattix/controllers/payment_controller.dart';
+import 'package:danceattix/controllers/wallet_controller.dart';
+import 'package:danceattix/global/custom_assets/assets.gen.dart';
+import 'package:danceattix/helper/time_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,172 +11,241 @@ import '../../../core/config/app_route.dart';
 import '../../widgets/cachanetwork_image.dart';
 import '../../widgets/custom_text.dart';
 
-class WalletScreen extends StatelessWidget {
+class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
+
+  @override
+  State<WalletScreen> createState() => _WalletScreenState();
+}
+
+class _WalletScreenState extends State<WalletScreen> {
+  final WalletController _walletController = Get.find<WalletController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      if (_walletController.balance.isEmpty) {
+        _walletController.balanceGet();
+      }if(_walletController.transactions.isEmpty){
+        _walletController.transactionGet();
+      }
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgColorWhiteFFFFFF,
-      appBar: AppBar(
-        backgroundColor: AppColors.bgColorWhiteFFFFFF,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () => Get.back(),
-          child: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-            size: 20.sp,
-          ),
-        ),
-        centerTitle: true,
-        title: CustomText(
-          text: "Wallet",
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 8.h),
+      backgroundColor: AppColors.bgColorWhite,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              expandedHeight: 220.h,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              backgroundColor: AppColors.bgColor,
+              title: CustomText(text: 'Wallet',fontSize: 22.sp),
+              centerTitle: true,
+              leading: IconButton(
+                icon: Assets.icons.back.svg(height: 24.h, width: 24.w),
+                onPressed: () => Navigator.pop(context),
+              ),
 
-            // Overview Title
-            CustomText(
-              text: "Overview",
-              color: Colors.black,
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-            ),
+              flexibleSpace: FlexibleSpaceBar(
+                background: SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 56.h, 20.w, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomText(
+                          text: "Overview",
+                          color: Colors.black54,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
 
-            SizedBox(height: 16.h),
+                        SizedBox(height: 16.h),
 
-            // Balance Card
-            _buildBalanceCard(),
-
-            SizedBox(height: 24.h),
-
-            // History Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomText(
-                  text: "History",
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                        _buildBalanceCard(),
+                      ],
+                    ),
+                  ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Get.toNamed(AppRoutes.walletHistoryScreen);
-                  },
-                  child: CustomText(
-                    text: "More...",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black54,
+              ),
+            ),
+          ];
+        },
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await _walletController.balanceGet();
+            await _walletController.transactionGet();
+
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20.h),
+
+                // History Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(
+                      text: "History",
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(AppRoutes.walletHistoryScreen);
+                      },
+                      child: CustomText(
+                        text: "More",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 16.h),
+
+                Expanded(
+                  child: GetBuilder<WalletController>(
+                    builder: (controller) {
+                      if (controller.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (controller.transactions.isEmpty) {
+                        return Center(
+                          child: CustomText(
+                            text: "No transactions yet",
+                            fontSize: 14.sp,
+                            color: Colors.grey,
+                          ),
+                        );
+                      }
+
+                      return ListView.builder(
+                        padding: EdgeInsets.only(bottom: 20.h),
+                        itemCount: controller.transactions.length,
+                        itemBuilder: (context, index) {
+                          final transaction = controller.transactions[index];
+                          return _buildTransactionItem(
+                            name: transaction.user?.fullName ?? 'N/A',
+                            transactionId: transaction.transectionType ?? 'N/A',
+                            date: transaction.createdAt ?? 'N/A',
+                            amount: "\$ ${transaction.amount}",
+                            imageUrl: '',
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-
-            SizedBox(height: 16.h),
-
-            // Transaction List
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.only(bottom: 20.h),
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return _buildTransactionItem(
-                    name: "Jeorge Mayank",
-                    transactionId: "374364736",
-                    date: "21 April 2025",
-                    amount: "\$ 23",
-                    imageUrl: "https://i.pravatar.cc/150?img=${index + 10}",
-                  );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildBalanceCard() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(20.r),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF1A1A2E),
-            Color(0xFF16213E),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Left side - Balance info
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return GetBuilder<WalletController>(
+      builder: (controller) {
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(20.r),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomText(
-                text: "Available Balance",
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.white70,
-              ),
-              SizedBox(height: 8.h),
-              Row(
+              // Left — Balance info
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: "\$",
-                    fontSize: 40.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    text: "Available Balance",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white70,
                   ),
-                  SizedBox(width: 4.w),
-                  CustomText(
-                    text: "2652",
-                    fontSize: 40.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                  SizedBox(height: 8.h),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: "\$",
+                        fontSize: 36.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 4.w),
+                      // FIX 6: Show shimmer placeholder while loading
+                      controller.isLoading
+                          ? Padding(
+                        padding: EdgeInsets.only(top: 8.h),
+                        child: SizedBox(
+                          width: 80.w,
+                          height: 32.h,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+                              borderRadius: BorderRadius.circular(6.r),
+                            ),
+                          ),
+                        ),
+                      )
+                          : CustomText(
+                        text: controller.balance,
+                        fontSize: 36.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Right — Action buttons
+              Column(
+                children: [
+                  _buildActionButton(
+                    text: "Withdraw Now",
+                    onTap: () {
+                      // TODO: handle withdraw
+                    },
+                  ),
+                  SizedBox(height: 10.h),
+                  _buildActionButton(
+                    text: "Deposit Now",
+                    onTap: _showDepositBottomSheet,
                   ),
                 ],
               ),
             ],
           ),
-
-          // Right side - Action buttons
-          Column(
-            children: [
-              _buildActionButton(
-                text: "Withdraw Now",
-                onTap: () {
-                  // Handle withdraw
-                },
-              ),
-              SizedBox(height: 10.h),
-              _buildActionButton(
-                text: "Deposit Now",
-                onTap: () {
-                  // Handle deposit
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -198,6 +271,156 @@ class WalletScreen extends StatelessWidget {
     );
   }
 
+  void _showDepositBottomSheet() {
+    final TextEditingController amountController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 0).copyWith(
+            // FIX 7: viewInsets padding applied correctly so keyboard
+            // doesn't cover the bottom sheet content.
+            bottom: MediaQuery.of(context).viewInsets.bottom + 40.h,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Handle bar
+              Center(
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20.h),
+
+              CustomText(
+                text: "Deposit Amount",
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+
+              SizedBox(height: 20.h),
+
+              TextField(
+                controller: amountController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.only(left: 16.w, right: 8.w),
+                    child: CustomText(
+                      text: "\$",
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  prefixIconConstraints:
+                  const BoxConstraints(minWidth: 0, minHeight: 0),
+                  hintText: "Enter amount",
+                  hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 16.h,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Quick-select chips
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [10, 50, 100, 200, 500].map((amount) {
+                  return GestureDetector(
+                    onTap: () => amountController.text = amount.toString(),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 14.w, vertical: 8.h),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(20.r),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: CustomText(
+                        text: "\$$amount",
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              SizedBox(height: 28.h),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final amount = amountController.text.trim();
+                    if (amount.isEmpty || double.tryParse(amount) == null) {
+                      return;
+                    }
+                    Navigator.pop(context);
+                    // FIX 8: Use Get.find instead of PaymentController()
+                    // to avoid creating an unregistered instance.
+                    Get.find<PaymentController>().makePayment(price: amount);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor,
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                  ),
+                  child: CustomText(
+                    text: "Deposit Now",
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildTransactionItem({
     required String name,
     required String transactionId,
@@ -214,7 +437,8 @@ class WalletScreen extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            // FIX 9: withOpacity is deprecated — use withValues instead
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -222,7 +446,6 @@ class WalletScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Profile Image
           Container(
             padding: EdgeInsets.all(2.r),
             decoration: BoxDecoration(
@@ -242,7 +465,6 @@ class WalletScreen extends StatelessWidget {
 
           SizedBox(width: 12.w),
 
-          // Transaction Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,8 +477,9 @@ class WalletScreen extends StatelessWidget {
                   textAlign: TextAlign.start,
                 ),
                 SizedBox(height: 4.h),
+                // FIX 10: Typo "Transition" → "Transaction"
                 CustomText(
-                  text: "Transition id : $transactionId",
+                  text: "Transaction: $transactionId",
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: Colors.grey,
@@ -264,7 +487,7 @@ class WalletScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 CustomText(
-                  text: date,
+                  text: TimeFormatHelper.timeWithAMPM(DateTime.parse(date)),
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: Colors.grey,
@@ -274,7 +497,6 @@ class WalletScreen extends StatelessWidget {
             ),
           ),
 
-          // Amount
           CustomText(
             text: amount,
             fontSize: 22.sp,

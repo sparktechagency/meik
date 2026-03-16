@@ -47,6 +47,7 @@ class UserController extends GetxController {
   final TextEditingController firstNameCtrl = TextEditingController();
   final TextEditingController lastNameCtrl = TextEditingController();
   final TextEditingController addressCtrl = TextEditingController();
+  final TextEditingController phoneCtrl = TextEditingController();
 
 
   void onImagePicked(XFile image) {

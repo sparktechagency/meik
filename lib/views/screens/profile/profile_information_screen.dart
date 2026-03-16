@@ -43,37 +43,6 @@ class _ProfileInformationScreenState extends State<ProfileInformationScreen> {
                     _buildInfoRow(label: 'Address', value: user?.address ?? 'N/A'),
                   ],
                 ),
-                SizedBox(height: 16.h),
-
-                _buildInfoCard(
-                  title: 'NID Information',
-                  rows: [
-                    _buildInfoRow(label: 'NID no', value: '3435434343'),
-                    _buildInfoRow(
-                      label: 'NID front',
-                      valueWidget: _buildFileChip('NidFront.jpg'),
-                    ),
-                    _buildInfoRow(
-                      label: 'NID back',
-                      valueWidget: _buildFileChip('Nidback.jpg'),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                _buildInfoCard(
-                  title: 'Passport Information',
-                  rows: [
-                    _buildInfoRow(label: 'Passport no', value: '3435434343'),
-                    _buildInfoRow(
-                      label: 'Passport front',
-                      valueWidget: _buildFileChip('PassFront.jpg'),
-                    ),
-                    _buildInfoRow(
-                      label: 'Passport back',
-                      valueWidget: _buildUploadChip(),
-                    ),
-                  ],
-                ),
                 SizedBox(height: 32.h),
               ],
             );

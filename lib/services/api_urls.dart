@@ -38,10 +38,14 @@ class ApiUrls {
 
   static String categories({int page = 1, int limit = 10}) => '/sub-categories?page=$page&limit=$limit';
   static String fvrtProduct({int page = 1, int limit = 10}) => '/favourites?page=$page&limit=$limit';
+  static String phurcasesProduct({int page = 1, int limit = 10}) => '/orders/phurcases?page=$page&limit=$limit';
+  static String transections({int page = 1, int limit = 10}) => '/transections?page=$page&limit=$limit';
+  static String salesProduct({int page = 1, int limit = 10}) => '/orders/sales?page=$page&limit=$limit';
   static String notification({int page = 1, int limit = 10}) => '/notifications?page=$page&limit=$limit';
   static String conversations({int page = 1, int limit = 50}) => '/conversations?page=$page&limit=$limit';
   static String inbox({String conID = '',int page = 1, int limit = 50}) => '/messages/$conID?page=$page&limit=$limit';
   static const String productsAdd = '/products';
+  static const String balance = '/wallets/balance';
   static const String sizes = '/sizes';
   static const String colors = '/colors';
   static const String favourites = '/favourites';
