@@ -241,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
             showBadge: true,
             ignorePointer: false,
             badgeContent: CustomText(
-              text: '9+',
+              text: '0',
               color: Colors.white,
               fontSize: 8.sp,
               fontWeight: FontWeight.w300,
@@ -260,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
             showBadge: true,
             ignorePointer: false,
             badgeContent: CustomText(
-              text: '9+',
+              text: '0',
               color: Colors.white,
               fontSize: 8.sp,
               fontWeight: FontWeight.w300,

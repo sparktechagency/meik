@@ -1,8 +1,10 @@
 import 'package:danceattix/controllers/chat_controller.dart';
+import 'package:danceattix/controllers/offer_controller.dart';
 import 'package:danceattix/controllers/socket_chat_controller.dart';
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
+import 'package:danceattix/models/inbox_model_data.dart';
 import 'package:danceattix/views/widgets/chat_card.dart';
 import 'package:danceattix/views/widgets/custom_list_tile.dart';
 import 'package:danceattix/views/widgets/widgets.dart';
@@ -22,6 +24,7 @@ class _MessageScreenState extends State<MessageScreen> {
   final ChatsController _chatController = Get.find<ChatsController>();
   final SocketChatController _socketChatController = Get.find<SocketChatController>();
   final TextEditingController _messageController = TextEditingController();
+  final TextEditingController offerPriceCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -121,12 +124,12 @@ class _MessageScreenState extends State<MessageScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: (){
-                  
-                },
-                  child: Assets.icons.addImage.svg()),
-              SizedBox(width: 10.w),
+              // GestureDetector(
+              //   onTap: (){
+              //
+              //   },
+              //     child: Assets.icons.addImage.svg()),
+              // SizedBox(width: 10.w),
               Expanded(
                 child: CustomTextField(
                   borderRadio: 24.r,
@@ -158,7 +161,9 @@ class _MessageScreenState extends State<MessageScreen> {
                   borderRadius: 44.r,
                   width: 110.w,
                   title: 'Make offer',
-                  onpress: () {},
+                  onpress: () {
+                    _showMakeOfferDialog(controller.inboxData?.conversation?.product);
+                  },
                 ),
               ],
 
@@ -168,6 +173,109 @@ class _MessageScreenState extends State<MessageScreen> {
       }
     );
   }
+
+
+  void _showMakeOfferDialog(Product? product) {
+    final imageUrl = (product?.images?.isNotEmpty ?? false)
+        ? '${product!.images!.first.image}'
+        : '';
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: AppColors.bgColorWhite,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(16.r),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(width: 12.w),
+                  CustomText(
+                    text: "Make Offer",
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  IconButton(
+                    onPressed: () => Get.back(),
+                    icon: Assets.icons.clean.svg(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.h),
+
+              // Product Info
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.r),
+                    child: CustomNetworkImage(
+                      imageUrl: imageUrl,
+                      height: 60.h,
+                      width: 60.w,
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: product?.productName ?? '',
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      SizedBox(height: 4.h),
+                      CustomText(
+                        text: "Price: \$ ${product?.price ?? 0.0}",
+                        fontSize: 12.sp,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 24.h),
+
+              // Offer Price Input
+              CustomTextField(
+                labelText: 'Offer your price',
+                hintText: 'Enter price',
+                filColor: Colors.grey.shade200,
+                showShadow: false,
+                borderRadio: 100.r,
+                controller: offerPriceCtrl,
+                keyboardType: TextInputType.number,
+              ),
+
+              SizedBox(height: 24.h),
+
+              // Make Offer Button
+              GetBuilder<OfferController>(
+                  builder: (controller) {
+                    return CustomButton(
+                      loading: controller.isLoadingSend,
+                      title: "Make offer",
+                      onpress: () {
+                        if(offerPriceCtrl.text.isEmpty) return;
+                        controller.send(product?.id ?? 0, double.parse(offerPriceCtrl.text));
+                      },
+                    );
+                  }
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
 
   @override

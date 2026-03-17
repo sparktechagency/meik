@@ -10,6 +10,8 @@ class OfferController extends GetxController {
   /// <======================= Offer send ===========================>
   bool isLoadingSend = false;
 
+
+
   Future<void> send(int productID, double price) async {
     isLoadingSend = true;
     update();

@@ -1,5 +1,6 @@
 import 'package:danceattix/controllers/offer_controller.dart';
 import 'package:danceattix/controllers/product_details_controller.dart';
+import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/config/app_route.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/models/product_details_model_data.dart';
@@ -151,6 +152,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 children: [
                   Expanded(
                     child: CustomText(
+                      maxline: 2,
                       textAlign: TextAlign.start,
                       text: product.productName ?? 'N/A',
                       fontSize: 24.sp,
@@ -205,6 +207,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Widget _buildBottomBar(ProductDetailsModelData product) {
+    if(product.user?.id == Get.find<UserController>().userData?.id) return const SizedBox.shrink();
     return Container(
       padding: EdgeInsets.all(16.w),
       child: SafeArea(
@@ -231,16 +234,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   boderColor: Colors.grey,
                 ),
               ),
-            SizedBox(width: 12.w),
-            Container(
-              height: 50.h,
-              width: 50.w,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Assets.icons.message.svg(color: Colors.black45),
-            ),
           ],
         ),
       ),

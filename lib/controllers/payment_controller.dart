@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:danceattix/controllers/user_controller.dart';
+import 'package:danceattix/controllers/wallet_controller.dart';
 import 'package:danceattix/env/config.dart';
 import 'package:danceattix/helper/toast_message_helper.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 
-class PaymentController {
+class PaymentController extends GetxController{
 
   Map<String,dynamic>? paymentIntentData;
 
@@ -19,7 +21,7 @@ class PaymentController {
 
   Future<void> makePayment({required String price}) async {
     try {
-      paymentIntentData = await _createPaymentIntent(price, "USD");
+      paymentIntentData = await _createPaymentIntent(price, "USD",);
       if (paymentIntentData != null) {
         String clientSecret = paymentIntentData!['client_secret'];
 
@@ -60,20 +62,16 @@ class PaymentController {
   }
 
 
-
-
-
-
-
-
   /// ===================================>>> hide =========================>>>
-  Future<Map<String,dynamic>?> _createPaymentIntent(String amount,String currency) async {
-
+  Future<Map<String,dynamic>?> _createPaymentIntent(String amount, String currency) async {
 
     try {
       Map<String, dynamic> body = {
         'amount': _calculateAmount(amount),
         'currency': currency,
+        'metadata[userId]': Get.find<UserController>().userData?.id ?? '',
+        'metadata[price]': amount,
+        'metadata[walletTopUp]': 'true' ,
       };
 
       var response = await http.post(
@@ -118,7 +116,7 @@ class PaymentController {
   Future<void> _displayPaymentSheet({required String price}) async {
     try {
       await Stripe.instance.presentPaymentSheet();
-      _retrieveTxnId(paymentIntent: paymentIntentData!['id'], price:price );
+      _retrieveTxnId(paymentIntent: paymentIntentData!['id'], price: price);
       if (kDebugMode) {
         print('Payment intent: $paymentIntentData');
       }
@@ -150,10 +148,10 @@ class PaymentController {
           print("***********payment data: $data");
         }
 
-
         ToastMessageHelper.showToastMessage("Payment Success");
+        await Get.find<WalletController>().balanceGet();
+        await Get.find<WalletController>().transactionGet();
         Get.back();
-      } else {
       }
     } catch (e) {
       debugPrint(e.toString());

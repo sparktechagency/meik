@@ -3,38 +3,42 @@ import 'package:danceattix/models/transaction_model_data.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
 import 'package:danceattix/views/widgets/custom_tost_message.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WalletController extends GetxController {
-
 
   @override
   void onInit() {
     super.onInit();
     balanceGet();
   }
+
   /// <======================= balance ===========================>
 
   bool isLoading = false;
-
   String balance = '';
 
   Future<void> balanceGet() async {
     isLoading = true;
     update();
 
-    final response = await ApiClient.getData(ApiUrls.balance);
+    try {
+      final response = await ApiClient.getData(ApiUrls.balance);
+      final responseBody = response.body;
 
-    final responseBody = response.body;
-
-    if (response.statusCode == 200) {
-      balance = responseBody['data']['balance'].toString();
-    } else {
-      showToast(responseBody['message']);
+      if (response.statusCode == 200) {
+        balance = responseBody['data']['balance'].toString();
+      } else {
+        showToast(responseBody['message']);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      showToast('Something went wrong. Please try again.');
+    } finally {
+      isLoading = false;
+      update();
     }
-
-    isLoading = false;
-    update();
   }
 
   /// <======================= Transaction ===========================>
@@ -56,26 +60,29 @@ class WalletController extends GetxController {
       update();
     }
 
-    final response = await ApiClient.getData(
-      ApiUrls.transections(page: transactionPage, limit: limit),
-    );
-
-    final responseBody = response.body;
-
-    if (response.statusCode == 200) {
-      final List data = responseBody['data'] ?? [];
-      transactions.addAll(
-        data.map((json) => TransactionModelData.fromJson(json)).toList(),
+    try {
+      final response = await ApiClient.getData(
+        ApiUrls.transections(page: transactionPage, limit: limit),
       );
-      transactionTotalPage =
-          responseBody['pagination']?['totalPages'] ?? transactionTotalPage;
-    } else {
-      showToast(responseBody['message']);
-    }
+      final responseBody = response.body;
 
-    isTransactionLoading = false;
-    isTransactionLoadingMore = false;
-    update();
+      if (response.statusCode == 200) {
+        final List data = responseBody['data'] ?? [];
+        transactions.addAll(
+          data.map((json) => TransactionModelData.fromJson(json)).toList(),
+        );
+        transactionTotalPage =
+            responseBody['pagination']?['totalPages'] ?? transactionTotalPage;
+      } else {
+        showToast(responseBody['message']);
+      }
+    } catch (e) {
+      showToast('Something went wrong. Please try again.');
+    } finally {
+      isTransactionLoading = false;
+      isTransactionLoadingMore = false;
+      update();
+    }
   }
 
   void transactionMore() async {

@@ -84,6 +84,7 @@ class Conversation {
 class Product {
   int? id;
   String? productName;
+  double? price;
   List<Images>? images;
   List<Variants>? variants;
   User? user;
@@ -92,6 +93,7 @@ class Product {
   Product({
     this.id,
     this.productName,
+    this.price,
     this.images,
     this.variants,
     this.user,
@@ -101,22 +103,27 @@ class Product {
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     productName = json['product_name'];
+
+    // Handle price as either String or num
+    if (json['price'] != null) {
+      price = double.tryParse(json['price'].toString());
+    }
+
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
-        images!.add(new Images.fromJson(v));
+        images!.add(Images.fromJson(v));
       });
     }
     if (json['variants'] != null) {
       variants = <Variants>[];
       json['variants'].forEach((v) {
-        variants!.add(new Variants.fromJson(v));
+        variants!.add(Variants.fromJson(v));
       });
     }
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     collectionAddress = json['collectionAddress'];
-  }
-}
+  }}
 
 class Images {
   int? id;

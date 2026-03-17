@@ -87,12 +87,15 @@ class CustomProductCard extends StatelessWidget {
                             SizedBox(height: 8.h),
                             Row(
                               children: [
-                                CustomText(
-                                    text: "$title",
-                                    fontWeight: FontWeight.w600,
-                                    bottom: 4.h,
-                                    color: Colors.black),
-                                Spacer(),
+                                Expanded(
+                                  child: CustomText(
+                                    textAlign: TextAlign.start,
+                                    maxline: 1,
+                                      text: "$title",
+                                      fontWeight: FontWeight.w600,
+                                      bottom: 4.h,
+                                      color: Colors.black),
+                                ),
                                 if (isBookMarkNeed ?? false)
                                   isFavorite ?? false
                                       ? Icon(Icons.favorite,

@@ -29,9 +29,17 @@ class CustomNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String getFullImageUrl(String imageUrl) {
+      if (imageUrl.startsWith('http')) {
+        return imageUrl; // already full url
+      } else {
+        return '${ApiUrls.imageBaseUrl}/$imageUrl';
+      }
+    }
+
     return CachedNetworkImage(
       fit: BoxFit.cover,
-      imageUrl: '${ApiUrls.imageBaseUrl}/$imageUrl',
+      imageUrl: getFullImageUrl(imageUrl),
       imageBuilder: (context, imageProvider) => Container(
         height: height,
         width: width,

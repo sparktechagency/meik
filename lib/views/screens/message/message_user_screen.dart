@@ -1,5 +1,6 @@
 import 'package:danceattix/controllers/chat_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/helper/time_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -70,10 +71,43 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
           Expanded(
             child: GetBuilder<ChatsController>(
               builder: (controller) {
+
+                if(controller.isLoadingCon) {
+                  return const Center(child: CustomLoader());
+                } else if(controller.conversationsData.isEmpty){
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Assets.lottie.emptyData.lottie(),
+                        CustomText(
+                          text: 'No Data Found',
+                          color: AppColors.hitTextColorA5A5A5,
+                          fontSize: 16.sp,
+                        ),
+                        SizedBox(height: 16.h),
+
+                        /// 🔄 Refresh Button
+                        CustomButton(
+                          fontSize: 14.sp,
+                          height: 34.h,
+                          width: 100.w,
+                          title: 'Refresh',
+                          onpress: () async {
+
+                             await controller.conversationGet();
+
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }
                 return RefreshIndicator(
                     onRefresh: () async{
                   await _controller.conversationGet();
                 },
+
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 10.h),
                       physics: AlwaysScrollableScrollPhysics(

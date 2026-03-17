@@ -11,6 +11,19 @@ import '../../../core/config/app_route.dart';
 import '../../widgets/cachanetwork_image.dart';
 import '../../widgets/custom_text.dart';
 
+import 'package:danceattix/controllers/payment_controller.dart';
+import 'package:danceattix/controllers/wallet_controller.dart';
+import 'package:danceattix/global/custom_assets/assets.gen.dart';
+import 'package:danceattix/helper/time_format_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import '../../../core/app_constants/app_colors.dart';
+import '../../../core/config/app_route.dart';
+import '../../widgets/cachanetwork_image.dart';
+import '../../widgets/custom_text.dart';
+
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
 
@@ -21,17 +34,35 @@ class WalletScreen extends StatefulWidget {
 class _WalletScreenState extends State<WalletScreen> {
   final WalletController _walletController = Get.find<WalletController>();
 
+  // ✅ ScrollController যোগ করা হয়েছে pagination-এর জন্য
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_walletController.balance.isEmpty) {
         _walletController.balanceGet();
-      }if(_walletController.transactions.isEmpty){
+      }
+      if (_walletController.transactions.isEmpty) {
         _walletController.transactionGet();
       }
     });
 
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        _walletController.transactionMore();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // ✅ Memory leak এড়াতে dispose করা হয়েছে
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,6 +70,7 @@ class _WalletScreenState extends State<WalletScreen> {
     return Scaffold(
       backgroundColor: AppColors.bgColorWhite,
       body: NestedScrollView(
+        controller: _scrollController,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
@@ -48,13 +80,12 @@ class _WalletScreenState extends State<WalletScreen> {
               elevation: 0,
               scrolledUnderElevation: 0,
               backgroundColor: AppColors.bgColor,
-              title: CustomText(text: 'Wallet',fontSize: 22.sp),
+              title: CustomText(text: 'Wallet', fontSize: 22.sp),
               centerTitle: true,
               leading: IconButton(
                 icon: Assets.icons.back.svg(height: 24.h, width: 24.w),
                 onPressed: () => Navigator.pop(context),
               ),
-
               flexibleSpace: FlexibleSpaceBar(
                 background: SafeArea(
                   child: Padding(
@@ -69,9 +100,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
-
                         SizedBox(height: 16.h),
-
                         _buildBalanceCard(),
                       ],
                     ),
@@ -85,7 +114,6 @@ class _WalletScreenState extends State<WalletScreen> {
           onRefresh: () async {
             await _walletController.balanceGet();
             await _walletController.transactionGet();
-
           },
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -123,7 +151,8 @@ class _WalletScreenState extends State<WalletScreen> {
                 Expanded(
                   child: GetBuilder<WalletController>(
                     builder: (controller) {
-                      if (controller.isLoading) {
+                      // ✅ Initial loading
+                      if (controller.isTransactionLoading) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
@@ -138,9 +167,24 @@ class _WalletScreenState extends State<WalletScreen> {
                       }
 
                       return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.only(bottom: 20.h),
-                        itemCount: controller.transactions.length,
+
+                        // ✅ Load more indicator-এর জন্য +1
+                        itemCount: controller.transactions.length +
+                            (controller.isTransactionLoadingMore ? 1 : 0),
+
                         itemBuilder: (context, index) {
+                          // ✅ শেষ item হলে loading indicator দেখাবে
+                          if (index == controller.transactions.length) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16.h),
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+
                           final transaction = controller.transactions[index];
                           return _buildTransactionItem(
                             name: transaction.user?.fullName ?? 'N/A',
@@ -395,8 +439,6 @@ class _WalletScreenState extends State<WalletScreen> {
                       return;
                     }
                     Navigator.pop(context);
-                    // FIX 8: Use Get.find instead of PaymentController()
-                    // to avoid creating an unregistered instance.
                     Get.find<PaymentController>().makePayment(price: amount);
                   },
                   style: ElevatedButton.styleFrom(
