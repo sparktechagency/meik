@@ -13,6 +13,7 @@ class ApiUrls {
   static const String forgetPassword = '/auth/forgot-password';
   static const String userMe = '/users/me';
   static const String userUpdate = '/users/profile';
+  static const String preNext = '/orders/checkout/preview';
 
   /// ================= products ===========>>>
   static String products({
@@ -35,6 +36,7 @@ class ApiUrls {
   }
 
   static String productDetails(int id) => '/products/$id';
+  static String checkout(int id) => '/orders/checkout-info/$id';
 
   static String categories({int page = 1, int limit = 10}) => '/sub-categories?page=$page&limit=$limit';
   static String fvrtProduct({int page = 1, int limit = 10}) => '/favourites?page=$page&limit=$limit';

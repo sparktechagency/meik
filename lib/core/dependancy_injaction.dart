@@ -1,6 +1,7 @@
 import 'package:danceattix/controllers/add_product_controller.dart';
 import 'package:danceattix/controllers/auth_controller.dart';
 import 'package:danceattix/controllers/chat_controller.dart';
+import 'package:danceattix/controllers/checkout_controller.dart';
 import 'package:danceattix/controllers/fvrt_product_controller.dart';
 import 'package:danceattix/controllers/notification_controller.dart';
 import 'package:danceattix/controllers/offer_controller.dart';
@@ -28,6 +29,7 @@ class DependencyInjection implements Bindings {
     Get.put(FvrtProductController());
     Get.put(WalletController());
     Get.put(PaymentController());
+    Get.put(CheckoutController());
 
 
   }}

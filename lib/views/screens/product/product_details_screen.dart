@@ -216,7 +216,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Expanded(
               child: CustomButton(
                 title: "Buy Now",
-                onpress: () {},
+                onpress: () {
+                  Get.toNamed(
+                    AppRoutes.checkoutScreen,
+                    arguments: product.id,
+                  );
+                },
                 loaderIgnore: true,
                 borderRadius: 20.r,
               ),

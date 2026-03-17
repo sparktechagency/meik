@@ -198,77 +198,77 @@ class CustomProductCard extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h),
                   // Action Buttons Row
-                  Row(
-                    children: [
-                      // Buy Now Button
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: onBuyNowTap,
-                          child: Container(
-                            height: 26.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Center(
-                              child: CustomText(
-                                text: "Buy now",
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 5.w),
-                      // Offer Button
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: onOfferTap,
-                          child: Container(
-                            height: 26.h,
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(color: Colors.grey.shade400),
-                            ),
-                            child: Center(
-                              child: CustomText(
-                                text: "Offer",
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 5.w),
-                      // Message Icon
-                      GestureDetector(
-                        onTap: onMessageTap,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(6.r),
-                            child: Assets.icons.message.svg(
-                              colorFilter: const ColorFilter.mode(
-                                Colors.black54,
-                                BlendMode.srcIn,
-                              ),
-                              height: 10.h,
-                              width: 10.w,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     // Buy Now Button
+                  //     Expanded(
+                  //       child: GestureDetector(
+                  //         onTap: onBuyNowTap,
+                  //         child: Container(
+                  //           height: 26.h,
+                  //           decoration: BoxDecoration(
+                  //             color: AppColors.primaryColor,
+                  //             borderRadius: BorderRadius.circular(12.r),
+                  //           ),
+                  //           child: Center(
+                  //             child: CustomText(
+                  //               text: "Buy now",
+                  //               fontSize: 10.sp,
+                  //               fontWeight: FontWeight.w600,
+                  //               color: Colors.white,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 5.w),
+                  //     // Offer Button
+                  //     Expanded(
+                  //       child: GestureDetector(
+                  //         onTap: onOfferTap,
+                  //         child: Container(
+                  //           height: 26.h,
+                  //           decoration: BoxDecoration(
+                  //             color: Colors.transparent,
+                  //             borderRadius: BorderRadius.circular(12.r),
+                  //             border: Border.all(color: Colors.grey.shade400),
+                  //           ),
+                  //           child: Center(
+                  //             child: CustomText(
+                  //               text: "Offer",
+                  //               fontSize: 10.sp,
+                  //               fontWeight: FontWeight.w600,
+                  //               color: Colors.grey.shade600,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 5.w),
+                  //     // Message Icon
+                  //     GestureDetector(
+                  //       onTap: onMessageTap,
+                  //       child: Container(
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.grey.shade100,
+                  //           shape: BoxShape.circle,
+                  //           border: Border.all(color: Colors.grey),
+                  //         ),
+                  //         child: Padding(
+                  //           padding: EdgeInsets.all(6.r),
+                  //           child: Assets.icons.message.svg(
+                  //             colorFilter: const ColorFilter.mode(
+                  //               Colors.black54,
+                  //               BlendMode.srcIn,
+                  //             ),
+                  //             height: 10.h,
+                  //             width: 10.w,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

@@ -1,5 +1,6 @@
 
 
+import 'package:danceattix/views/screens/checkout/checkout_screen.dart';
 import 'package:danceattix/views/screens/product/add_product_variant_screen.dart';
 import 'package:get/get.dart';
 
@@ -73,6 +74,7 @@ class AppRoutes {
   static const String createProductScreen = "/CreateProductScreen";
   static const String boostScreen = "/BoostScreen";
   static const String addProductVariantScreen = "/addProductVariantScreen";
+  static const String checkoutScreen = "/checkoutScreen";
 
 
 
@@ -111,5 +113,6 @@ class AppRoutes {
     GetPage(name: createProductScreen, page: () =>  AddProductScreen()),
     GetPage(name: addProductVariantScreen, page: () =>  AddProductVariantScreen()),
     GetPage(name: boostScreen, page: () => const BoostScreen()),
+    GetPage(name: checkoutScreen, page: () => const CheckoutScreen()),
   ];
 }
