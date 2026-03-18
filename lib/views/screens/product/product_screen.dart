@@ -1,4 +1,5 @@
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
+import 'package:danceattix/controllers/boost_controller.dart';
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/helper/shimmer_helper.dart';
@@ -51,104 +52,223 @@ class _ProductScreenState extends State<ProductScreen> {
           ),
         ),
       ),
-      body: GetBuilder<ProductController>(
-        builder: (controller) {
-          return ContainedTabBarView(
-            tabBarProperties: TabBarProperties(
-              height: 40.h,
-              indicatorColor: AppColors.primaryColor,
-              indicatorWeight: 2,
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelColor: AppColors.primaryColor,
-              unselectedLabelColor: Colors.black,
-              labelStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
-              unselectedLabelStyle: TextStyle(fontSize: 14.sp, color: AppColors.dividerColor),
+      body: Column(
+        children: [
+          Expanded(
+            child: GetBuilder<ProductController>(
+              builder: (controller) {
+                return ContainedTabBarView(
+                  tabBarProperties: TabBarProperties(
+                    height: 40.h,
+                    indicatorColor: AppColors.primaryColor,
+                    indicatorWeight: 2,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: AppColors.primaryColor,
+                    unselectedLabelColor: Colors.black,
+                    labelStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                    unselectedLabelStyle: TextStyle(fontSize: 14.sp, color: AppColors.dividerColor),
+                  ),
+                  tabs: [
+                    Text('Listed: ${controller.listedProductsData.length}'),
+                    Text('Pending: ${controller.pendingProductsData.length}'),
+                  ],
+                  views: [
+
+                    // ── Listed Tab ──
+                    controller.isLoadingProduct
+                        ? ShimmerHelper.instance.showMyProductShimmer()
+                        : controller.listedProductsData.isEmpty
+                        ? Center(child: Text('No listed products found.'))
+                        : AnimationLimiter(
+                      child: RefreshIndicator(
+                        onRefresh: ()async {
+                        await  _controller.productsGet(type: 'own', status: 'available');
+                        },
+                        child: ListView.builder(
+                          itemCount: controller.listedProductsData.length,
+                          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                          itemBuilder: (context, index) {
+                            final product = controller.listedProductsData[index];
+                            return CustomMyProductCard(
+                              index: index,
+                              leftBtnName: "Buy now",
+                              boast: "Boost now",
+                              title: product.productName,
+                              price: product.price,
+                              image: product.image,
+                              onTap: () => Get.toNamed(
+                                AppRoutes.productDetailsScreen,
+                                arguments: product.id,
+                              ),
+                              boostOnTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16.r),
+                                      ),
+                                      contentPadding: EdgeInsets.all(20.w),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          /// Icon
+                                          Container(
+                                            padding: EdgeInsets.all(12.w),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primaryShade100,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              Icons.trending_up,
+                                              color: AppColors.primaryColor,
+                                              size: 32.sp,
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 16.h),
+
+                                          /// Title
+                                          Text(
+                                            "Boost Your Post 🚀",
+                                            style: TextStyle(
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 10.h),
+
+                                          /// Description
+                                          Text(
+                                            "Get more visibility by boosting your post for 3 days.",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              color: Colors.grey.shade600,
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 16.h),
+
+                                          /// Price Box
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 10.h,
+                                              horizontal: 16.w,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primaryShade100,
+                                              borderRadius: BorderRadius.circular(10.r),
+                                            ),
+                                            child: Text(
+                                              "\$2 for 3 Days",
+                                              style: TextStyle(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.primaryColor,
+                                              ),
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 20.h),
+
+                                          /// Buttons
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: CustomButton(
+                                                  titlecolor: AppColors.primaryColor,
+                                                  height: 38.h,
+                                                  color: AppColors.primaryShade100,
+                                                  borderRadius: 50.r,
+                                                  onpress: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  title: "Cancel",
+                                                ),
+                                              ),
+                                              SizedBox(width: 10.w),
+                                              Expanded(
+                                                child: GetBuilder<BoostController>(
+                                                  builder: (controller) {
+                                                    return CustomButton(
+                                                      loading: controller.isLoading,
+                                                      height: 38.h,
+                                                      borderRadius: 50.r,
+                                                      onpress: () {
+                                                        controller.boost(product.id ?? 0);
+
+                                                        },
+
+                                                      title: "Boost Now",
+                                                    );
+                                                  }
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+
+                    // ── Pending Tab ──
+                    controller.isLoadingProduct
+                        ? ShimmerHelper.instance.showMyProductShimmer()
+                        : controller.pendingProductsData.isEmpty
+                        ? Center(child: Text('No pending products found.'))
+                        : AnimationLimiter(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                         await controller.productsGet(type: 'own', status: 'pending');
+                        },
+                        child: ListView.builder(
+                          itemCount: controller.pendingProductsData.length,
+                          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                          itemBuilder: (context, index) {
+                            final product = controller.pendingProductsData[index];
+                            return CustomMyProductCard(
+                              index: index,
+                              title: product.productName,
+                              price: product.price,
+                              image: product.image,
+                              onTap: () => Get.toNamed(
+                                AppRoutes.productDetailsScreen,
+                                arguments: product.id,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                  onChange: (index) {
+                    if (index == 0) {
+                      if(controller.listedProductsData.isEmpty){
+                        controller.productsGet(type: 'own', status: 'available');
+                      }
+                    } else if (index == 1) {
+                      if(controller.pendingProductsData.isEmpty){
+                        controller.productsGet(type: 'own', status: 'pending');
+                      }
+                    }
+                  },
+                );
+              },
             ),
-            tabs: [
-              Text('Listed: ${controller.listedProductsData.length}'),
-              Text('Pending: ${controller.pendingProductsData.length}'),
-            ],
-            views: [
+          ),
 
-              // ── Listed Tab ──
-              controller.isLoadingProduct
-                  ? ShimmerHelper.instance.showMyProductShimmer()
-                  : controller.listedProductsData.isEmpty
-                  ? Center(child: Text('No listed products found.'))
-                  : AnimationLimiter(
-                child: RefreshIndicator(
-                  onRefresh: ()async {
-                  await  _controller.productsGet(type: 'own', status: 'available');
-                  },
-                  child: ListView.builder(
-                    itemCount: controller.listedProductsData.length,
-                    padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                    itemBuilder: (context, index) {
-                      final product = controller.listedProductsData[index];
-                      return CustomMyProductCard(
-                        index: index,
-                        leftBtnName: "Buy now",
-                        boast: "Boost now",
-                        title: product.productName,
-                        price: product.price,
-                        image: product.image,
-                        onTap: () => Get.toNamed(
-                          AppRoutes.productDetailsScreen,
-                          arguments: product.id,
-                        ),
-                        boostOnTap: () => Get.toNamed(
-                          AppRoutes.boostScreen,
-                          arguments: product,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-              // ── Pending Tab ──
-              controller.isLoadingProduct
-                  ? ShimmerHelper.instance.showMyProductShimmer()
-                  : controller.pendingProductsData.isEmpty
-                  ? Center(child: Text('No pending products found.'))
-                  : AnimationLimiter(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                   await controller.productsGet(type: 'own', status: 'pending');
-                  },
-                  child: ListView.builder(
-                    itemCount: controller.pendingProductsData.length,
-                    padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                    itemBuilder: (context, index) {
-                      final product = controller.pendingProductsData[index];
-                      return CustomMyProductCard(
-                        index: index,
-                        title: product.productName,
-                        price: product.price,
-                        image: product.image,
-                        onTap: () => Get.toNamed(
-                          AppRoutes.productDetailsScreen,
-                          arguments: product.id,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-            onChange: (index) {
-              if (index == 0) {
-                if(controller.listedProductsData.isEmpty){
-                  controller.productsGet(type: 'own', status: 'available');
-                }
-              } else if (index == 1) {
-                if(controller.pendingProductsData.isEmpty){
-                  controller.productsGet(type: 'own', status: 'pending');
-                }
-              }
-            },
-          );
-        },
+          SizedBox(height: 80.h),
+        ],
       ),
     );
   }

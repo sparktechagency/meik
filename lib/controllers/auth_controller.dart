@@ -128,14 +128,17 @@ class AuthController extends GetxController {
       
       final user = responseBody['data'];
 
-      Get.find<UserController>().userData = user != null ? UserModelData.fromJson(user) : null;
+     // Get.find<UserController>().userData = user != null ? UserModelData.fromJson(user) : null;
+
 
       Get.offAllNamed(AppRoutes.bottomNavBar);
 
       await PrefsHelper.setString(AppConstants.bearerToken, responseBody['token'] ?? '');
+      await Get.find<UserController>().userGet();
+
     } else {
 
-      //showToast(responseBody['message']);
+      showToast(responseBody['message']);
     }
 
     isLoadingLogin = false;

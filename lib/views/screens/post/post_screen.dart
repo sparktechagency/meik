@@ -92,170 +92,173 @@ class _PostScreenState extends State<PostScreen> {
       appBar: CustomAppBar(title: "Products History."),
       body: Column(
         children: [
-          GetBuilder<FvrtProductController>(
-            builder: (controller) {
-              return ContainedTabBarView(
-                tabBarProperties: TabBarProperties(
-                  height: 40.h,
-                  indicatorColor: AppColors.primaryColor,
-                  indicatorWeight: 2,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelColor: AppColors.primaryColor,
-                  unselectedLabelColor: Colors.black,
-                  labelStyle:
-                  TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
-                  unselectedLabelStyle: TextStyle(
-                      fontSize: 14.sp, color: AppColors.dividerColor),
-                ),
-                tabs: [
-                  Text('  Favorite  '),
-                  Text('  Purchased  '),
-                  Text('  History  '),
-                ],
-                views: [
-                  // ── Favorite Tab ──
-                  controller.isLoading
-                      ? ShimmerHelper.instance.showMyProductShimmer()
-                      : controller.fvrtData.isEmpty
-                      ? const Center(child: Text('No favourite products found.'))
-                      : AnimationLimiter(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await controller.fvrtGet();
-                      },
-                      child: ListView.builder(
-                        controller: _fvrtScrollController,
-                        itemCount: controller.fvrtData.length +
-                            (controller.isLoadingMore ? 1 : 0),
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12.h, horizontal: 16.w),
-                        itemBuilder: (context, index) {
-                          if (index == controller.fvrtData.length) {
-                            return const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: CircularProgressIndicator(),
-                                ));
-                          }
-                          final product = controller.fvrtData[index];
-                          return CustomProductCard(
-                            index: index,
-                            leftBtnName: "Buy now",
-                            rightBtnName: "Message",
-                            isBookMarkNeed: true,
-                            isFavorite: true,
-                            title: product.productName,
-                            price: product.price,
-                            image: product.images?.first.image ?? 'N/A',
-                            onTap: () {
-                              Get.toNamed(
-                                AppRoutes.productDetailsScreen,
-                                arguments: product.id,
-                              );
-                            },
-                          );
+          Expanded(
+            child: GetBuilder<FvrtProductController>(
+              builder: (controller) {
+                return ContainedTabBarView(
+                  tabBarProperties: TabBarProperties(
+                    height: 40.h,
+                    indicatorColor: AppColors.primaryColor,
+                    indicatorWeight: 2,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: AppColors.primaryColor,
+                    unselectedLabelColor: Colors.black,
+                    labelStyle:
+                    TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                    unselectedLabelStyle: TextStyle(
+                        fontSize: 14.sp, color: AppColors.dividerColor),
+                  ),
+                  tabs: [
+                    Text('  Favorite  '),
+                    Text('  Purchased  '),
+                    Text('  History  '),
+                  ],
+                  views: [
+                    // ── Favorite Tab ──
+                    controller.isLoading
+                        ? ShimmerHelper.instance.showMyProductShimmer()
+                        : controller.fvrtData.isEmpty
+                        ? const Center(child: Text('No favourite products found.'))
+                        : AnimationLimiter(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          await controller.fvrtGet();
                         },
+                        child: ListView.builder(
+                          controller: _fvrtScrollController,
+                          itemCount: controller.fvrtData.length +
+                              (controller.isLoadingMore ? 1 : 0),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12.h, horizontal: 16.w),
+                          itemBuilder: (context, index) {
+                            if (index == controller.fvrtData.length) {
+                              return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: CircularProgressIndicator(),
+                                  ));
+                            }
+                            final product = controller.fvrtData[index];
+                            return CustomProductCard(
+                              index: index,
+                              leftBtnName: "Buy now",
+                              rightBtnName: "Message",
+                              isBookMarkNeed: true,
+                              isFavorite: true,
+                              title: product.productName,
+                              price: product.price,
+                              image: product.images?.first.image ?? 'N/A',
+                              onTap: () {
+                                Get.toNamed(
+                                  AppRoutes.productDetailsScreen,
+                                  arguments: product.id,
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
 
-                  // ── Purchased Tab ──
-                  controller.isPurchasesLoading
-                      ? ShimmerHelper.instance.showMyProductShimmer()
-                      : controller.purchasesData.isEmpty
-                      ? const Center(
-                      child: Text('No purchased products found.'))
-                      : AnimationLimiter(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await controller.phurcasesGet();
-                      },
-                      child: ListView.builder(
-                        controller: _purchasesScrollController,
-                        itemCount: controller.purchasesData.length +
-                            (controller.isPurchasesLoadingMore ? 1 : 0),
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12.h, horizontal: 16.w),
-                        itemBuilder: (context, index) {
-                          if (index == controller.purchasesData.length) {
-                            return const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: CircularProgressIndicator(),
-                                ));
-                          }
-                          final product = controller.purchasesData[index];
-                          return CustomProductCard(
-                            index: index,
-                            isBookMarkNeed: true,
-                            isFavorite: false,
-                            progressStatus: product.status,
-                            title: product.productName,
-                            price: product.price,
-                            image: product.images?.first.image ?? 'N/A',
-                            onTap: () {
-                              Get.toNamed(
-                                AppRoutes.productDetailsScreen,
-                                arguments: product.id,
-                              );
-                            },
-                          );
+                    // ── Purchased Tab ──
+                    controller.isPurchasesLoading
+                        ? ShimmerHelper.instance.showMyProductShimmer()
+                        : controller.purchasesData.isEmpty
+                        ? const Center(
+                        child: Text('No purchased products found.'))
+                        : AnimationLimiter(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          await controller.phurcasesGet();
                         },
+                        child: ListView.builder(
+                          controller: _purchasesScrollController,
+                          itemCount: controller.purchasesData.length +
+                              (controller.isPurchasesLoadingMore ? 1 : 0),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12.h, horizontal: 16.w),
+                          itemBuilder: (context, index) {
+                            if (index == controller.purchasesData.length) {
+                              return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: CircularProgressIndicator(),
+                                  ));
+                            }
+                            final product = controller.purchasesData[index];
+                            return CustomProductCard(
+                              index: index,
+                              isBookMarkNeed: true,
+                              isFavorite: false,
+                              progressStatus: product.status,
+                              title: product.productName,
+                              price: product.price,
+                              image: product.images?.first.image ?? 'N/A',
+                              onTap: () {
+                                Get.toNamed(
+                                  AppRoutes.productDetailsScreen,
+                                  arguments: product.id,
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
 
-                  // ── History (Sales) Tab ──
-                  controller.isSalesLoading
-                      ? ShimmerHelper.instance.showMyProductShimmer()
-                      : controller.salesData.isEmpty
-                      ? const Center(child: Text('No sales history found.'))
-                      : AnimationLimiter(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await controller.salesGet();
-                      },
-                      child: ListView.builder(
-                        controller: _salesScrollController,
-                        itemCount: controller.salesData.length +
-                            (controller.isSalesLoadingMore ? 1 : 0),
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12.h, horizontal: 16.w),
-                        itemBuilder: (context, index) {
-                          if (index == controller.salesData.length) {
-                            return const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: CircularProgressIndicator(),
-                                ));
-                          }
-                          final product = controller.salesData[index];
-                          return CustomProductCard(
-                            index: index,
-                            isBookMarkNeed: true,
-                            isFavorite: false,
-                            isHistory: true,
-                            progressStatus: product.status,
-                            title: product.productName,
-                            price: product.price,
-                            image: product.images?.first.image ?? 'N/A',
-                            onTap: () {
-                              Get.toNamed(
-                                AppRoutes.productDetailsScreen,
-                                arguments: product.id,
-                              );
-                            },
-                          );
+                    // ── History (Sales) Tab ──
+                    controller.isSalesLoading
+                        ? ShimmerHelper.instance.showMyProductShimmer()
+                        : controller.salesData.isEmpty
+                        ? const Center(child: Text('No sales history found.'))
+                        : AnimationLimiter(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          await controller.salesGet();
                         },
+                        child: ListView.builder(
+                          controller: _salesScrollController,
+                          itemCount: controller.salesData.length +
+                              (controller.isSalesLoadingMore ? 1 : 0),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12.h, horizontal: 16.w),
+                          itemBuilder: (context, index) {
+                            if (index == controller.salesData.length) {
+                              return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: CircularProgressIndicator(),
+                                  ));
+                            }
+                            final product = controller.salesData[index];
+                            return CustomProductCard(
+                              index: index,
+                              isBookMarkNeed: true,
+                              isFavorite: false,
+                              isHistory: true,
+                              progressStatus: product.status,
+                              title: product.productName,
+                              price: product.price,
+                              image: product.images?.first.image ?? 'N/A',
+                              onTap: () {
+                                Get.toNamed(
+                                  AppRoutes.productDetailsScreen,
+                                  arguments: product.id,
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
 
-                ],
-                onChange: (index) => _onTabChanged(index),
-              );
-            },
+                  ],
+                  onChange: (index) => _onTabChanged(index),
+                );
+              },
+            ),
           ),
+          SizedBox(height: 80.h),
         ],
       ),
     );

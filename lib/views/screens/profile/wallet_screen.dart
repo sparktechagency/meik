@@ -259,12 +259,14 @@ class _WalletScreenState extends State<WalletScreen> {
                           ),
                         ),
                       )
-                          : CustomText(
-                        text: controller.balance,
-                        fontSize: 36.sp,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
+                          : FittedBox(
+                            child: CustomText(
+                                                    text: controller.balance,
+                                                    fontSize: 36.sp,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.white,
+                                                  ),
+                          ),
                     ],
                   ),
                 ],

@@ -111,6 +111,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
           const SizedBox(height: 18),
 
+          /// 🔥 Address Section
+          _buildAddressSection(c),
+
+          const SizedBox(height: 18),
+
           /// 🔥 Price Breakdown
           _buildPriceSection(c),
 
@@ -550,6 +555,115 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
+  // ==================== Address Section ====================
+  Widget _buildAddressSection(CheckoutController c) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Delivery Address',
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          ),
+          const SizedBox(height: 16),
+
+          /// Address Field
+          _buildAddressTextField(
+            label: 'Address',
+            hintText: 'Enter street address',
+            value: c.address,
+            onChanged: c.setAddress,
+          ),
+          const SizedBox(height: 12),
+
+          /// House Number Field
+          _buildAddressTextField(
+            label: 'House Number',
+            hintText: 'Enter house number',
+            value: c.houseNumber,
+            onChanged: c.setHouseNumber,
+          ),
+          const SizedBox(height: 12),
+
+          /// City Field
+          _buildAddressTextField(
+            label: 'City',
+            hintText: 'Enter city',
+            value: c.city,
+            onChanged: c.setCity,
+          ),
+          const SizedBox(height: 12),
+
+          /// Country Field
+          _buildAddressTextField(
+            label: 'Country',
+            hintText: 'Enter country',
+            value: c.country,
+            onChanged: c.setCountry,
+          ),
+          const SizedBox(height: 12),
+
+          /// Postal Code Field
+          _buildAddressTextField(
+            label: 'Postal Code',
+            hintText: 'Enter postal code',
+            value: c.postalCode,
+            onChanged: c.setPostalCode,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build Address TextField
+  Widget _buildAddressTextField({
+    required String label,
+    required String hintText,
+    required String? value,
+    required Function(String) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
+        ),
+        const SizedBox(height: 6),
+        TextField(
+          onChanged: onChanged,
+          controller: TextEditingController(text: value ?? ''),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.grey.shade400),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   // ==================== Price Section ====================
   Widget _buildPriceSection(CheckoutController c) {
     final isLoading = c.isLoadingPreNext;
@@ -693,10 +807,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16),
+              padding:  EdgeInsets.only(left: 16),
               child: CustomButton(
+                loading: c.isLoadingCheck,
                 onpress: () => c.proceedToPayment(),
-                title: "Continue",
+                title: c.isLoadingCheck ? "Processing..." : "Continue",
               ),
             ),
           ),

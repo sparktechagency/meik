@@ -14,14 +14,22 @@ import '../../widgets/cachanetwork_image.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
-  // Change this to test verified/unverified state
-  final bool isVerified = true;
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
 
+class _ProfileScreenState extends State<ProfileScreen> {
+
+  final UserController controller = Get.find<UserController>();
+
+  // Change this to test verified/unverified state
   @override
   Widget build(BuildContext context) {
+    final bool isVerified = controller.userData?.isActive == true;
+
     return CustomScaffold(
       appBar: CustomAppBar(),
       body: SingleChildScrollView(
@@ -31,6 +39,7 @@ class ProfileScreen extends StatelessWidget {
 
             // Profile Image with border
             GetBuilder<UserController>(
+
               builder: (controller) {
                 return GestureDetector(
                   onTap: () {
@@ -73,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(height: 12.h),
 
             // Verified/Verify Now Badge
-            _buildVerificationBadge(),
+           // _buildVerificationBadge(isVerified),
 
             SizedBox(height: 40.h),
 
@@ -134,53 +143,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVerificationBadge() {
-    if (isVerified) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(25.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.verified,
-              color: Colors.white,
-              size: 18.sp,
-            ),
-            SizedBox(width: 6.w),
-            CustomText(
-              text: "Verified",
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      );
-    } else {
-      return GestureDetector(
-        onTap: () {
-          Get.toNamed(AppRoutes.uploadNIDScreen);
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-          decoration: BoxDecoration(
-            color: Colors.red.shade700,
-            borderRadius: BorderRadius.circular(25.r),
-          ),
-          child: CustomText(
-            text: "Verify now",
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-          ),
-        ),
-      );
-    }
-  }
 
   Widget _buildMenuItem({
     required IconData icon,

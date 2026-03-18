@@ -14,6 +14,7 @@ class ApiUrls {
   static const String userMe = '/users/me';
   static const String userUpdate = '/users/profile';
   static const String preNext = '/orders/checkout/preview';
+  static const String checkoutExecute = '/orders/checkout/execute';
 
   /// ================= products ===========>>>
   static String products({
@@ -52,6 +53,7 @@ class ApiUrls {
   static const String colors = '/colors';
   static const String favourites = '/favourites';
   static  String offersAccept(String offerID) => '/offers/$offerID/accept';
+  static  String boost(int productID) => '/products/$productID/boosts';
   static  String offersReject(String offerID) => '/offers/$offerID/reject';
   static  String offersSend = '/offers/send';
   static const String imageURL = 'https://jidian.merinasib.shop/api/v1/s3/pre-signed-url?fileName=newimage.png&primaryPath=UserUploads&field=User_Profile&expiresIn=900';

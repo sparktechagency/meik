@@ -1,3 +1,4 @@
+import 'package:danceattix/core/config/app_route.dart';
 import 'package:danceattix/models/checkout_model_data.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
@@ -8,17 +9,26 @@ class CheckoutController extends GetxController {
   // ==================== State ====================
   bool isLoadingCheckout = false;
   bool isLoadingPreNext = false;
+  bool isLoadingCheck = false;
 
   CheckoutModelData? checkoutData;
   CheckoutPreviewModel? previewData;
 
   String? checkoutError;
   String? previewError;
+  String? sessionId; // ✅ NEW: Store sessionId from API response
 
   // ==================== Selection State ====================
   int quantity = 1;
   int? selectedColorId;
   int? selectedSizeId;
+
+  // ==================== Address State ====================
+  String? address;
+  String? city;
+  String? country;
+  String? postalCode;
+  String? houseNumber;
 
   // ==================== Getters ====================
 
@@ -112,8 +122,16 @@ class CheckoutController extends GetxController {
     return checkoutData?.product != null && isVariantSelected;
   }
 
+  bool get isAddressValid {
+    return address != null && address!.isNotEmpty &&
+        city != null && city!.isNotEmpty &&
+        country != null && country!.isNotEmpty &&
+        postalCode != null && postalCode!.isNotEmpty;
+  }
+
   String? get validationError {
     if (!isVariantSelected) return "Please select color and size";
+    if (!isAddressValid) return "Please fill in all address fields";
     return null;
   }
 
@@ -219,8 +237,36 @@ class CheckoutController extends GetxController {
     update();
   }
 
+  // ==================== Address Methods =================
+
+  void setAddress(String value) {
+    address = value;
+    update();
+  }
+
+  void setCity(String value) {
+    city = value;
+    update();
+  }
+
+  void setCountry(String value) {
+    country = value;
+    update();
+  }
+
+  void setPostalCode(String value) {
+    postalCode = value;
+    update();
+  }
+
+  void setHouseNumber(String value) {
+    houseNumber = value;
+    update();
+  }
+
   // ==================== Preview/Next =================
 
+  /// ✅ FIXED: Capture sessionId from API response
   Future<void> preNext() async {
     final product = checkoutData?.product;
 
@@ -243,6 +289,13 @@ class CheckoutController extends GetxController {
 
       if (res.statusCode == 201) {
         previewData = CheckoutPreviewModel.fromJson(res.body['data']);
+
+        // ✅ CAPTURE sessionId from API response
+        if (res.body['data']['sessionId'] != null) {
+          sessionId = res.body['data']['sessionId'];
+          print('✅ SessionId captured: $sessionId');
+        }
+
         previewError = null;
       } else {
         previewError = res.body['message'] ?? 'Failed to calculate price';
@@ -257,8 +310,8 @@ class CheckoutController extends GetxController {
     update();
   }
 
-  /// Proceed to payment
-  void proceedToPayment() {
+  /// ✅ FIXED: Use captured sessionId instead of hardcoded value
+  Future<void> proceedToPayment() async {
     final error = validationError;
 
     if (error != null) {
@@ -266,17 +319,45 @@ class CheckoutController extends GetxController {
       return;
     }
 
-    final total = previewData?.finalPrice ?? checkoutData?.total ?? 0;
+    // ✅ Validate sessionId exists
+    if (sessionId == null || sessionId!.isEmpty) {
+      showToast('Session not initialized. Please try again.');
+      return;
+    }
 
-    Get.toNamed('/payment', arguments: {
-      'variantId': selectedVariantId,
-      'quantity': quantity,
-      'total': total,
-      'productId': checkoutData?.product?.id,
-      'productName': checkoutData?.product?.productName,
-      'colorId': selectedColorId,
-      'sizeId': selectedSizeId,
-    });
+    isLoadingCheck = true;
+    update();
+
+    try {
+      final body = {
+        "sessionId": sessionId, // ✅ USE CAPTURED sessionId
+        "newAddress": {
+          "address": address,
+          "city": city,
+          "country": country,
+          "postal_code": postalCode,
+          "house_number": houseNumber ?? ""
+        },
+        "paymentMethod": "wallet"
+      };
+
+      final res = await ApiClient.postData(ApiUrls.checkoutExecute, body);
+
+      if (res.statusCode == 201) {
+        Get.offNamed(AppRoutes.bottomNavBar);
+        showToast(res.body['message']);
+        previewError = null;
+      } else {
+        previewError = res.body['message'] ?? 'Failed to process payment';
+        showToast(previewError!);
+      }
+    } catch (e) {
+      previewError = 'Network error. Please try again.';
+      showToast(previewError!);
+    }
+
+    isLoadingCheck = false;
+    update();
   }
 
   // ==================== Helpers =================
@@ -328,10 +409,16 @@ class CheckoutController extends GetxController {
     selectedColorId = null;
     selectedSizeId = null;
     quantity = 1;
+    address = null;
+    city = null;
+    country = null;
+    postalCode = null;
+    houseNumber = null;
     checkoutData = null;
     previewData = null;
     checkoutError = null;
     previewError = null;
+    sessionId = null; // ✅ Also cleanup sessionId
     isLoadingCheckout = false;
     isLoadingPreNext = false;
     update();
