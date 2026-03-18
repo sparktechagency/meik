@@ -28,7 +28,6 @@ class _ProductScreenState extends State<ProductScreen> {
         _controller.productsGet(type: 'own', status: 'available');
       }
     });
-
   }
 
   @override
@@ -73,7 +72,6 @@ class _ProductScreenState extends State<ProductScreen> {
                     Text('Pending: ${controller.pendingProductsData.length}'),
                   ],
                   views: [
-
                     // ── Listed Tab ──
                     controller.isLoadingProduct
                         ? ShimmerHelper.instance.showMyProductShimmer()
@@ -82,7 +80,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         : AnimationLimiter(
                       child: RefreshIndicator(
                         onRefresh: ()async {
-                        await  _controller.productsGet(type: 'own', status: 'available');
+                          await  _controller.productsGet(type: 'own', status: 'available');
                         },
                         child: ListView.builder(
                           itemCount: controller.listedProductsData.length,
@@ -101,120 +99,8 @@ class _ProductScreenState extends State<ProductScreen> {
                                 arguments: product.id,
                               ),
                               boostOnTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16.r),
-                                      ),
-                                      contentPadding: EdgeInsets.all(20.w),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          /// Icon
-                                          Container(
-                                            padding: EdgeInsets.all(12.w),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primaryShade100,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.trending_up,
-                                              color: AppColors.primaryColor,
-                                              size: 32.sp,
-                                            ),
-                                          ),
-
-                                          SizedBox(height: 16.h),
-
-                                          /// Title
-                                          Text(
-                                            "Boost Your Post 🚀",
-                                            style: TextStyle(
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-
-                                          SizedBox(height: 10.h),
-
-                                          /// Description
-                                          Text(
-                                            "Get more visibility by boosting your post for 3 days.",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 14.sp,
-                                              color: Colors.grey.shade600,
-                                            ),
-                                          ),
-
-                                          SizedBox(height: 16.h),
-
-                                          /// Price Box
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 10.h,
-                                              horizontal: 16.w,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primaryShade100,
-                                              borderRadius: BorderRadius.circular(10.r),
-                                            ),
-                                            child: Text(
-                                              "\$2 for 3 Days",
-                                              style: TextStyle(
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.primaryColor,
-                                              ),
-                                            ),
-                                          ),
-
-                                          SizedBox(height: 20.h),
-
-                                          /// Buttons
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: CustomButton(
-                                                  titlecolor: AppColors.primaryColor,
-                                                  height: 38.h,
-                                                  color: AppColors.primaryShade100,
-                                                  borderRadius: 50.r,
-                                                  onpress: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  title: "Cancel",
-                                                ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Expanded(
-                                                child: GetBuilder<BoostController>(
-                                                  builder: (controller) {
-                                                    return CustomButton(
-                                                      loading: controller.isLoading,
-                                                      height: 38.h,
-                                                      borderRadius: 50.r,
-                                                      onpress: () {
-                                                        controller.boost(product.id ?? 0);
-
-                                                        },
-
-                                                      title: "Boost Now",
-                                                    );
-                                                  }
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
+                                _showBoostPricingDialog(context, product.id ?? 0);
                               },
-
                             );
                           },
                         ),
@@ -229,7 +115,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         : AnimationLimiter(
                       child: RefreshIndicator(
                         onRefresh: () async {
-                         await controller.productsGet(type: 'own', status: 'pending');
+                          await controller.productsGet(type: 'own', status: 'pending');
                         },
                         child: ListView.builder(
                           itemCount: controller.pendingProductsData.length,
@@ -268,6 +154,292 @@ class _ProductScreenState extends State<ProductScreen> {
           ),
 
           SizedBox(height: 80.h),
+        ],
+      ),
+    );
+  }
+
+  /// Show boost pricing dialog with pricing list
+  void _showBoostPricingDialog(BuildContext context, int productId) {
+    final boostController = Get.find<BoostController>();
+
+    // Fetch pricing data when dialog opens
+    boostController.boostPricingGet(productID: productId.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: GetBuilder<BoostController>(
+                builder: (controller) {
+                  // Get selected pricing from controller or use local state
+                  int? selectedPricingIndex = controller.selectedPricingIndex;
+
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Header
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(20.w),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16.r),
+                            topRight: Radius.circular(16.r),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(10.w),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.trending_up,
+                                color: Colors.white,
+                                size: 28.sp,
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                            Text(
+                              "Boost Your Post 🚀",
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              "Choose a plan to increase visibility",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Loading State
+                      if (controller.isLoadingPrices)
+                        Padding(
+                          padding: EdgeInsets.all(20.w),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 10.h),
+                              CircularProgressIndicator(
+                                color: AppColors.primaryColor,
+                              ),
+                              SizedBox(height: 10.h),
+                              Text(
+                                "Loading pricing options...",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              SizedBox(height: 10.h),
+                            ],
+                          ),
+                        )
+                      // Pricing List
+                      else if (controller.boostPricingData.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.all(16.w),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: 12.h),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: controller.boostPricingData.length,
+                                itemBuilder: (context, index) {
+                                  final pricing = controller.boostPricingData[index];
+                                  final days = pricing.days ?? 0;
+                                  final price = pricing.cost ?? 0;
+                                  final currency = pricing.currency ?? 0;
+                                  final isSelected = selectedPricingIndex == index;
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      controller.setSelectedPricing(index);
+                                    },
+                                    child: _buildPricingCard(
+                                      currency: currency,
+                                      context: context,
+                                      days: days,
+                                      price: price,
+                                      description: "Boost your post",
+                                      isSelected: isSelected,
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 16.h),
+                            ],
+                          ),
+                        )
+                      // Empty State
+                      else
+                        Padding(
+                          padding: EdgeInsets.all(20.w),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 10.h),
+                              Icon(
+                                Icons.info_outline,
+                                color: Colors.grey.shade400,
+                                size: 32.sp,
+                              ),
+                              SizedBox(height: 10.h),
+                              Text(
+                                "No pricing options available",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              SizedBox(height: 10.h),
+                            ],
+                          ),
+                        ),
+
+                      SizedBox(height: 16.h),
+
+                      // Action Buttons at Bottom
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CustomButton(
+                                titlecolor: AppColors.primaryColor,
+                                height: 42.h,
+                                color: AppColors.primaryShade100,
+                                borderRadius: 50.r,
+                                onpress: () {
+                                  Navigator.pop(context);
+                                },
+                                title: "Cancel",
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: GetBuilder<BoostController>(
+                                builder: (boostCtrl) {
+                                  return CustomButton(
+                                    loading: boostCtrl.isLoading,
+                                    height: 42.h,
+                                    borderRadius: 50.r,
+                                    onpress:  () {
+                                      if (selectedPricingIndex == null) {
+                                        showToast("Please select a pricing option.");
+                                        return;}
+
+                                      final selectedPricing =
+                                      boostCtrl.boostPricingData[
+                                      selectedPricingIndex];
+                                      final days =
+                                          selectedPricing.days ?? 0;
+                                      boostCtrl.boost(productId, days);
+                                    },
+                                    title: "Boost Now",
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 16.h),
+                    ],
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// Build individual pricing card
+  Widget _buildPricingCard({
+    required BuildContext context,
+    required int days,
+    required dynamic price,
+    required dynamic currency,
+    required String description,
+    required bool isSelected,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.primaryColor : Colors.white,
+        border: Border.all(
+          color: isSelected
+              ? AppColors.primaryColor
+              : AppColors.primaryColor.withOpacity(0.2),
+          width: isSelected ? 2 : 1,
+        ),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Boost for $days Days",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? Colors.white : Colors.black,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: isSelected
+                        ? Colors.white.withOpacity(0.8)
+                        : Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "$currency: $price",
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected ? Colors.white : AppColors.primaryColor,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -41,7 +41,7 @@ class ApiUrls {
 
   static String categories({int page = 1, int limit = 10}) => '/sub-categories?page=$page&limit=$limit';
   static String fvrtProduct({int page = 1, int limit = 10}) => '/favourites?page=$page&limit=$limit';
-  static String phurcasesProduct({int page = 1, int limit = 10}) => '/orders/phurcases?page=$page&limit=$limit';
+  static String phurcasesProduct({int page = 1, int limit = 10}) => '/orders/purchases?page=$page&limit=$limit';
   static String transections({int page = 1, int limit = 10}) => '/transections?page=$page&limit=$limit';
   static String salesProduct({int page = 1, int limit = 10}) => '/orders/sales?page=$page&limit=$limit';
   static String notification({int page = 1, int limit = 10}) => '/notifications?page=$page&limit=$limit';
@@ -53,7 +53,8 @@ class ApiUrls {
   static const String colors = '/colors';
   static const String favourites = '/favourites';
   static  String offersAccept(String offerID) => '/offers/$offerID/accept';
-  static  String boost(int productID) => '/products/$productID/boosts';
+  static  String boostPricing(String productID) => '/products/$productID/boost-preview';
+  static  String boost(int productID,int days) => '/products/$productID/boosts?days=$days';
   static  String offersReject(String offerID) => '/offers/$offerID/reject';
   static  String offersSend = '/offers/send';
   static const String imageURL = 'https://jidian.merinasib.shop/api/v1/s3/pre-signed-url?fileName=newimage.png&primaryPath=UserUploads&field=User_Profile&expiresIn=900';

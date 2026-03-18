@@ -77,7 +77,9 @@ class CustomButton extends StatelessWidget {
                   height: 25.h,
                   width: 25.w,
                   child: loading
-                      ? Assets.lottie.loading.lottie(fit: BoxFit.cover)
+                      ?  CircularProgressIndicator(
+                          color: titlecolor ?? Colors.white,
+                        )
                       : const SizedBox.shrink(),
                 ),
               ),
