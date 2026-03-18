@@ -67,123 +67,167 @@ class AddProductController extends GetxController {
 
   // ── Photo ─────────────────────────────────────────────────────────────────
   void addPhoto(BuildContext context) {
-    PhotoPickerHelper.showPicker(
-      context: context,
-      onImagePicked: (file) async {
-        final imageFile = File(file.path);
-        // images.add(imageFile);
-        // pickedColors.add(null);
-        // update([kIdImageList, kIdColorList]);
-
-        getImageURL(imageFile);
+    try {
+      PhotoPickerHelper.showPicker(
+        context: context,
+        onImagePicked: (file) async {
+          final imageFile = File(file.path);
+          getImageURL(imageFile);
         },
-    );
+      );
+    } catch (e) {
+      debugPrint('❌ Error in addPhoto: $e');
+      showToast('Error picking photo');
+    }
   }
 
   void removePhoto(int index) {
-    if (index < 0 || index >= images.length) return;
-    final c = pickedColors[index];
-    if (c != null) _removeColorData(hex(c));
-    images.removeAt(index);
-    pickedColors.removeAt(index);
+    try {
+      if (index < 0 || index >= images.length) return;
+      final c = pickedColors[index];
+      if (c != null) _removeColorData(hex(c));
+      images.removeAt(index);
+      pickedColors.removeAt(index);
 
-    if (pickerIndex == index) {
-      pickerIndex = null;
-    } else if (pickerIndex != null && pickerIndex! > index) {
-      pickerIndex = pickerIndex! - 1;
+      if (pickerIndex == index) {
+        pickerIndex = null;
+      } else if (pickerIndex != null && pickerIndex! > index) {
+        pickerIndex = pickerIndex! - 1;
+      }
+      update([kIdImageList, kIdColorList]);
+    } catch (e) {
+      debugPrint('❌ Error in removePhoto: $e');
+      showToast('Error removing photo');
     }
-    update([kIdImageList, kIdColorList]);
   }
 
   void _removeColorData(String hexVal) {
-    colorSizes.remove(hexVal);
-    colorIdMap.remove(hexVal);
-    final ks = stock.keys.where((k) => k.startsWith('${hexVal}_')).toList();
-    for (final k in ks) {
-      stock[k]?.dispose();
-      stock.remove(k);
+    try {
+      colorSizes.remove(hexVal);
+      colorIdMap.remove(hexVal);
+      final ks = stock.keys.where((k) => k.startsWith('${hexVal}_')).toList();
+      for (final k in ks) {
+        stock[k]?.dispose();
+        stock.remove(k);
+      }
+    } catch (e) {
+      debugPrint('❌ Error in _removeColorData: $e');
     }
   }
 
   // ── Color Picker ──────────────────────────────────────────────────────────
 
   void togglePickerMode(int index) {
-    pickerIndex = pickerIndex == index ? null : index;
-    update([kIdImageList]);
+    try {
+      pickerIndex = pickerIndex == index ? null : index;
+      update([kIdImageList]);
+    } catch (e) {
+      debugPrint('❌ Error in togglePickerMode: $e');
+    }
   }
 
   // ✅ Color select হলে → colorsCreate() API call
   void setColorForImage(int index, Color color) {
-    pickedColors[index] = color;
-    pickerIndex = null;
-    update([kIdImageList, kIdColorList]);
+    try {
+      pickedColors[index] = color;
+      pickerIndex = null;
+      update([kIdImageList, kIdColorList]);
 
-    final hexVal = hex(color);
-    if (!colorIdMap.containsKey(hexVal)) {
-      colorsCreate(hexVal: hexVal);
+      final hexVal = hex(color);
+      if (!colorIdMap.containsKey(hexVal)) {
+        colorsCreate(hexVal: hexVal);
+      }
+    } catch (e) {
+      debugPrint('❌ Error in setColorForImage: $e');
+      showToast('Error setting color');
     }
   }
 
   // ── Accordion ─────────────────────────────────────────────────────────────
 
   void toggleAccordion(String hexVal) {
-    final prev = expandedHex;
-    expandedHex = expandedHex == hexVal ? null : hexVal;
-    update([if (prev != null) kIdAccordion(prev), kIdAccordion(hexVal)]);
+    try {
+      final prev = expandedHex;
+      expandedHex = expandedHex == hexVal ? null : hexVal;
+      update([if (prev != null) kIdAccordion(prev), kIdAccordion(hexVal)]);
+    } catch (e) {
+      debugPrint('❌ Error in toggleAccordion: $e');
+    }
   }
 
   // ── Sizes ─────────────────────────────────────────────────────────────────
 
   // ✅ Size select হলে → sizesCreate() API call
   void toggleSize(String hexVal, String size) {
-    final s = colorSizes.putIfAbsent(hexVal, () => {});
-    if (s.contains(size)) {
-      // deselect করলে remove করো
-      s.remove(size);
-      final k = '${hexVal}_$size';
-      stock[k]?.dispose();
-      stock.remove(k);
-      update([kIdSizes(hexVal), kIdTotalStock, kIdAccordion(hexVal)]);
-    } else {
-      // select করলে API call করো, তারপর add করো
-      s.add(size);
-      update([kIdSizes(hexVal), kIdTotalStock, kIdAccordion(hexVal)]);
+    try {
+      final s = colorSizes.putIfAbsent(hexVal, () => {});
+      if (s.contains(size)) {
+        // deselect করলে remove করো
+        s.remove(size);
+        final k = '${hexVal}_$size';
+        stock[k]?.dispose();
+        stock.remove(k);
+        update([kIdSizes(hexVal), kIdTotalStock, kIdAccordion(hexVal)]);
+      } else {
+        // select করলে API call করো, তারপর add করো
+        s.add(size);
+        update([kIdSizes(hexVal), kIdTotalStock, kIdAccordion(hexVal)]);
 
-      if (!sizeIdMap.containsKey(size)) {
-        sizesCreate(sizeName: size);
+        if (!sizeIdMap.containsKey(size)) {
+          sizesCreate(sizeName: size);
+        }
       }
+    } catch (e) {
+      debugPrint('❌ Error in toggleSize: $e');
+      showToast('Error toggling size');
     }
   }
 
   void clearSizes(String hexVal) {
-    for (final s in (colorSizes[hexVal]?.toList() ?? [])) {
-      final k = '${hexVal}_$s';
-      stock[k]?.dispose();
-      stock.remove(k);
+    try {
+      for (final s in (colorSizes[hexVal]?.toList() ?? [])) {
+        final k = '${hexVal}_$s';
+        stock[k]?.dispose();
+        stock.remove(k);
+      }
+      colorSizes[hexVal]?.clear();
+      update([kIdSizes(hexVal), kIdTotalStock, kIdAccordion(hexVal)]);
+    } catch (e) {
+      debugPrint('❌ Error in clearSizes: $e');
     }
-    colorSizes[hexVal]?.clear();
-    update([kIdSizes(hexVal), kIdTotalStock, kIdAccordion(hexVal)]);
   }
 
   // ── Stock ──────────────────────────────────────────────────────────────────
 
   void incrementStock(String hexVal, String size) {
-    final c = ctrl(hexVal, size);
-    c.text = ((int.tryParse(c.text) ?? 0) + 1).toString();
-    update([kIdStock(hexVal, size), kIdTotalStock, kIdSizes(hexVal)]);
+    try {
+      final c = ctrl(hexVal, size);
+      c.text = ((int.tryParse(c.text) ?? 0) + 1).toString();
+      update([kIdStock(hexVal, size), kIdTotalStock, kIdSizes(hexVal)]);
+    } catch (e) {
+      debugPrint('❌ Error in incrementStock: $e');
+    }
   }
 
   void decrementStock(String hexVal, String size) {
-    final c = ctrl(hexVal, size);
-    final val = int.tryParse(c.text) ?? 0;
-    if (val > 0) {
-      c.text = (val - 1).toString();
-      update([kIdStock(hexVal, size), kIdTotalStock, kIdSizes(hexVal)]);
+    try {
+      final c = ctrl(hexVal, size);
+      final val = int.tryParse(c.text) ?? 0;
+      if (val > 0) {
+        c.text = (val - 1).toString();
+        update([kIdStock(hexVal, size), kIdTotalStock, kIdSizes(hexVal)]);
+      }
+    } catch (e) {
+      debugPrint('❌ Error in decrementStock: $e');
     }
   }
 
   void onStockChanged(String hexVal, String size) {
-    update([kIdStock(hexVal, size), kIdTotalStock, kIdSizes(hexVal)]);
+    try {
+      update([kIdStock(hexVal, size), kIdTotalStock, kIdSizes(hexVal)]);
+    } catch (e) {
+      debugPrint('❌ Error in onStockChanged: $e');
+    }
   }
 
   /// ======================== Products Add ===========================>
@@ -199,71 +243,84 @@ class AddProductController extends GetxController {
   int? categoryId;
 
   Future<void> productsAdd() async {
-    isLoadingAdd = true;
-    update();
+    try {
+      isLoadingAdd = true;
+      update();
 
-    // ── Variants build ───────────────────────────────────────────
-    final List<Map<String, dynamic>> variants = [];
-    for (final entry in colorEntries) {
-      final sizes = colorSizes[entry.hex] ?? {};
-      for (final size in sizes) {
-        final stockVal = int.tryParse(ctrl(entry.hex, size).text) ?? 0;
-        variants.add({
-          "colorId": colorIdMap[entry.hex], // ✅ color API থেকে পাওয়া id
-          "sizeId": sizeIdMap[size], // ✅ size API থেকে পাওয়া id
-          "unit": stockVal,
-        });
+      // ── Variants build ───────────────────────────────────────────
+      final List<Map<String, dynamic>> variants = [];
+      for (final entry in colorEntries) {
+        final sizes = colorSizes[entry.hex] ?? {};
+        for (final size in sizes) {
+          final stockVal = int.tryParse(ctrl(entry.hex, size).text) ?? 0;
+          variants.add({
+            "colorId": colorIdMap[entry.hex], // ✅ color API থেকে পাওয়া id
+            "sizeId": sizeIdMap[size], // ✅ size API থেকে পাওয়া id
+            "unit": stockVal,
+          });
+        }
       }
+
+      // ── Image URLs ───────────────────────────────────────────────
+      final requestBody = {
+        "product_name": productNameController.text.trim(),
+        "description": descriptionController.text.trim(),
+        "condition": conditionController.text.trim(),
+        "brand": brandController.text.trim(),
+        "price": priceController.text.trim(),
+        "subCategoryId": categoryId.toString(),
+        "is_negotiable": false,
+        "variants": variants,
+        "images": imageUrls,
+      };
+
+      final response = await ApiClient.postData(ApiUrls.productsAdd, requestBody);
+      final responseBody = response.body;
+
+      if (response.statusCode == 201) {
+        reset();
+        Get.back();
+        Get.back();
+        showToast('Product added successfully');
+      } else {
+        showToast(responseBody['message'] ?? 'Something went wrong');
+      }
+    } on SocketException catch (e) {
+      debugPrint('❌ Network error: $e');
+      showToast('Network error. Please check your connection.');
+    } catch (e) {
+      debugPrint('❌ Error in productsAdd: $e');
+      showToast('An error occurred while adding product');
+    } finally {
+      isLoadingAdd = false;
+      update();
     }
-
-    // ── Image URLs ───────────────────────────────────────────────
-    final requestBody = {
-      "product_name": productNameController.text.trim(),
-      "description": descriptionController.text.trim(),
-      "condition": conditionController.text.trim(),
-      "brand": brandController.text.trim(),
-      "price": priceController.text.trim(),
-      "subCategoryId": categoryId.toString(),
-      "is_negotiable": false,
-      "variants": variants,
-      "images": imageUrls,
-    };
-
-    final response = await ApiClient.postData(ApiUrls.productsAdd, requestBody);
-    final responseBody = response.body;
-
-    if (response.statusCode == 201) {
-      reset();
-      Get.back();
-      Get.back();
-    } else {
-      showToast(responseBody['message'] ?? 'Something went wrong');
-    }
-
-    isLoadingAdd = false;
-    update();
   }
 
   void reset() {
-    productNameController.clear();
-    categoryController.clear();
-    descriptionController.clear();
-    priceController.clear();
-    conditionController.clear();
-    brandController.clear();
-    images.clear();
-    pickedColors.clear();
-    colorSizes.clear();
-    colorIdMap.clear();
-    sizeIdMap.clear();
-    for (final c in stock.values) {
-      c.dispose();
+    try {
+      productNameController.clear();
+      categoryController.clear();
+      descriptionController.clear();
+      priceController.clear();
+      conditionController.clear();
+      brandController.clear();
+      images.clear();
+      pickedColors.clear();
+      colorSizes.clear();
+      colorIdMap.clear();
+      sizeIdMap.clear();
+      for (final c in stock.values) {
+        c.dispose();
+      }
+      stock.clear();
+      pickerIndex = null;
+      expandedHex = null;
+      categoryId = null;
+      update([kIdImageList, kIdColorList, kIdTotalStock]);
+    } catch (e) {
+      debugPrint('❌ Error in reset: $e');
     }
-    stock.clear();
-    pickerIndex = null;
-    expandedHex = null;
-    categoryId = null;
-    update([kIdImageList, kIdColorList, kIdTotalStock]);
   }
 
   /// <======================= Category ===========================>
@@ -276,42 +333,55 @@ class AddProductController extends GetxController {
   List<CategoryModelData> categoryData = [];
 
   Future<void> categoryGet({bool isInitialLoad = true}) async {
-    if (isInitialLoad) {
-      categoryData.clear();
-      categoryPage = 1;
-      categoryTotalPage = -1;
-      isLoadingCategory = true;
+    try {
+      if (isInitialLoad) {
+        categoryData.clear();
+        categoryPage = 1;
+        categoryTotalPage = -1;
+        isLoadingCategory = true;
+        isLoadingCategoryMore = false;
+        update();
+      }
+
+      final response = await ApiClient.getData(
+        ApiUrls.categories(page: categoryPage, limit: categoryLimit),
+      );
+      final responseBody = response.body;
+
+      if (response.statusCode == 200) {
+        final List data = responseBody['data'] ?? [];
+        categoryData.addAll(
+          data.map((json) => CategoryModelData.fromJson(json)).toList(),
+        );
+        categoryTotalPage =
+            responseBody['pagination']?['totalPages'] ?? categoryTotalPage;
+      } else {
+        showToast(responseBody['message'] ?? 'Failed to fetch categories');
+      }
+    } on SocketException catch (e) {
+      debugPrint('❌ Network error in categoryGet: $e');
+      showToast('Network error. Please check your connection.');
+    } catch (e) {
+      debugPrint('❌ Error in categoryGet: $e');
+      showToast('Error fetching categories');
+    } finally {
+      isLoadingCategory = false;
       isLoadingCategoryMore = false;
       update();
     }
-
-    final response = await ApiClient.getData(
-      ApiUrls.categories(page: categoryPage, limit: categoryLimit),
-    );
-    final responseBody = response.body;
-
-    if (response.statusCode == 200) {
-      final List data = responseBody['data'] ?? [];
-      categoryData.addAll(
-        data.map((json) => CategoryModelData.fromJson(json)).toList(),
-      );
-      categoryTotalPage =
-          responseBody['pagination']?['totalPages'] ?? categoryTotalPage;
-    } else {
-      showToast(responseBody['message']);
-    }
-
-    isLoadingCategory = false;
-    isLoadingCategoryMore = false;
-    update();
   }
 
   void productsMore(String type) async {
-    if (categoryPage < categoryTotalPage && !isLoadingCategoryMore) {
-      categoryPage += 1;
-      isLoadingCategoryMore = true;
-      update();
-      await categoryGet(isInitialLoad: false);
+    try {
+      if (categoryPage < categoryTotalPage && !isLoadingCategoryMore) {
+        categoryPage += 1;
+        isLoadingCategoryMore = true;
+        update();
+        await categoryGet(isInitialLoad: false);
+      }
+    } catch (e) {
+      debugPrint('❌ Error in productsMore: $e');
+      showToast('Error loading more categories');
     }
   }
 
@@ -320,26 +390,34 @@ class AddProductController extends GetxController {
   bool isColorsLoading = false;
 
   Future<void> colorsCreate({required String hexVal}) async {
-    isColorsLoading = true;
-    update();
+    try {
+      isColorsLoading = true;
+      update();
 
-    final requestBody = {"name": hexVal, "image": "#$hexVal"};
+      final requestBody = {"name": hexVal, "image": "#$hexVal"};
 
-    final response = await ApiClient.postData(ApiUrls.colors, requestBody);
-    final responseBody = response.body;
+      final response = await ApiClient.postData(ApiUrls.colors, requestBody);
+      final responseBody = response.body;
 
-    if (response.statusCode == 201) {
-      final id = responseBody['id'] ?? responseBody['id'];
-      if (id != null) {
-        colorIdMap[hexVal] = id;
-        debugPrint('✅ Color saved → hex: $hexVal | id: $id');
+      if (response.statusCode == 201) {
+        final id = responseBody['id'] ?? responseBody['id'];
+        if (id != null) {
+          colorIdMap[hexVal] = id;
+          debugPrint('✅ Color saved → hex: $hexVal | id: $id');
+        }
+      } else {
+        showToast(responseBody['message'] ?? 'Color creation failed');
       }
-    } else {
-      showToast(responseBody['message'] ?? 'Color creation failed');
+    } on SocketException catch (e) {
+      debugPrint('❌ Network error in colorsCreate: $e');
+      showToast('Network error. Please check your connection.');
+    } catch (e) {
+      debugPrint('❌ Error in colorsCreate: $e');
+      showToast('Error creating color');
+    } finally {
+      isColorsLoading = false;
+      update();
     }
-
-    isColorsLoading = false;
-    update();
   }
 
   /// <======================= Sizes Create ===========================>
@@ -347,105 +425,133 @@ class AddProductController extends GetxController {
   bool isSizeLoading = false;
 
   Future<void> sizesCreate({required String sizeName}) async {
-    isSizeLoading = true;
-    update();
+    try {
+      isSizeLoading = true;
+      update();
 
-    // size name থেকে type বের করো
-    final sizeType = _getSizeType(sizeName);
+      // size name থেকে type বের করো
+      final sizeType = _getSizeType(sizeName);
 
-    final requestBody = {"name": sizeName, "type": sizeType};
+      final requestBody = {"name": sizeName, "type": sizeType};
 
-    final response = await ApiClient.postData(ApiUrls.sizes, requestBody);
-    final responseBody = response.body;
+      final response = await ApiClient.postData(ApiUrls.sizes, requestBody);
+      final responseBody = response.body;
 
-    if (response.statusCode == 201) {
-      final id = responseBody['id'] ?? responseBody['id'];
-      if (id != null) {
-        sizeIdMap[sizeName] = id;
-        debugPrint('✅ Size saved → name: $sizeName | id: $id');
+      if (response.statusCode == 201) {
+        final id = responseBody['id'] ?? responseBody['id'];
+        if (id != null) {
+          sizeIdMap[sizeName] = id;
+          debugPrint('✅ Size saved → name: $sizeName | id: $id');
+        }
+      } else {
+        showToast(responseBody['message'] ?? 'Size creation failed');
       }
-    } else {
-      showToast(responseBody['message'] ?? 'Size creation failed');
+    } on SocketException catch (e) {
+      debugPrint('❌ Network error in sizesCreate: $e');
+      showToast('Network error. Please check your connection.');
+    } catch (e) {
+      debugPrint('❌ Error in sizesCreate: $e');
+      showToast('Error creating size');
+    } finally {
+      isSizeLoading = false;
+      update();
     }
-
-    isSizeLoading = false;
-    update();
   }
 
+  Future<void> getImageURL(File imageFile) async {
+    try {
+      final response = await ApiClient.getDataRaw(
+        ApiUrls.imageURL,
+        headers: {'Content-Type': 'application/json'},
+      );
+      final responseBody = response.body;
 
-
-  Future<void> getImageURL( File imageFile) async {
-
-
-    final response = await ApiClient.getDataRaw(ApiUrls.imageURL,headers: {'Content-Type': 'application/json'});
-    final responseBody = response.body;
-
-    if (response.statusCode == 200) {
-      final url = responseBody['data']?['url'] ?? responseBody['data']?['url'];
-      final imageUrl = responseBody['data']?['key'] ?? responseBody['data']?['key'];
-      if (url != null) {
-        uploadImage(url: url, imageFile: imageFile);
-        debugPrint('✅ image url : $url');
+      if (response.statusCode == 200) {
+        final url = responseBody['data']?['url'] ?? responseBody['data']?['url'];
+        final imageUrl = responseBody['data']?['key'] ?? responseBody['data']?['key'];
+        if (url != null) {
+          await uploadImage(url: url, imageFile: imageFile);
+          debugPrint('✅ image url : $url');
+        }
+        if (imageUrl != null) {
+          imageUrls.add(imageUrl);
+          debugPrint('✅ image url : $imageUrls');
+        }
+      } else {
+        showToast('Image upload failed. Please try again');
       }
-      if (imageUrl != null) {
-        imageUrls.add(imageUrl);
-        debugPrint('✅ image url : $imageUrls');
-      }
-
-    } else {
-      //showToast(responseBody['message'] ?? 'Size creation failed');
-      showToast('Image upload field please try again');
-
+    } on SocketException catch (e) {
+      debugPrint('❌ Network error in getImageURL: $e');
+      showToast('Network error. Please check your connection.');
+    } catch (e) {
+      debugPrint('❌ Error in getImageURL: $e');
+      showToast('Error getting image URL');
     }
-
   }
 
   bool isUploadImage = false;
 
   Future<void> uploadImage({required String url, required File imageFile}) async {
+    try {
+      isUploadImage = true;
+      update();
 
-    isUploadImage = true;
-    update();
+      final response = await ApiClient.putBinaryToUrl(url, imageFile);
 
-    final response = await ApiClient.putBinaryToUrl(url, imageFile);
-
-    if (response.statusCode == 200) {
-      images.add(imageFile);
-      pickedColors.add(null);
-      update([kIdImageList, kIdColorList]);
-      log.i('✅ Image uploaded successfully to: $url');
-    } else {
-      showToast('Image upload field please try again');
+      if (response.statusCode == 200) {
+        images.add(imageFile);
+        pickedColors.add(null);
+        update([kIdImageList, kIdColorList]);
+        debugPrint('✅ Image uploaded successfully to: $url');
+      } else {
+        showToast('Image upload failed. Please try again');
+      }
+    } on SocketException catch (e) {
+      debugPrint('❌ Network error in uploadImage: $e');
+      showToast('Network error. Please check your connection.');
+    } catch (e) {
+      debugPrint('❌ Error in uploadImage: $e');
+      showToast('Error uploading image');
+    } finally {
+      isUploadImage = false;
+      update();
     }
-    isUploadImage = false;
-    update();
   }
 
   // size name থেকে type map করো
   String _getSizeType(String size) {
-    const typeMap = {
-      'XS': 'extra_small',
-      'S': 'small',
-      'M': 'medium',
-      'L': 'large',
-      'XL': 'extra_large',
-      'XXL': 'double_extra_large',
-      '3XL': 'triple_extra_large',
-    };
-    return typeMap[size] ?? size.toLowerCase();
+    try {
+      const typeMap = {
+        'XS': 'extra_small',
+        'S': 'small',
+        'M': 'medium',
+        'L': 'large',
+        'XL': 'extra_large',
+        'XXL': 'double_extra_large',
+        '3XL': 'triple_extra_large',
+      };
+      return typeMap[size] ?? size.toLowerCase();
+    } catch (e) {
+      debugPrint('❌ Error in _getSizeType: $e');
+      return size.toLowerCase();
+    }
   }
 
   @override
   void onClose() {
-    for (final c in stock.values) {
-      c.dispose();
+    try {
+      for (final c in stock.values) {
+        c.dispose();
+      }
+      productNameController.dispose();
+      descriptionController.dispose();
+      priceController.dispose();
+      conditionController.dispose();
+      categoryController.dispose();
+      brandController.dispose();
+      super.onClose();
+    } catch (e) {
+      debugPrint('❌ Error in onClose: $e');
     }
-    productNameController.dispose();
-    descriptionController.dispose();
-    priceController.dispose();
-    conditionController.dispose();
-    categoryController.dispose();
-    brandController.dispose();
-    super.onClose();
   }
 }

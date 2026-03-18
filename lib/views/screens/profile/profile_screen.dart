@@ -243,6 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: "Logout",
                       onpress: () {
                         PrefsHelper.remove(AppConstants.bearerToken);
+                        Get.find<UserController>().userData = null;
                         Get.offAllNamed(AppRoutes.logInScreen);
                       },
                       color: Colors.red,

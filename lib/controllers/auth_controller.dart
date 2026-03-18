@@ -220,12 +220,9 @@ class AuthController extends GetxController {
 
 
   /// <======================= Log out related work are here ===========================>
-  // void logOut() async {
-  //   await PrefsHelper.remove(AppConstants.bearerToken);
-  //   await PrefsHelper.remove(AppConstants.role);
-  //   Get.find<UserController>().useModelData = null;
-  //   Get.offAllNamed(AppRoutes.roleScreen);
-  //   Get.find<CustomBottomNavBarController>().onChange(0);
-  // }
+  void logOut() async {
+    await PrefsHelper.remove(AppConstants.bearerToken);
+    Get.find<UserController>().userData = null;
+  }
 
 }

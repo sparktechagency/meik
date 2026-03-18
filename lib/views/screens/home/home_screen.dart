@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: 10.h),
 
               GestureDetector(
-                onTap: () => Get.toNamed(AppRoutes.boostScreen),
+                //onTap: () => Get.find<BottomNavController>(),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
                   child: Assets.images.boostBanner.image(
@@ -230,25 +230,25 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       actions: [
-        GestureDetector(
-          onTap: () => Get.toNamed(AppRoutes.progressScreen),
-          child: badges.Badge(
-            badgeStyle: badges.BadgeStyle(
-              padding: EdgeInsets.all(3.r),
-              elevation: 0,
-            ),
-            position: badges.BadgePosition.topEnd(top: -4, end: -4),
-            showBadge: true,
-            ignorePointer: false,
-            badgeContent: CustomText(
-              text: '0',
-              color: Colors.white,
-              fontSize: 8.sp,
-              fontWeight: FontWeight.w300,
-            ),
-            child: Assets.icons.card.svg(),
-          ),
-        ),
+        // GestureDetector(
+        //   onTap: () => Get.toNamed(AppRoutes.progressScreen),
+        //   child: badges.Badge(
+        //     badgeStyle: badges.BadgeStyle(
+        //       padding: EdgeInsets.all(3.r),
+        //       elevation: 0,
+        //     ),
+        //     position: badges.BadgePosition.topEnd(top: -4, end: -4),
+        //     showBadge: true,
+        //     ignorePointer: false,
+        //     badgeContent: CustomText(
+        //       text: '0',
+        //       color: Colors.white,
+        //       fontSize: 8.sp,
+        //       fontWeight: FontWeight.w300,
+        //     ),
+        //     child: Assets.icons.card.svg(),
+        //   ),
+        // ),
         IconButton(
           onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
           icon: badges.Badge(

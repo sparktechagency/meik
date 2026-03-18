@@ -110,9 +110,5 @@ class _OptScreenState extends State<OptScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    _controller.otpController.dispose();
-    super.dispose();
-  }
+
 }

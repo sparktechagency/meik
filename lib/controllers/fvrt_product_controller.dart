@@ -58,7 +58,7 @@ class FvrtProductController extends GetxController {
   bool isPurchasesLoadingMore = false;
   int purchasesPage = 1;
   int purchasesTotalPage = -1;
-  List<FavouriteModelData> purchasesData = [];
+  List<SalesModelData> purchasesData = [];
 
   Future<void> phurcasesGet({bool isInitialLoad = true}) async {
     if (isInitialLoad) {
@@ -78,7 +78,7 @@ class FvrtProductController extends GetxController {
 
     if (response.statusCode == 200) {
       final List data = responseBody['data'] ?? [];
-      purchasesData.addAll(data.map((json) => FavouriteModelData.fromJson(json)).toList());
+      purchasesData.addAll(data.map((json) => SalesModelData.fromJson(json)).toList());
       purchasesTotalPage = responseBody['pagination']?['totalPages'] ?? purchasesTotalPage;
     } else {
       showToast(responseBody['message']);
@@ -104,7 +104,7 @@ class FvrtProductController extends GetxController {
   bool isSalesLoadingMore = false;
   int salesPage = 1;
   int salesTotalPage = -1;
-  List<FavouriteModelData> salesData = [];
+  List<SalesModelData> salesData = [];
 
   Future<void> salesGet({bool isInitialLoad = true}) async {
     if (isInitialLoad) {
@@ -124,7 +124,7 @@ class FvrtProductController extends GetxController {
 
     if (response.statusCode == 200) {
       final List data = responseBody['data'] ?? [];
-      salesData.addAll(data.map((json) => FavouriteModelData.fromJson(json)).toList());
+      salesData.addAll(data.map((json) => SalesModelData.fromJson(json)).toList());
       salesTotalPage = responseBody['pagination']?['totalPages'] ?? salesTotalPage;
     } else {
       showToast(responseBody['message']);
