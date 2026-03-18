@@ -1,4 +1,3 @@
-import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/app_constants/app_colors.dart';
