@@ -1,7 +1,14 @@
 import 'package:danceattix/controllers/checkout_controller.dart';
+import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/global/custom_assets/assets.gen.dart';
+import 'package:danceattix/views/widgets/cachanetwork_image.dart';
 import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_button.dart';
+import 'package:danceattix/views/widgets/custom_text.dart';
+import 'package:danceattix/views/widgets/custom_tost_message.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -25,13 +32,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: "Checkout"),
-      body: GetBuilder<CheckoutController>(
-        builder: (c) => _buildBody(context, c),
-      ),
-      bottomNavigationBar: GetBuilder<CheckoutController>(
-        builder: (c) => _buildBottomBar(context, c),
+    return WillPopScope(
+      onWillPop: () async {
+        controller.cleanupCheckout();
+        Get.back();
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomAppBar(title: "Checkout",backAction: (){
+          controller.cleanupCheckout();
+          Get.back();
+        },),
+        body: GetBuilder<CheckoutController>(
+          builder: (c) => _buildBody(context, c),
+        ),
+        bottomNavigationBar: GetBuilder<CheckoutController>(
+          builder: (c) => _buildBottomBar(context, c),
+        ),
       ),
     );
   }
@@ -40,14 +57,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget _buildBody(BuildContext context, CheckoutController c) {
     // Loading state
     if (c.isLoadingCheckout) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     // Error state
     if (c.checkoutError != null || c.checkoutData?.product == null) {
-      return _buildErrorState(context, c);
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Assets.lottie.emptyData.lottie(),
+            CustomText(
+              text: 'No Data Found',
+              color: AppColors.hitTextColorA5A5A5,
+              fontSize: 16.sp,
+            ),
+            SizedBox(height: 16.h),
+
+            /// 🔄 Refresh Button
+            CustomButton(
+              fontSize: 14.sp,
+              height: 34.h,
+              width: 100.w,
+              title: 'Refresh',
+              onpress: () async {
+                await controller.checkout(productId);
+              },
+            ),
+          ],
+        ),
+      );
     }
 
     // Success state
@@ -83,18 +122,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   // ==================== Product Card ====================
   Widget _buildProductCard(dynamic product) {
+    final imageUrl = product.images?.isNotEmpty == true
+        ? product.images!.first.image
+        : null;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,10 +137,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           // Product Info Row
           Row(
             children: [
-              // Product Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: _buildProductImage(product),
+              CustomNetworkImage(
+                borderRadius: BorderRadius.circular(12.r),
+                width: 80.w,
+                height: 80.h,
+                imageUrl: imageUrl,
               ),
               const SizedBox(width: 16),
               // Product Details
@@ -148,18 +184,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
           // Seller Info (if available)
           if (product.user != null) ...[
-            Divider(color: Colors.grey.shade300),
-            const SizedBox(height: 12),
+            Divider(color: Colors.grey.shade100),
+            SizedBox(height: 4.h),
             Row(
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: product.user?.image != null
-                      ? NetworkImage(product.user!.image!)
-                      : null,
-                  child: product.user?.image == null
-                      ? const Icon(Icons.person)
-                      : null,
+                //  if(product.user?.image != null)
+                CustomNetworkImage(
+                  boxShape: BoxShape.circle,
+                  width: 44.w,
+                  height: 44.h,
+                  imageUrl: product.user?.image ?? 'N/A',
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -190,74 +224,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  /// Product Image with error handling
-  Widget _buildProductImage(dynamic product) {
-    final imageUrl = product.images?.isNotEmpty == true
-        ? product.images!.first.image
-        : null;
-
-    if (imageUrl == null || imageUrl.isEmpty) {
-      return Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(
-          Icons.image_not_supported_outlined,
-          color: Colors.grey.shade400,
-        ),
-      );
-    }
-
-    return Image.network(
-      imageUrl,
-      width: 80,
-      height: 80,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(
-            Icons.broken_image_outlined,
-            color: Colors.grey.shade400,
-          ),
-        );
-      },
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   // ==================== Color & Size Section (Combined) ====================
   Widget _buildColorAndSizeSection(CheckoutController c) {
+    final isColorAutoSelected = c.colors.length == 1;
+    final isSizeAutoSelected = c.sizes.length == 1;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
@@ -267,21 +243,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Color',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  letterSpacing: 0.3,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Color',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  if (isColorAutoSelected)
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.w),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(4.r),
+                          border: Border.all(color: Colors.blue.shade200),
+                        ),
+                        child: Text(
+                          'Auto',
+                          style: TextStyle(
+                            color: Colors.blue.shade700,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               if (c.selectedColorId != null)
                 Text(
                   _getColorName(c),
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                 ),
             ],
           ),
@@ -290,10 +283,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Center(
               child: Text(
                 'No colors available',
-                style: TextStyle(
-                  color: Colors.grey.shade500,
-                  fontSize: 13,
-                ),
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
               ),
             )
           else
@@ -308,14 +298,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 return GestureDetector(
                   onTap: isAvailable
                       ? () => c.selectColor(colorId!)
-                      : () => _showUnavailableMessage('This color is not available'),
+                      : () => showToast('This color is not available'),
                   child: Tooltip(
                     message: color?.name ?? 'Unknown color',
                     child: Opacity(
                       opacity: isAvailable ? 1.0 : 0.35,
                       child: Container(
-                        width: 42,
-                        height: 42,
+                        width: 32.w,
+                        height: 32.h,
                         decoration: BoxDecoration(
                           color: Color(c.parseColorHex(color?.image)),
                           shape: BoxShape.circle,
@@ -354,28 +344,44 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
 
           const SizedBox(height: 14),
-          Divider(color: Colors.grey.shade200, height: 1),
+          Divider(color: Colors.grey.shade100, height: 1),
           const SizedBox(height: 14),
 
-          // Size Section (M, L, XL only)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Size',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  letterSpacing: 0.3,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Size',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  if (isSizeAutoSelected)
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.w),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(4.r),
+                          border: Border.all(color: Colors.blue.shade200),
+                        ),
+                        child: Text(
+                          'Auto',
+                          style: TextStyle(
+                            color: Colors.blue.shade700,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               if (c.selectedSizeId != null)
                 Text(
                   _getSizeName(c),
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                 ),
             ],
           ),
@@ -384,10 +390,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Center(
               child: Text(
                 'No sizes available',
-                style: TextStyle(
-                  color: Colors.grey.shade500,
-                  fontSize: 13,
-                ),
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
               ),
             )
           else
@@ -402,21 +405,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 return GestureDetector(
                   onTap: isAvailable
                       ? () => c.selectSize(sizeId!)
-                      : () => _showUnavailableMessage('This size is not available'),
+                      : () => showToast('This size is not available'),
                   child: Tooltip(
                     message: 'Size: ${size?.name}',
                     child: Opacity(
                       opacity: isAvailable ? 1.0 : 0.35,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
+                        padding: EdgeInsets.all(8.r),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? Colors.black87
                               : Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: isSelected
                                 ? Colors.black87
@@ -435,9 +435,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         child: Text(
                           size?.name ?? 'Unknown',
                           style: TextStyle(
-                            color: isSelected
-                                ? Colors.white
-                                : Colors.black,
+                            color: isSelected ? Colors.white : Colors.black,
                             fontWeight: isSelected
                                 ? FontWeight.w600
                                 : FontWeight.w500,
@@ -458,7 +456,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   /// Filter sizes to show only M, L, XL
   List<dynamic> _filterSizes(List<dynamic> sizes) {
-    final validSizes = ['M', 'L', 'XL'];
+    final validSizes = ['M', 'L', 'XL', 'XXL'];
     return sizes.where((size) {
       final sizeName = size?.name?.toUpperCase() ?? '';
       return validSizes.contains(sizeName);
@@ -468,7 +466,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   /// Get selected color name
   String _getColorName(CheckoutController c) {
     try {
-      return c.colors.firstWhere((e) => e?.id == c.selectedColorId, orElse: () => null)?.name ?? '';
+      return c.colors
+          .firstWhere((e) => e?.id == c.selectedColorId, orElse: () => null)
+          ?.name ??
+          '';
     } catch (e) {
       return '';
     }
@@ -477,7 +478,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   /// Get selected size name
   String _getSizeName(CheckoutController c) {
     try {
-      return c.sizes.firstWhere((e) => e?.id == c.selectedSizeId, orElse: () => null)?.name ?? '';
+      return c.sizes
+          .firstWhere((e) => e?.id == c.selectedSizeId, orElse: () => null)
+          ?.name ??
+          '';
     } catch (e) {
       return '';
     }
@@ -500,18 +504,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             children: [
               const Text(
                 'Quantity',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
               ),
               const SizedBox(height: 4),
               Text(
                 'Max: ${c.maxQuantity}',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
               ),
             ],
           ),
@@ -539,8 +537,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
                 IconButton(
-                  onPressed:
-                  c.quantity < c.maxQuantity ? c.incrementQty : null,
+                  onPressed: c.quantity < c.maxQuantity ? c.incrementQty : null,
                   icon: const Icon(Icons.add),
                   iconSize: 18,
                   splashRadius: 20,
@@ -569,10 +566,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Column(
         children: [
           if (isLoading)
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.all(16),
-                child: CircularProgressIndicator(strokeWidth: 2),
+                padding: EdgeInsets.all(16.r),
+                child: CupertinoActivityIndicator(),
               ),
             )
           else if (c.previewError != null)
@@ -589,19 +586,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   Text(
                     c.previewError!,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.red.shade600,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.red.shade600, fontSize: 14),
                   ),
                 ],
               ),
             )
           else ...[
-              _priceRow(
-                'Base Price',
-                preview?.basePrice ?? fallback?.price,
-              ),
+              _priceRow('Base Price', preview?.basePrice ?? fallback?.price),
               const SizedBox(height: 10),
               _priceRow(
                 'Protection Fee',
@@ -704,76 +695,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 16),
               child: CustomButton(
-                onpress: () {},
+                onpress: () => c.proceedToPayment(),
                 title: "Continue",
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // ==================== Error State ====================
-  Widget _buildErrorState(BuildContext context, CheckoutController c) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red.shade300,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Failed to Load Checkout',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              c.checkoutError ?? 'Unable to load product information',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton.icon(
-              onPressed: () => c.retryCheckout(productId),
-              icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () => Get.back(),
-              child: const Text('Go Back'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ==================== Helpers ====================
-  void _showUnavailableMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.orange.shade600,
-        duration: const Duration(seconds: 2),
       ),
     );
   }

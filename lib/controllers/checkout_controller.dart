@@ -129,6 +129,21 @@ class CheckoutController extends GetxController {
       if (res.statusCode == 200) {
         checkoutData = CheckoutModelData.fromJson(res.body['data']);
         checkoutError = null;
+
+        // Auto-select single color if only one exists
+        if (colors.length == 1 && selectedColorId == null) {
+          selectedColorId = colors.first?.id;
+        }
+
+        // Auto-select single size if only one exists
+        if (sizes.length == 1 && selectedSizeId == null) {
+          selectedSizeId = sizes.first?.id;
+        }
+
+        // If both color and size are auto-selected, fetch preview after a short delay
+        if (isVariantSelected) {
+          Future.delayed(const Duration(milliseconds: 500), () => preNext());
+        }
       } else {
         checkoutError = res.body['message'] ?? 'Failed to load checkout data';
         showToast(checkoutError!);
@@ -304,5 +319,27 @@ class CheckoutController extends GetxController {
     if (price is String) value = double.tryParse(price) ?? 0;
 
     return '\$${value.toStringAsFixed(2)}';
+  }
+
+  // ==================== Cleanup =================
+
+  /// Clean up state when leaving checkout screen
+  void cleanupCheckout() {
+    selectedColorId = null;
+    selectedSizeId = null;
+    quantity = 1;
+    checkoutData = null;
+    previewData = null;
+    checkoutError = null;
+    previewError = null;
+    isLoadingCheckout = false;
+    isLoadingPreNext = false;
+    update();
+  }
+
+  @override
+  void onClose() {
+    cleanupCheckout();
+    super.onClose();
   }
 }

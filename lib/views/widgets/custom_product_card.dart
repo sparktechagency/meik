@@ -26,16 +26,16 @@ class CustomProductCard extends StatelessWidget {
 
   const CustomProductCard(
       {super.key,
-      this.index,
-      this.title,
-      this.price,
-      this.image,
-      this.isFavorite,
-      this.onTap,
-      this.leftBtnName,
-      this.rightBtnName,
-      this.isBookMarkNeed,
-      this.progressStatus, this.isHistory = false});
+        this.index,
+        this.title,
+        this.price,
+        this.image,
+        this.isFavorite,
+        this.onTap,
+        this.leftBtnName,
+        this.rightBtnName,
+        this.isBookMarkNeed,
+        this.progressStatus, this.isHistory = false});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class CustomProductCard extends StatelessWidget {
 
                           borderRadius: BorderRadius.circular(8.r),
                           imageUrl: "$image",
-                          height: 142.h,
+                          height: 120.h,
                           width: 102.w),
 
                       SizedBox(width: 7.w),
@@ -89,8 +89,8 @@ class CustomProductCard extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: CustomText(
-                                    textAlign: TextAlign.start,
-                                    maxline: 1,
+                                      textAlign: TextAlign.start,
+                                      maxline: 1,
                                       text: "$title",
                                       fontWeight: FontWeight.w600,
                                       bottom: 4.h,
@@ -99,7 +99,7 @@ class CustomProductCard extends StatelessWidget {
                                 if (isBookMarkNeed ?? false)
                                   isFavorite ?? false
                                       ? Icon(Icons.favorite,
-                                          color: AppColors.primaryColor)
+                                      color: AppColors.primaryColor)
                                       : Icon(Icons.favorite_border, color: AppColors.primaryColor)
                               ],
                             ),
@@ -110,166 +110,139 @@ class CustomProductCard extends StatelessWidget {
                             CustomText(
                                 maxline: 3,
                                 text:
-                                    "Transform your look with expert cuts, styling, and personalized service at our premier salon, designed for your ultimate satisfaction.",
+                                "Transform your look with expert cuts, styling, and personalized service at our premier salon, designed for your ultimate satisfaction.",
                                 fontSize: 10.h,
                                 textAlign: TextAlign.start,
                                 bottom: 4.h,
                                 color: Colors.black),
                             SizedBox(height: 10.h),
-                               progressStatus?.isNotEmpty ?? false ?
+                            progressStatus?.isNotEmpty ?? false ?
 
-                                   progressStatus?.toLowerCase() == "received" ?
-                                       CustomButton(
-                                           width: 120.w,
-                                           height: 26.h,
-                                           loaderIgnore: true,
-                                           fontSize: 10.h,
-                                           title: "$progressStatus", onpress: () {
-
-
-
-                                         TextEditingController amonCtrl =
-                                         TextEditingController();
-                                         showDialog(
-                                           context: context,
-                                           builder: (context) {
-                                             return AlertDialog(
-                                               content: Column(
-                                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                                 mainAxisSize: MainAxisSize.min,
-                                                 children: [
-                                                   CustomText(
-                                                       text: "Give Feedback",
-                                                       fontSize: 22.h,
-                                                       fontWeight: FontWeight.w600,
-                                                       top: 29.h,
-                                                       bottom: 20.h),
-
-
-                                                   Align(
-                                                     alignment: Alignment.center,
-                                                     child: RatingBar.builder(
-                                                       initialRating: 3,
-                                                       minRating: 1,
-                                                       direction: Axis.horizontal,
-                                                       allowHalfRating: true,
-                                                       itemSize: 28,
-                                                       itemCount: 5,
-                                                       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                       itemBuilder: (context, _) => Icon(
-                                                         Icons.star,
-                                                         color: Colors.amber,
-                                                       ),
-                                                       onRatingUpdate: (rating) {
-                                                         print(rating);
-                                                       },
-                                                     ),
-                                                   ),
-
-                                                   SizedBox(height: 12.h),
-                                                   CustomTextField(
-                                                     minLines: 3,
-                                                     filColor: Colors.white,
-                                                     borderColor: AppColors.primaryColor,
-                                                     showShadow: false,
-                                                      labelText: "Add Comments",
-                                                       controller: amonCtrl,
-                                                       hintText: "Write here"),
-
-
-                                                   SizedBox(height: 20.h),
-
-
-                                                   Row(
-                                                     children: [
-                                                       Expanded(
-                                                         flex: 1,
-                                                         child: CustomButton(
-                                                             height: 50.h,
-                                                             title: "Submit",
-                                                             onpress: () {},
-                                                             color: Colors.transparent,
-                                                             fontSize: 11.h,
-                                                             loaderIgnore: true,
-                                                             boderColor: AppColors
-                                                                 .primaryColor,
-                                                             titlecolor: AppColors
-                                                                 .primaryColor),
-                                                       ),
-                                                       SizedBox(width: 8.w),
-                                                       Expanded(
-                                                         flex: 1,
-                                                         child: CustomButton(
-                                                             loading: false,
-                                                             loaderIgnore: true,
-                                                             height: 50.h,
-                                                             title: "Cancel",
-                                                             onpress: () {
-
-                                                             },
-                                                             fontSize: 11.h),
-                                                       ),
-                                                     ],
-                                                   )
-                                                 ],
-                                               ),
-                                             );
-                                           },
-                                         );
+                            progressStatus?.toLowerCase() == "received" ?
+                            CustomButton(
+                                width: 120.w,
+                                height: 26.h,
+                                loaderIgnore: true,
+                                fontSize: 10.h,
+                                title: "$progressStatus", onpress: () {
 
 
 
-
-                                       }) :
-
-                                 Row(
-                                   children: [
-
-                                     if(isHistory)
-                                   Container(
-                                       margin: EdgeInsets.only(right: 12.w),
-                                       height: 14.h,
-                                       width: 14.w,
-                                       decoration: BoxDecoration(
-                                         shape: BoxShape.circle,
-                                         color: progressStatus?.toLowerCase() == "cancel" ? Colors.red : AppColors.primaryColor
-                                       ),
-                                     ),
-
-                                     CustomText(
-                                        text: "$progressStatus",
-                                        color: progressStatus?.toLowerCase() == "cancel" ? Colors.red : AppColors.primaryColor),
-                                   ],
-                                 )
+                              TextEditingController amonCtrl =
+                              TextEditingController();
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CustomText(
+                                            text: "Give Feedback",
+                                            fontSize: 22.h,
+                                            fontWeight: FontWeight.w600,
+                                            top: 29.h,
+                                            bottom: 20.h),
 
 
-                                : Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: CustomButton(
-                                            height: 26.h,
-                                            title: "$leftBtnName",
-                                            onpress: () {},
-                                            fontSize: 10.h,
-                                            loaderIgnore: true),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Expanded(
-                                        flex: 1,
-                                        child: CustomButton(
-                                            loading: false,
-                                            loaderIgnore: true,
-                                            color: Colors.transparent,
-                                            titlecolor: Colors.black87,
-                                            boderColor: Colors.black87,
-                                            height: 26.h,
-                                            title: "$rightBtnName",
-                                            onpress: () {},
-                                            fontSize: 10.h),
-                                      ),
-                                    ],
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: RatingBar.builder(
+                                            initialRating: 3,
+                                            minRating: 1,
+                                            direction: Axis.horizontal,
+                                            allowHalfRating: true,
+                                            itemSize: 28,
+                                            itemCount: 5,
+                                            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                            itemBuilder: (context, _) => Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                            onRatingUpdate: (rating) {
+                                              print(rating);
+                                            },
+                                          ),
+                                        ),
+
+                                        SizedBox(height: 12.h),
+                                        CustomTextField(
+                                            minLines: 3,
+                                            filColor: Colors.white,
+                                            borderColor: AppColors.primaryColor,
+                                            showShadow: false,
+                                            labelText: "Add Comments",
+                                            controller: amonCtrl,
+                                            hintText: "Write here"),
+
+
+                                        SizedBox(height: 20.h),
+
+
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: CustomButton(
+                                                  height: 50.h,
+                                                  title: "Submit",
+                                                  onpress: () {},
+                                                  color: Colors.transparent,
+                                                  fontSize: 11.h,
+                                                  loaderIgnore: true,
+                                                  boderColor: AppColors
+                                                      .primaryColor,
+                                                  titlecolor: AppColors
+                                                      .primaryColor),
+                                            ),
+                                            SizedBox(width: 8.w),
+                                            Expanded(
+                                              flex: 1,
+                                              child: CustomButton(
+                                                  loading: false,
+                                                  loaderIgnore: true,
+                                                  height: 50.h,
+                                                  title: "Cancel",
+                                                  onpress: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  fontSize: 11.h),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+
+
+
+
+                            }) :
+
+                            Row(
+                              children: [
+
+                                if(isHistory)
+                                  Container(
+                                    margin: EdgeInsets.only(right: 12.w),
+                                    height: 14.h,
+                                    width: 14.w,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: progressStatus?.toLowerCase() == "cancel" ? Colors.red : AppColors.primaryColor
+                                    ),
                                   ),
+
+                                CustomText(
+                                    text: "$progressStatus",
+                                    color: progressStatus?.toLowerCase() == "cancel" ? Colors.red : AppColors.primaryColor),
+                              ],
+                            )
+
+                                : SizedBox.shrink(),
                           ],
                         ),
                       ),
