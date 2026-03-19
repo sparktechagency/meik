@@ -65,7 +65,7 @@ class TransactionModelData {
 class Wallet {
   int? id;
   String? userId;
-  double? balance;
+  dynamic? balance;
   String? currency;
   int? version;
   String? createdAt;

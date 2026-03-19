@@ -34,7 +34,7 @@ class WalletController extends GetxController {
       }
     } catch (e) {
       debugPrint(e.toString());
-      showToast('Something went wrong. Please try again.');
+      //showToast('Something went wrong. Please try again.');
     } finally {
       isLoading = false;
       update();
@@ -77,7 +77,8 @@ class WalletController extends GetxController {
         showToast(responseBody['message']);
       }
     } catch (e) {
-      showToast('Something went wrong. Please try again.');
+     debugPrint(e.toString());
+      // showToast('Something went wrong. Please try again.');
     } finally {
       isTransactionLoading = false;
       isTransactionLoadingMore = false;
