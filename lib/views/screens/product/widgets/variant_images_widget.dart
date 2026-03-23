@@ -61,6 +61,7 @@ class VariantImagesWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 CustomText(
+                  maxline: 1,
                   text: 'Add Photo',
                   color: Colors.grey,
                   fontSize: 12.sp,
@@ -116,16 +117,19 @@ class VariantImagesWidget extends StatelessWidget {
                         color: Colors.white,
                       ),
                       SizedBox(width: 3.w),
-                      CustomText(
-                        text: isPickMode
-                            ? 'Tap image...'
-                            : pickedColor != null
-                            ? '#${controller.hex(pickedColor)}'
-                            : 'Pick Color',
-                        fontSize: 9.sp,
-                        color: pickedColor != null || isPickMode
-                            ? Colors.white
-                            : Colors.grey
+                      Flexible(
+                        child: CustomText(
+                          maxline: 1,
+                          text: isPickMode
+                              ? 'Tap image...'
+                              : pickedColor != null
+                              ? '#${controller.hex(pickedColor)}'
+                              : 'Pick Color',
+                          fontSize: 9.sp,
+                          color: pickedColor != null || isPickMode
+                              ? Colors.white
+                              : Colors.grey
+                        ),
                       ),
                     ],
                   ),

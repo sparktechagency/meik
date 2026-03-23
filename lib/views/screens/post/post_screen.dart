@@ -6,6 +6,7 @@ import 'package:danceattix/views/widgets/fvrt_card.dart';
 import 'package:danceattix/views/widgets/purchase_card.dart';
 import 'package:danceattix/views/widgets/sales_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_translate/flutter_auto_translate.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -125,9 +126,11 @@ class _PostScreenState extends State<PostScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "Give Feedback",
-                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
+              AutoTranslate(
+                child: Text(
+                  "Give Feedback",
+                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
+                ),
               ),
               SizedBox(height: 20.h),
               // Rating bar
@@ -169,7 +172,7 @@ class _PostScreenState extends State<PostScreen> {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Feedback submitted successfully'),
+                            content: AutoTranslate(child: Text('Feedback submitted successfully')),
                           ),
                         );
                       },
@@ -180,7 +183,7 @@ class _PostScreenState extends State<PostScreen> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('Cancel'),
+                      child: AutoTranslate(child: Text('Cancel')),
                     ),
                   ),
                 ],
@@ -220,9 +223,9 @@ class _PostScreenState extends State<PostScreen> {
                     ),
                   ),
                   tabs: [
-                    Text('  Favorite  '),
-                    Text('  Purchased  '),
-                    Text('  History  '),
+                    AutoTranslate(child: Text('  Favorite  ')),
+                    AutoTranslate(child: Text('  Purchased  ')),
+                    AutoTranslate(child: Text('  History  ')),
                   ],
                   views: [
                     // ════════════════════════════════════════════════════════════════════════════════
@@ -232,7 +235,7 @@ class _PostScreenState extends State<PostScreen> {
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.fvrtData.isEmpty
                         ? const Center(
-                            child: Text('No favourite products found.'),
+                            child: AutoTranslate(child: Text('No favourite products found.')),
                           )
                         : AnimationLimiter(
                             child: RefreshIndicator(
@@ -292,8 +295,10 @@ class _PostScreenState extends State<PostScreen> {
                                             context,
                                           ).showSnackBar(
                                             SnackBar(
-                                              content: Text(
-                                                'Removed from favorites',
+                                              content: AutoTranslate(
+                                                child: Text(
+                                                  'Removed from favorites',
+                                                ),
                                               ),
                                             ),
                                           );
@@ -304,7 +309,7 @@ class _PostScreenState extends State<PostScreen> {
                                             context,
                                           ).showSnackBar(
                                             SnackBar(
-                                              content: Text('Added to cart'),
+                                              content: AutoTranslate(child: Text('Added to cart')),
                                             ),
                                           );
                                         },
@@ -323,7 +328,7 @@ class _PostScreenState extends State<PostScreen> {
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.purchasesData.isEmpty
                         ? const Center(
-                            child: Text('No purchased products found.'),
+                            child: AutoTranslate(child: Text('No purchased products found.')),
                           )
                         : AnimationLimiter(
                             child: RefreshIndicator(
@@ -422,7 +427,7 @@ class _PostScreenState extends State<PostScreen> {
                     controller.isSalesLoading
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.salesData.isEmpty
-                        ? const Center(child: Text('No sales history found.'))
+                        ? const Center(child: AutoTranslate(child: Text('No sales history found.')))
                         : AnimationLimiter(
                             child: RefreshIndicator(
                               onRefresh: () async {
@@ -499,7 +504,7 @@ class _PostScreenState extends State<PostScreen> {
                                             context,
                                           ).showSnackBar(
                                             SnackBar(
-                                              content: Text('Sale confirmed!'),
+                                              content: AutoTranslate(child: Text('Sale confirmed!')),
                                             ),
                                           );
                                         },

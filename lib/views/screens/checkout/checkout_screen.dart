@@ -39,10 +39,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         return false;
       },
       child: Scaffold(
-        appBar: CustomAppBar(title: "Checkout",backAction: (){
+        appBar: CustomAppBar(title: "Checkout", backAction: () {
           controller.cleanupCheckout();
           Get.back();
-        },),
+        }),
         body: GetBuilder<CheckoutController>(
           builder: (c) => _buildBody(context, c),
         ),
@@ -154,30 +154,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      product.productName ?? 'Unknown Product',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    CustomText(
+                      text: product.productName ?? 'Unknown Product',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                      maxline: 2,
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      product.brand ?? 'Unknown Brand',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 14,
-                      ),
+                    CustomText(
+                      text: product.brand ?? 'Unknown Brand',
+                      color: Colors.grey.shade600,
+                      fontSize: 14.sp,
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      'Condition: ${product.condition ?? 'Unknown'}',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                      ),
+                    CustomText(
+                      text: 'Condition: ${product.condition ?? 'Unknown'}',
+                      color: Colors.grey.shade600,
+                      fontSize: 12.sp,
                     ),
                   ],
                 ),
@@ -193,7 +186,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                //  if(product.user?.image != null)
                 CustomNetworkImage(
                   boxShape: BoxShape.circle,
                   width: 44.w,
@@ -205,18 +197,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      CustomText(
+                        text:
                         '${product.user?.firstName ?? ''} ${product.user?.lastName ?? ''}',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
                       ),
-                      Text(
-                        product.user?.address ?? 'Location not available',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      CustomText(
+                        text: product.user?.address ?? 'Location not available',
+                        color: Colors.grey.shade600,
+                        fontSize: 12.sp,
+                        maxline: 1,
                       ),
                     ],
                   ),
@@ -250,45 +241,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             children: [
               Row(
                 children: [
-                  const Text(
-                    'Color',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                  CustomText(
+                    text: 'Color',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.sp,
                   ),
                   if (isColorAutoSelected)
                     Padding(
                       padding: EdgeInsets.only(left: 8.w),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 6.w, vertical: 2.h),
                         decoration: BoxDecoration(
                           color: Colors.blue.shade50,
                           borderRadius: BorderRadius.circular(4.r),
                           border: Border.all(color: Colors.blue.shade200),
                         ),
-                        child: Text(
-                          'Auto',
-                          style: TextStyle(
-                            color: Colors.blue.shade700,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        child: CustomText(
+                          text: 'Auto',
+                          color: Colors.blue.shade700,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                 ],
               ),
               if (c.selectedColorId != null)
-                Text(
-                  _getColorName(c),
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                CustomText(
+                  text: _getColorName(c),
+                  color: Colors.grey.shade600,
+                  fontSize: 12.sp,
                 ),
             ],
           ),
           const SizedBox(height: 10),
           if (c.colors.isEmpty)
             Center(
-              child: Text(
-                'No colors available',
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+              child: CustomText(
+                text: 'No colors available',
+                color: Colors.grey.shade500,
+                fontSize: 13.sp,
               ),
             )
           else
@@ -352,57 +345,61 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Divider(color: Colors.grey.shade100, height: 1),
           const SizedBox(height: 14),
 
+          // Size Section
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  const Text(
-                    'Size',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                  CustomText(
+                    text: 'Size',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.sp,
                   ),
                   if (isSizeAutoSelected)
                     Padding(
                       padding: EdgeInsets.only(left: 8.w),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 6.w, vertical: 2.h),
                         decoration: BoxDecoration(
                           color: Colors.blue.shade50,
                           borderRadius: BorderRadius.circular(4.r),
                           border: Border.all(color: Colors.blue.shade200),
                         ),
-                        child: Text(
-                          'Auto',
-                          style: TextStyle(
-                            color: Colors.blue.shade700,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        child: CustomText(
+                          text: 'Auto',
+                          color: Colors.blue.shade700,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                 ],
               ),
               if (c.selectedSizeId != null)
-                Text(
-                  _getSizeName(c),
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                CustomText(
+                  text: _getSizeName(c),
+                  color: Colors.grey.shade600,
+                  fontSize: 12.sp,
                 ),
             ],
           ),
           const SizedBox(height: 10),
           if (c.sizes.isEmpty)
             Center(
-              child: Text(
-                'No sizes available',
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+              child: CustomText(
+                text: 'No sizes available',
+                color: Colors.grey.shade500,
+                fontSize: 13.sp,
               ),
             )
           else
+          // ✅ সব size দেখাবে, _filterSizes সরানো হয়েছে
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: _filterSizes(c.sizes).map((size) {
+              children: c.sizes.map((size) {
                 final sizeId = size?.id;
                 final isSelected = c.selectedSizeId == sizeId;
                 final isAvailable = c.isSizeAvailable(sizeId ?? -1);
@@ -437,16 +434,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                           ],
                         ),
-                        child: Text(
-                          size?.name ?? 'Unknown',
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.black,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                            fontSize: 13,
-                            letterSpacing: 0.3,
-                          ),
+                        child: CustomText(
+                          text: size?.name ?? 'Unknown',
+                          color: isSelected ? Colors.white : Colors.black,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w500,
+                          fontSize: 13.sp,
                         ),
                       ),
                     ),
@@ -457,15 +451,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ],
       ),
     );
-  }
-
-  /// Filter sizes to show only M, L, XL
-  List<dynamic> _filterSizes(List<dynamic> sizes) {
-    final validSizes = ['M', 'L', 'XL', 'XXL'];
-    return sizes.where((size) {
-      final sizeName = size?.name?.toUpperCase() ?? '';
-      return validSizes.contains(sizeName);
-    }).toList();
   }
 
   /// Get selected color name
@@ -507,14 +492,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Quantity',
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+              CustomText(
+                text: 'Quantity',
+                fontWeight: FontWeight.w600,
+                fontSize: 15.sp,
               ),
               const SizedBox(height: 4),
-              Text(
-                'Max: ${c.maxQuantity}',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+              CustomText(
+                text: 'Max: ${c.maxQuantity}',
+                color: Colors.grey.shade600,
+                fontSize: 12.sp,
               ),
             ],
           ),
@@ -533,12 +520,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: Text(
-                    '${c.quantity}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                    ),
+                  child: CustomText(
+                    text: '${c.quantity}',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15.sp,
                   ),
                 ),
                 IconButton(
@@ -567,9 +552,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Delivery Address',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          CustomText(
+            text: 'Delivery Address',
+            fontWeight: FontWeight.w600,
+            fontSize: 16.sp,
           ),
           const SizedBox(height: 16),
 
@@ -631,12 +617,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 13,
-          ),
+        CustomText(
+          text: label,
+          fontWeight: FontWeight.w600,
+          fontSize: 13.sp,
         ),
         const SizedBox(height: 6),
         TextField(
@@ -645,7 +629,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.grey.shade400),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey.shade300),
@@ -683,7 +668,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Center(
               child: Padding(
                 padding: EdgeInsets.all(16.r),
-                child: CupertinoActivityIndicator(),
+                child: const CupertinoActivityIndicator(),
               ),
             )
           else if (c.previewError != null)
@@ -697,10 +682,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     size: 32,
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    c.previewError!,
+                  CustomText(
+                    text: c.previewError!,
+                    color: Colors.red.shade600,
+                    fontSize: 14.sp,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.red.shade600, fontSize: 14),
                   ),
                 ],
               ),
@@ -719,7 +705,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 'Total',
                 preview?.finalPrice ?? fallback?.total,
                 isBold: true,
-                fontSize: 17,
+                fontSize: 17.sp,
               ),
             ],
         ],
@@ -732,26 +718,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       String title,
       dynamic value, {
         bool isBold = false,
-        double fontSize = 14,
+        double? fontSize,
       }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontWeight: isBold ? FontWeight.w600 : FontWeight.w500,
-            fontSize: fontSize,
-            letterSpacing: 0.3,
-          ),
+        CustomText(
+          text: title,
+          fontWeight: isBold ? FontWeight.w600 : FontWeight.w500,
+          fontSize: fontSize ?? 14.sp,
         ),
-        Text(
-          controller.formatPrice(value),
-          style: TextStyle(
-            fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
-            fontSize: fontSize,
-            letterSpacing: 0.3,
-          ),
+        CustomText(
+          text: controller.formatPrice(value),
+          fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+          fontSize: fontSize ?? 14.sp,
         ),
       ],
     );
@@ -760,7 +740,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // ==================== Bottom Bar ====================
   Widget _buildBottomBar(BuildContext context, CheckoutController c) {
     final total = c.previewData?.finalPrice ?? c.checkoutData?.total ?? 0;
-    final isLoading = c.isLoadingPreNext || c.isLoadingCheckout;
 
     return Container(
       padding: EdgeInsets.only(
@@ -786,28 +765,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Total',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+              CustomText(
+                text: 'Total',
+                color: Colors.grey.shade600,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
               ),
               const SizedBox(height: 4),
-              Text(
-                controller.formatPrice(total),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.3,
-                ),
+              CustomText(
+                text: controller.formatPrice(total),
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
               ),
             ],
           ),
           Expanded(
             child: Padding(
-              padding:  EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.only(left: 16),
               child: CustomButton(
                 loading: c.isLoadingCheck,
                 onpress: () => c.proceedToPayment(),

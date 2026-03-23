@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SocketChatController extends GetxController {
-  final SocketServices _socketService = SocketServices();
   final ChatsController _chatController = Get.find<ChatsController>();
 
   final Set<String> _activeListeners = {};
 
   /// Listen for new messages via socket.
   void listenMessage(String conversationId) {
-    SocketServices.socket?.off("conversation-$conversationId");
+    SocketServices.instance .socket?.off("conversation-$conversationId");
 
-    SocketServices.socket?.on("conversation-$conversationId", (data) {
+    SocketServices.instance.socket?.on("conversation-$conversationId", (data) {
       debugPrint("=========> Response Message: $data");
       debugPrint(
         "=========> Received at: ${DateTime.now().millisecondsSinceEpoch}",
@@ -50,11 +49,11 @@ class SocketChatController extends GetxController {
   /// Send a new message via socket.
   void sendMessage({required String message, required String conversationId}) {
     final body = {"conversation_id": conversationId, "msg": message};
-    _socketService.emit('send-message', body);
+    SocketServices.instance.emit('send-message', body);
   }
 
   void removeListeners(String conversationId) {
-    SocketServices.socket?.off("conversation-$conversationId");
+    SocketServices.instance.socket?.off("conversation-$conversationId");
     _activeListeners.remove(conversationId);
   }
 

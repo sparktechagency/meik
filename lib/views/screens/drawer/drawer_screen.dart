@@ -17,6 +17,7 @@ class DrawerScreen extends StatefulWidget {
 class _DrawerScreenState extends State<DrawerScreen> {
   @override
   Widget build(BuildContext context) {
+
     return Drawer(
       backgroundColor: AppColors.bgColorWhite,
       width: 320.w,
@@ -216,6 +217,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   ),
                 ),
                 child: CustomText(
+                  enableAutoTranslate: false,
                   text: option,
                   fontSize: 12.sp,
                   color: isSelected ? Colors.white : Colors.black,

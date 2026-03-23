@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../controllers/terms_and_condition_controller.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_text.dart';
 
@@ -11,29 +12,62 @@ class PrivacyPolicyAllScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(TermsAndConditionController());
+    final title = Get.arguments?['title'] ?? 'Terms and Conditions';
+    
+    controller.fetchTermsAndCondition();
+
     return Scaffold(
-      appBar: CustomAppBar(title: "${Get.arguments["title"]}"),
+      appBar: CustomAppBar(title: title),
 
-      body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 24.w),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-              SizedBox(height: 20.h),
+        if (controller.errorMessage.value.isNotEmpty) {
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  SizedBox(height: 16.h),
+                  CustomText(
+                    text: controller.errorMessage.value,
+                    textAlign: TextAlign.center,
+                    color: Colors.red,
+                  ),
+                  SizedBox(height: 24.h),
+                  ElevatedButton.icon(
+                    onPressed: () => controller.fetchTermsAndCondition(),
+                    icon: Icon(Icons.refresh),
+                    label: Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
 
-
-              CustomText(
-                color: Colors.black,
-                maxline: 1000,
-                textAlign: TextAlign.start,
-                text: "Lorem ipsum dolor sit amet consectetur. Enim massa aenean ac odio leo habitasse tortor tempor. Ut id urna odio dui leo congue. Ultrices pharetra ornare nam faucibus. Integer id varius consectetur non. \n\n Lorem ipsum dolor sit amet consectetur. Enim massa aenean ac odio leo habitasse tortor tempor. Ut id urna odio dui leo congue. Ultrices pharetra ornare nam faucibus. Integer id varius consectetur non. \n\nLorem ipsum dolor sit amet consectetur. Enim massa aenean ac odio leo habitasse tortor tempor. Ut id urna odio dui leo congue. Ultrices pharetra ornare nam faucibus. Integer id varius consectetur non. \n\nLorem ipsum dolor sit amet consectetur. Enim massa aenean ac odio leo habitasse tortor tempor. Ut id urna odio dui leo congue. Ultrices pharetra ornare nam faucibus. Integer id varius consectetur non.",)
-
-
-            ],
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 20.h),
+                CustomText(
+                  color: Colors.black,
+                  maxline: 1000,
+                  textAlign: TextAlign.start,
+                  text: controller.content.value,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

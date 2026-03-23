@@ -99,6 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               icon: Icons.translate,
               title: "Translation",
               onTap: () {
+                Get.toNamed(AppRoutes.languagesScreen);
                 // Navigate to translation screen
               },
             ),
@@ -241,11 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: CustomButton(
                       height: 48.h,
                       title: "Logout",
-                      onpress: () {
-                        PrefsHelper.remove(AppConstants.bearerToken);
-                        Get.find<UserController>().userData = null;
-                        Get.offAllNamed(AppRoutes.logInScreen);
-                      },
+                      onpress: () => Get.find<UserController>().userLogout(),
                       color: Colors.red,
                       boderColor: Colors.red,
                       fontSize: 14.sp,

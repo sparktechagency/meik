@@ -6,6 +6,7 @@ import 'package:danceattix/views/widgets/custom_text.dart';
 import 'package:danceattix/views/widgets/custom_text_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_translate/flutter_auto_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/app_constants/app_colors.dart';
@@ -23,6 +24,31 @@ class LogInScreen extends StatefulWidget {
 class _LogInScreenState extends State<LogInScreen> {
   final AuthController _controller = Get.find<AuthController>();
 
+  // Translated strings
+  String _dontHaveAccount = "Don't have an account?  ";
+  String _signUp = 'Sign Up';
+
+  @override
+  void initState() {
+    super.initState();
+    _translateStaticStrings();
+  }
+
+  Future<void> _translateStaticStrings() async {
+    final s = TranslationService();
+    final results = await Future.wait([
+      s.translate("Don't have an account?  "),
+      s.translate('Sign Up'),
+    ]);
+
+    if (mounted) {
+      setState(() {
+        _dontHaveAccount = results[0];
+        _signUp = results[1];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +60,8 @@ class _LogInScreenState extends State<LogInScreen> {
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
               children: [
-SizedBox(height: 24.h),
+                SizedBox(height: 24.h),
+
                 // Logo
                 Container(
                   padding: EdgeInsets.all(16.w),
@@ -57,13 +84,14 @@ SizedBox(height: 24.h),
 
                 SizedBox(height: 8.h),
 
-                // BAZARIO Text
+                // BAZARIO — brand name, translation disabled
                 CustomText(
                   text: "BAZARIO",
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primaryColor,
                   letterSpacing: 2,
+                  enableAutoTranslate: false,
                 ),
 
                 SizedBox(height: 50.h),
@@ -116,13 +144,13 @@ SizedBox(height: 24.h),
                 // Login Button
                 GetBuilder<AuthController>(
                   builder: (controller) {
-                    return controller.isLoadingLogin ?
-                    const CustomLoader() :
-                         CustomButton(
+                    return controller.isLoadingLogin
+                        ? const CustomLoader()
+                        : CustomButton(
                       title: "Lets go !!",
-                      onpress: () => controller.login()
+                      onpress: () => controller.login(),
                     );
-                  }
+                  },
                 ),
 
                 SizedBox(height: 24.h),
@@ -136,9 +164,9 @@ SizedBox(height: 24.h),
                       fontFamily: "Poppins",
                     ),
                     children: [
-                      const TextSpan(text: "Don't have an account?  "),
+                      TextSpan(text: _dontHaveAccount),
                       TextSpan(
-                        text: 'Sign Up',
+                        text: _signUp,
                         style: TextStyle(
                           color: AppColors.primaryColor,
                           fontWeight: FontWeight.w600,
@@ -147,7 +175,7 @@ SizedBox(height: 24.h),
                           ..onTap = () {
                             Get.toNamed(AppRoutes.signUpScreen);
                           },
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -160,11 +188,4 @@ SizedBox(height: 24.h),
       ),
     );
   }
-
-  // @override
-  // void dispose() {
-  //   _controller.loginEmailController.dispose();
-  //   _controller.loginPasswordController.dispose();
-  //   super.dispose();
-  // }
 }

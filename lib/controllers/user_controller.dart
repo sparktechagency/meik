@@ -1,7 +1,13 @@
 import 'dart:io';
+import 'package:danceattix/controllers/fvrt_product_controller.dart';
+import 'package:danceattix/controllers/product_controller.dart';
+import 'package:danceattix/core/app_constants/app_constants.dart';
+import 'package:danceattix/core/config/app_route.dart';
+import 'package:danceattix/helper/prefs_helper.dart';
 import 'package:danceattix/models/user_model_data.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
+import 'package:danceattix/services/socket_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -87,6 +93,22 @@ class UserController extends GetxController {
 
     isLoadingUserUpdate = false;
     update();
+  }
+
+
+
+
+  void userLogout() async {
+    PrefsHelper.remove(AppConstants.bearerToken);
+    SocketServices.instance.disconnect();
+    Get.find<UserController>().userData = null;
+    Get.find<FvrtProductController>().fvrtData.clear();
+    Get.find<FvrtProductController>().purchasesData.clear();
+    Get.find<FvrtProductController>().salesData.clear();
+    Get.find<ProductController>().listedProductsData.clear();
+    Get.find<ProductController>().pendingProductsData.clear();
+    Get.offAllNamed(AppRoutes.logInScreen);
+
   }
 
 }

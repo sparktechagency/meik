@@ -269,6 +269,7 @@ class ColorAccordionCard extends StatelessWidget {
                                           : [],
                                     ),
                                     child: CustomText(
+                                      enableAutoTranslate: false,
                                       text: size,
                                       fontSize: 12.sp,
                                       fontWeight: selected

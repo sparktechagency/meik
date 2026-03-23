@@ -42,6 +42,7 @@ class StockRowWidget extends StatelessWidget {
                 ),
                 child: Center(
                   child: CustomText(
+                    enableAutoTranslate: false,
                     text: size,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,

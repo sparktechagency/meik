@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_translate/flutter_auto_translate.dart';
 import 'package:get/get.dart';
 
 String? _lastMessage;
@@ -29,12 +30,14 @@ void showToast(String message, {int? seconds}) {
       content: Row(
         children: [
           Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                height: 1.4,
+            child: AutoTranslate(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  height: 1.4,
+                ),
               ),
             ),
           ),

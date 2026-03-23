@@ -3,6 +3,7 @@ import 'package:danceattix/controllers/auth_controller.dart';
 import 'package:danceattix/views/widgets/custom_loader.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_translate/flutter_auto_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -22,12 +23,51 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final AuthController _controller = Get.find<AuthController>();
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isChecked = false;
   String selectedCountryCode = "+1";
   String selectedCountryFlag = "US";
+
+  // Translated strings
+  String _agreeWith = 'Agree with ';
+  String _termsOfServices = 'Terms of Services';
+  String _and = ' & ';
+  String _privacyPolicy = 'Privacy Policy';
+  String _haveAccount = 'Have any account ?  ';
+  String _login = 'Login';
+  String _phoneHint = 'e.g. 123 456 7890';
+
+  @override
+  void initState() {
+    super.initState();
+    _translateStaticStrings();
+  }
+
+  Future<void> _translateStaticStrings() async {
+    final s = TranslationService();
+    final results = await Future.wait([
+      s.translate('Agree with '),
+      s.translate('Terms of Services'),
+      s.translate(' & '),
+      s.translate('Privacy Policy'),
+      s.translate('Have any account ?  '),
+      s.translate('Login'),
+      s.translate('e.g. 123 456 7890'),
+    ]);
+
+    if (mounted) {
+      setState(() {
+        _agreeWith = results[0];
+        _termsOfServices = results[1];
+        _and = results[2];
+        _privacyPolicy = results[3];
+        _haveAccount = results[4];
+        _login = results[5];
+        _phoneHint = results[6];
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40.w),
                   child: CustomText(
-                    text:
-                        "Enter this information properly and get excited service properly !!!",
+                    text: "Enter this information properly and get excited service properly !!!",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.hitTextColorA5A5A5,
@@ -85,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 SizedBox(height: 24.h),
 
-                // Form Fields Container
+                // Form Fields
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 24.w,
@@ -93,7 +132,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   child: Column(
                     children: [
-                      // Name Field
                       CustomTextField(
                         showShadow: false,
                         controller: _controller.firstNameController,
@@ -116,7 +154,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
 
-                      // Email Field
                       CustomTextField(
                         showShadow: false,
                         controller: _controller.emailController,
@@ -129,10 +166,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         isEmail: true,
                       ),
 
-                      // Phone Field with Country Code
                       _buildPhoneField(),
 
-                      // Address Field
                       CustomTextField(
                         showShadow: false,
                         controller: _controller.locationController,
@@ -144,7 +179,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
 
-                      // Password Field
                       CustomTextField(
                         showShadow: false,
                         controller: _controller.passwordController,
@@ -157,7 +191,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         isPassword: true,
                       ),
 
-                      // Confirm Password Field
                       CustomTextField(
                         showShadow: false,
                         controller: _controller.confirmPassController,
@@ -170,7 +203,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         isPassword: true,
                       ),
 
-                      // Terms and Conditions Checkbox
+                      // Terms and Conditions
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -203,29 +236,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       fontFamily: "Poppins",
                                     ),
                                     children: [
-                                      const TextSpan(text: 'Agree with '),
+                                      TextSpan(text: _agreeWith),
                                       TextSpan(
-                                        text: 'Terms of Services',
+                                        text: _termsOfServices,
                                         style: TextStyle(
                                           color: Colors.red,
                                           decoration: TextDecoration.underline,
                                         ),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            // Open Terms of Service
-                                          },
+                                          ..onTap = () {},
                                       ),
-                                      const TextSpan(text: ' & '),
+                                      TextSpan(text: _and),
                                       TextSpan(
-                                        text: 'Privacy Policy',
+                                        text: _privacyPolicy,
                                         style: TextStyle(
                                           color: Colors.red,
                                           decoration: TextDecoration.underline,
                                         ),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            // Open Privacy Policy
-                                          },
+                                          ..onTap = () {},
                                       ),
                                     ],
                                   ),
@@ -244,14 +273,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return controller.isLoadingRegister
                               ? CustomLoader()
                               : CustomButton(
-                                  title: "Register",
-                                  onpress: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      controller.register();
-                                    }
-                                    //_showSuccessDialog(context);
-                                  },
-                                );
+                            title: "Register",
+                            onpress: () {
+                              if (_formKey.currentState!.validate()) {
+                                controller.register();
+                              }
+                            },
+                          );
                         },
                       ),
 
@@ -266,9 +294,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             fontFamily: "Poppins",
                           ),
                           children: [
-                            const TextSpan(text: 'Have any account ?  '),
+                            TextSpan(text: _haveAccount),
                             TextSpan(
-                              text: 'Login',
+                              text: _login,
                               style: TextStyle(
                                 color: AppColors.primaryColor,
                                 fontWeight: FontWeight.w600,
@@ -300,7 +328,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       padding: EdgeInsets.only(bottom: 14.h),
       child: Row(
         children: [
-          // Country Code Picker
           Container(
             height: 58.h,
             decoration: BoxDecoration(
@@ -330,7 +357,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
           SizedBox(width: 8.w),
-          // Phone Number Field
           Expanded(
             child: Container(
               height: 58.h,
@@ -347,7 +373,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   color: AppColors.textColorA0A0A,
                 ),
                 decoration: InputDecoration(
-                  hintText: "e.g. 123 456 7890",
+                  // ✅ Translated hint
+                  hintText: _phoneHint,
                   hintStyle: TextStyle(
                     fontSize: 12.sp,
                     color: AppColors.hitTextColorA5A5A5,
@@ -365,156 +392,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
-  void _showSuccessDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Success Icon
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Decorative circles
-                    ...List.generate(6, (index) {
-                      return Positioned(
-                        top: (index % 2 == 0) ? 10.h : 60.h,
-                        left: (index % 3 == 0)
-                            ? 20.w
-                            : (index % 3 == 1)
-                            ? 80.w
-                            : 140.w,
-                        child: Container(
-                          width: 8.w,
-                          height: 8.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryColor.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      );
-                    }),
-                    Container(
-                      width: 80.w,
-                      height: 80.h,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 40.sp,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 24.h),
-
-                // Congratulation Text
-                CustomText(
-                  text: "Congratulation",
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textColorA0A0A,
-                ),
-
-                SizedBox(height: 12.h),
-
-                // Description
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: CustomText(
-                    text:
-                        "Your account create successfully. Are you want to setup profile now ?",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.hitTextColorA5A5A5,
-                    textAlign: TextAlign.center,
-                    maxline: 3,
-                  ),
-                ),
-
-                SizedBox(height: 24.h),
-
-                // Buttons
-                Row(
-                  children: [
-                    // Later Button
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          Get.toNamed(AppRoutes.logInScreen);
-                        },
-                        child: Container(
-                          height: 48.h,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(color: AppColors.borderColor),
-                          ),
-                          child: Center(
-                            child: CustomText(
-                              text: "Later",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textColorA0A0A,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(width: 12.w),
-
-                    // Yes Button
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          Get.toNamed(AppRoutes.uploadNIDScreen);
-                        },
-                        child: Container(
-                          height: 48.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryColor,
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Center(
-                            child: CustomText(
-                              text: "Yes",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
 }

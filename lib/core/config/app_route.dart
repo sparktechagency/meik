@@ -2,6 +2,7 @@
 
 import 'package:danceattix/views/screens/checkout/checkout_screen.dart';
 import 'package:danceattix/views/screens/product/add_product_variant_screen.dart';
+import 'package:danceattix/views/screens/profile/languages_screen.dart';
 import 'package:get/get.dart';
 
 import '../../views/screens/auth/enable_location/enable_location_screen.dart';
@@ -75,6 +76,7 @@ class AppRoutes {
   static const String boostScreen = "/BoostScreen";
   static const String addProductVariantScreen = "/addProductVariantScreen";
   static const String checkoutScreen = "/checkoutScreen";
+  static const String languagesScreen = "/languagesScreen";
 
 
 
@@ -114,5 +116,6 @@ class AppRoutes {
     GetPage(name: addProductVariantScreen, page: () =>  AddProductVariantScreen()),
     GetPage(name: boostScreen, page: () => const BoostScreen()),
     GetPage(name: checkoutScreen, page: () => const CheckoutScreen()),
+    GetPage(name: languagesScreen, page: () => const LanguagesScreen()),
   ];
 }

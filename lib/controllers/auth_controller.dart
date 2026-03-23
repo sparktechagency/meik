@@ -2,7 +2,6 @@ import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/app_constants/app_constants.dart';
 import 'package:danceattix/core/config/app_route.dart';
 import 'package:danceattix/helper/prefs_helper.dart';
-import 'package:danceattix/models/user_model_data.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
 import 'package:danceattix/views/widgets/custom_tost_message.dart';
@@ -16,7 +15,7 @@ class AuthController extends GetxController {
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController(text: 'titegiy278@roastic.com');
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -60,7 +59,7 @@ class AuthController extends GetxController {
      Get.toNamed(AppRoutes.otpScreen,arguments: 'registration');
       cleanFieldRegister();
     } else {
-     // showToast(responseBody['message']);
+      showToast(responseBody['message']);
     }
     isLoadingRegister = false;
     update();

@@ -2,9 +2,9 @@
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/core/app_constants/app_constants.dart';
 import 'package:danceattix/global/custom_assets/fonts.gen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_auto_translate/flutter_auto_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/widgets.dart';
 
@@ -85,6 +85,52 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   bool obscureText = true;
 
+  String? _translatedHint;
+
+  // Validator strings
+  String _pleaseEnterText = '';
+  String _passwordMinText = 'Password: 8 characters min!';
+  String _checkEmailText = 'Please check your email!';
+
+  @override
+  void initState() {
+    super.initState();
+    _translateTexts();
+  }
+
+  Future<void> _translateTexts() async {
+    final service = TranslationService();
+
+    if (widget.hintText != null) {
+      final hint = await service.translate(widget.hintText!);
+      final please = await service.translate('Please ${widget.hintText!.toLowerCase()}');
+      if (mounted) {
+        setState(() {
+          _translatedHint = hint;
+          _pleaseEnterText = please;
+        });
+      }
+    }
+    final passMin = await service.translate('Password: 8 characters min!');
+    final checkEmail = await service.translate('Please check your email!');
+    if (mounted) {
+      setState(() {
+        _passwordMinText = passMin;
+        _checkEmailText = checkEmail;
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(CustomTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.hintText != widget.hintText ||
+        oldWidget.labelText != widget.labelText) {
+      _translateTexts();
+    }
+  }
+
+
   void toggle() {
     setState(() {
       obscureText = !obscureText;
@@ -95,7 +141,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Column(
-
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.labelText != null)
@@ -154,23 +199,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
               },
 
               validator: widget.validator ??
-                  (value) {
+                      (value) {
                     if (widget.isEmail == false) {
                       if (value!.isEmpty) {
-                        return "Please  ${widget.hintText!.toLowerCase()}";
+                        return _pleaseEnterText;
                       } else if (widget.isPassword) {
                         if (value.isEmpty) {
-                          return "Please  ${widget.hintText!.toLowerCase()}";
+                          return _pleaseEnterText;
                         } else if (value.length < 8) {
-                          return "Password: 8 characters min!";
+                          return _passwordMinText;
                         }
                       }
                     } else {
                       bool data = AppConstants.emailValidate.hasMatch(value!);
                       if (value.isEmpty) {
-                        return "Please  ${widget.hintText!.toLowerCase()}";
+                        return _pleaseEnterText;
                       } else if (!data) {
-                        return "Please check your email!";
+                        return _checkEmailText;
                       }
                     }
                     return null;
@@ -202,7 +247,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       : widget.suffixIcon,
                   prefixIconConstraints:
                       BoxConstraints(minHeight: 24.w, minWidth: 24.w),
-                  hintText: widget.hintText,
+                  hintText: _translatedHint ?? widget.hintText,
                   hintStyle: TextStyle(
                       color: widget.hintextColor ?? Colors.grey,
                       fontSize: widget.hintextSize ?? 12.h,

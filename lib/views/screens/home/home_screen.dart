@@ -211,12 +211,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
+                      enableAutoTranslate: false,
                       text: '${user.fullName ?? 'N/A'} !',
                       color: Colors.black,
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                     ),
                     CustomText(
+                      enableAutoTranslate: false,
                       text: "welcome to bazario",
                       fontSize: 12.sp,
                       color: Colors.grey,

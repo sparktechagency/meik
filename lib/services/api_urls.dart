@@ -58,4 +58,7 @@ class ApiUrls {
   static  String offersReject(String offerID) => '/offers/$offerID/reject';
   static  String offersSend = '/offers/send';
   static const String imageURL = 'https://jidian.merinasib.shop/api/v1/s3/pre-signed-url?fileName=newimage.png&primaryPath=UserUploads&field=User_Profile&expiresIn=900';
+  
+  /// ================= settings ===========>>>
+  static const String termsAndCondition = '/settings/terms_and_condition';
 }

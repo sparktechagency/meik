@@ -437,13 +437,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomText(
+                  enableAutoTranslate: false,
                   text: "${user.firstName ?? ''} ${user.lastName ?? ''}".trim(),
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
                 SizedBox(height: 2.h),
-                CustomText(
+                CustomText(enableAutoTranslate: true,
                   text: user.address ?? '',
                   fontSize: 12.sp,
                   color: Colors.grey,

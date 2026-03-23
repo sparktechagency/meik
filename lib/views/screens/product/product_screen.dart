@@ -4,6 +4,7 @@ import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/helper/shimmer_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_translate/flutter_auto_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
@@ -24,7 +25,7 @@ class _ProductScreenState extends State<ProductScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(_controller.listedProductsData.isEmpty){
+      if (_controller.listedProductsData.isEmpty) {
         _controller.productsGet(type: 'own', status: 'available');
       }
     });
@@ -64,86 +65,129 @@ class _ProductScreenState extends State<ProductScreen> {
                     indicatorSize: TabBarIndicatorSize.tab,
                     labelColor: AppColors.primaryColor,
                     unselectedLabelColor: Colors.black,
-                    labelStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
-                    unselectedLabelStyle: TextStyle(fontSize: 14.sp, color: AppColors.dividerColor),
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.dividerColor,
+                    ),
                   ),
                   tabs: [
-                    Text('Listed: ${controller.listedProductsData.length}'),
-                    Text('Pending: ${controller.pendingProductsData.length}'),
+                    AutoTranslate(
+                      child: Text(
+                        'Listed: ${controller.listedProductsData.length}',
+                      ),
+                    ),
+                    AutoTranslate(
+                      child: Text(
+                        'Pending: ${controller.pendingProductsData.length}',
+                      ),
+                    ),
                   ],
                   views: [
                     // ── Listed Tab ──
                     controller.isLoadingProduct
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.listedProductsData.isEmpty
-                        ? Center(child: Text('No listed products found.'))
+                        ? Center(
+                            child: AutoTranslate(
+                              child: Text('No listed products found.'),
+                            ),
+                          )
                         : AnimationLimiter(
-                      child: RefreshIndicator(
-                        onRefresh: ()async {
-                          await  _controller.productsGet(type: 'own', status: 'available');
-                        },
-                        child: ListView.builder(
-                          itemCount: controller.listedProductsData.length,
-                          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                          itemBuilder: (context, index) {
-                            final product = controller.listedProductsData[index];
-                            return CustomMyProductCard(
-                              index: index,
-                              leftBtnName: "Buy now",
-                              boast: "Boost now",
-                              title: product.productName,
-                              price: product.price,
-                              image: product.image,
-                              onTap: () => Get.toNamed(
-                                AppRoutes.productDetailsScreen,
-                                arguments: product.id,
-                              ),
-                              boostOnTap: () {
-                                _showBoostPricingDialog(context, product.id ?? 0);
+                            child: RefreshIndicator(
+                              onRefresh: () async {
+                                await _controller.productsGet(
+                                  type: 'own',
+                                  status: 'available',
+                                );
                               },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                              child: ListView.builder(
+                                itemCount: controller.listedProductsData.length,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 12.h,
+                                  horizontal: 16.w,
+                                ),
+                                itemBuilder: (context, index) {
+                                  final product =
+                                      controller.listedProductsData[index];
+                                  return CustomMyProductCard(
+                                    index: index,
+                                    leftBtnName: "Buy now",
+                                    boast: "Boost now",
+                                    title: product.productName,
+                                    price: product.price,
+                                    image: product.image,
+                                    onTap: () => Get.toNamed(
+                                      AppRoutes.productDetailsScreen,
+                                      arguments: product.id,
+                                    ),
+                                    boostOnTap: () {
+                                      _showBoostPricingDialog(
+                                        context,
+                                        product.id ?? 0,
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
 
                     // ── Pending Tab ──
                     controller.isLoadingProduct
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.pendingProductsData.isEmpty
-                        ? Center(child: Text('No pending products found.'))
+                        ? Center(
+                            child: AutoTranslate(
+                              child: Text('No pending products found.'),
+                            ),
+                          )
                         : AnimationLimiter(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          await controller.productsGet(type: 'own', status: 'pending');
-                        },
-                        child: ListView.builder(
-                          itemCount: controller.pendingProductsData.length,
-                          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                          itemBuilder: (context, index) {
-                            final product = controller.pendingProductsData[index];
-                            return CustomMyProductCard(
-                              index: index,
-                              title: product.productName,
-                              price: product.price,
-                              image: product.image,
-                              onTap: () => Get.toNamed(
-                                AppRoutes.productDetailsScreen,
-                                arguments: product.id,
+                            child: RefreshIndicator(
+                              onRefresh: () async {
+                                await controller.productsGet(
+                                  type: 'own',
+                                  status: 'pending',
+                                );
+                              },
+                              child: ListView.builder(
+                                itemCount:
+                                    controller.pendingProductsData.length,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 12.h,
+                                  horizontal: 16.w,
+                                ),
+                                itemBuilder: (context, index) {
+                                  final product =
+                                      controller.pendingProductsData[index];
+                                  return CustomMyProductCard(
+                                    index: index,
+                                    title: product.productName,
+                                    price: product.price,
+                                    image: product.image,
+                                    onTap: () => Get.toNamed(
+                                      AppRoutes.productDetailsScreen,
+                                      arguments: product.id,
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                            ),
+                          ),
                   ],
                   onChange: (index) {
                     if (index == 0) {
-                      if(controller.listedProductsData.isEmpty){
-                        controller.productsGet(type: 'own', status: 'available');
+                      if (controller.listedProductsData.isEmpty) {
+                        controller.productsGet(
+                          type: 'own',
+                          status: 'available',
+                        );
                       }
                     } else if (index == 1) {
-                      if(controller.pendingProductsData.isEmpty){
+                      if (controller.pendingProductsData.isEmpty) {
                         controller.productsGet(type: 'own', status: 'pending');
                       }
                     }
@@ -210,21 +254,25 @@ class _ProductScreenState extends State<ProductScreen> {
                               ),
                             ),
                             SizedBox(height: 12.h),
-                            Text(
-                              "Boost Your Post 🚀",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                            AutoTranslate(
+                              child: Text(
+                                "Boost Your Post 🚀",
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                             SizedBox(height: 6.h),
-                            Text(
-                              "Choose a plan to increase visibility",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: Colors.white.withOpacity(0.8),
+                            AutoTranslate(
+                              child: Text(
+                                "Choose a plan to increase visibility",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Colors.white.withOpacity(0.8),
+                                ),
                               ),
                             ),
                           ],
@@ -242,11 +290,13 @@ class _ProductScreenState extends State<ProductScreen> {
                                 color: AppColors.primaryColor,
                               ),
                               SizedBox(height: 10.h),
-                              Text(
-                                "Loading pricing options...",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.grey.shade600,
+                              AutoTranslate(
+                                child: Text(
+                                  "Loading pricing options...",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.grey.shade600,
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 10.h),
@@ -266,11 +316,13 @@ class _ProductScreenState extends State<ProductScreen> {
                                 physics: NeverScrollableScrollPhysics(),
                                 itemCount: controller.boostPricingData.length,
                                 itemBuilder: (context, index) {
-                                  final pricing = controller.boostPricingData[index];
+                                  final pricing =
+                                      controller.boostPricingData[index];
                                   final days = pricing.days ?? 0;
                                   final price = pricing.cost ?? 0;
                                   final currency = pricing.currency ?? 0;
-                                  final isSelected = selectedPricingIndex == index;
+                                  final isSelected =
+                                      selectedPricingIndex == index;
 
                                   return GestureDetector(
                                     onTap: () {
@@ -304,11 +356,13 @@ class _ProductScreenState extends State<ProductScreen> {
                                 size: 32.sp,
                               ),
                               SizedBox(height: 10.h),
-                              Text(
-                                "No pricing options available",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.grey.shade600,
+                              AutoTranslate(
+                                child: Text(
+                                  "No pricing options available",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.grey.shade600,
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 10.h),
@@ -343,16 +397,17 @@ class _ProductScreenState extends State<ProductScreen> {
                                     loading: boostCtrl.isLoading,
                                     height: 42.h,
                                     borderRadius: 50.r,
-                                    onpress:  () {
+                                    onpress: () {
                                       if (selectedPricingIndex == null) {
-                                        showToast("Please select a pricing option.");
-                                        return;}
+                                        showToast(
+                                          "Please select a pricing option.",
+                                        );
+                                        return;
+                                      }
 
-                                      final selectedPricing =
-                                      boostCtrl.boostPricingData[
-                                      selectedPricingIndex];
-                                      final days =
-                                          selectedPricing.days ?? 0;
+                                      final selectedPricing = boostCtrl
+                                          .boostPricingData[selectedPricingIndex];
+                                      final days = selectedPricing.days ?? 0;
                                       boostCtrl.boost(productId, days);
                                     },
                                     title: "Boost Now",
@@ -405,22 +460,26 @@ class _ProductScreenState extends State<ProductScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Boost for $days Days",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.bold,
-                    color: isSelected ? Colors.white : Colors.black,
+                AutoTranslate(
+                  child: Text(
+                    "Boost for $days Days",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
                   ),
                 ),
                 SizedBox(height: 4.h),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: isSelected
-                        ? Colors.white.withOpacity(0.8)
-                        : Colors.grey.shade600,
+                AutoTranslate(
+                  child: Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: isSelected
+                          ? Colors.white.withOpacity(0.8)
+                          : Colors.grey.shade600,
+                    ),
                   ),
                 ),
               ],
@@ -430,12 +489,14 @@ class _ProductScreenState extends State<ProductScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                "$currency: $price",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: isSelected ? Colors.white : AppColors.primaryColor,
+              AutoTranslate(
+                child: Text(
+                  "$currency: $price",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? Colors.white : AppColors.primaryColor,
+                  ),
                 ),
               ),
             ],
@@ -445,7 +506,6 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 }
-
 
 class CustomMyProductCard extends StatefulWidget {
   final int? index;
@@ -542,18 +602,20 @@ class _CustomMyProductCardState extends State<CustomMyProductCard> {
                               if (widget.isBookMarkNeed ?? false)
                                 widget.isFavorite ?? false
                                     ? Container(
-                                  height: 25.h,
-                                  width: 25.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4.r),
-                                    color: AppColors.primaryColor,
-                                  ),
-                                  child: Icon(
-                                    Icons.delete_outline_sharp,
-                                    color: Colors.white,
-                                    size: 16.h,
-                                  ),
-                                )
+                                        height: 25.h,
+                                        width: 25.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            4.r,
+                                          ),
+                                          color: AppColors.primaryColor,
+                                        ),
+                                        child: Icon(
+                                          Icons.delete_outline_sharp,
+                                          color: Colors.white,
+                                          size: 16.h,
+                                        ),
+                                      )
                                     : SizedBox(),
                             ],
                           ),
@@ -565,7 +627,8 @@ class _CustomMyProductCardState extends State<CustomMyProductCard> {
                           ),
                           CustomText(
                             maxline: 3,
-                            text: "Transform your look with expert cuts, styling, and personalized service at our premier salon, designed for your ultimate satisfaction.",
+                            text:
+                                "Transform your look with expert cuts, styling, and personalized service at our premier salon, designed for your ultimate satisfaction.",
                             fontSize: 10.h,
                             textAlign: TextAlign.start,
                             bottom: 4.h,

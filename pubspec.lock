@@ -478,6 +478,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_auto_translate:
+    dependency: "direct main"
+    description:
+      name: flutter_auto_translate
+      sha256: "4de73bc17aeea43a9bf15e709f0a0e2c4edf59692509afa491c8782440c8ccb1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -1717,6 +1725,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  translator:
+    dependency: transitive
+    description:
+      name: translator
+      sha256: fb28ada8b29931f5142907bac62dda375b14a60a57ec72ed37b78e3e97a7047b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4+1"
   typed_data:
     dependency: transitive
     description:

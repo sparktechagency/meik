@@ -2,7 +2,6 @@ import 'package:danceattix/models/favourite_model_data.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
 import 'package:danceattix/views/widgets/custom_tost_message.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class FvrtProductController extends GetxController {

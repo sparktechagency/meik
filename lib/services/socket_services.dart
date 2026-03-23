@@ -6,10 +6,16 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class SocketServices {
-  static String token = '';
-  static IO.Socket? socket;
 
-  static Future<void> init() async {
+ SocketServices._();
+
+  static final SocketServices instance = SocketServices._();
+
+
+   String token = '';
+   IO.Socket? socket;
+
+   Future<void> init() async {
     // Fetch the token from preferences
     token = await PrefsHelper.getString(AppConstants.bearerToken);
 
@@ -61,7 +67,7 @@ class SocketServices {
     socket?.off(event, handler);
   }
 
-  static Future<dynamic> emitWithAck(String event, dynamic body) async {
+   Future<dynamic> emitWithAck(String event, dynamic body) async {
     Completer<dynamic> completer = Completer<dynamic>();
     socket?.emitWithAck(
       event,

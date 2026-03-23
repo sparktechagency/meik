@@ -2,6 +2,7 @@ import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/global/custom_assets/fonts.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_translate/flutter_auto_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -57,16 +58,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           )
               : null),
       title: title != null && title!.isNotEmpty
-          ? Text(
-        title!,
-        style: TextStyle(
+          ? AutoTranslate(
+            child: Text(
+                    title!,
+                    style: TextStyle(
 
-          fontFamily: FontFamily.poppins,
-          fontWeight: FontWeight.w600,
-          fontSize: titleSize.sp,
-          color: AppColors.primaryColor,
-        ),
-      )
+            fontFamily: FontFamily.poppins,
+            fontWeight: FontWeight.w600,
+            fontSize: titleSize.sp,
+            color: AppColors.primaryColor,
+                    ),
+                  ),
+          )
           : titleWidget,
       actions: actions,
     );
