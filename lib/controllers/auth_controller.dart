@@ -21,7 +21,6 @@ class AuthController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
 
-
   void cleanFieldRegister() {
     firstNameController.clear();
     lastNameController.clear();
@@ -36,33 +35,40 @@ class AuthController extends GetxController {
     isLoadingRegister = true;
     update();
 
-    final requestBody = {
-      "firstName":firstNameController.text.trim(),
-      "lastName": firstNameController.text.trim(),
-      "email": emailController.text.trim(),
-      "password":confirmPassController.text,
-      "phone" : phoneController.text.trim(),
-      "address" : locationController.text.trim(),
-      "currency":"GBP"
-    };
-    // print(requestBody);
-    final response = await ApiClient.postData(
-      ApiUrls.register,
-      requestBody,
-      headers: {'Content-Type': 'application/json'},
-    );
+    try {
+      final requestBody = {
+        "firstName": firstNameController.text.trim(),
+        "lastName": firstNameController.text.trim(),
+        "email": emailController.text.trim(),
+        "password": confirmPassController.text,
+        "phone": phoneController.text.trim(),
+        "address": locationController.text.trim(),
+        "currency": "GBP"
+      };
 
-    final responseBody = response.body;
-    if (response.statusCode == 201) {
-      await PrefsHelper.setString(AppConstants.bearerToken, responseBody['token'] ?? '');
-      await PrefsHelper.setString(AppConstants.userId, responseBody['user']?['id'] ?? '');
-     Get.toNamed(AppRoutes.otpScreen,arguments: 'registration');
-      cleanFieldRegister();
-    } else {
-      showToast(responseBody['message']);
+      final response = await ApiClient.postData(
+        ApiUrls.register,
+        requestBody,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      final responseBody = response.body;
+
+      if (response.statusCode == 201) {
+        await PrefsHelper.setString(AppConstants.bearerToken, responseBody['token'] ?? '');
+        await PrefsHelper.setString(AppConstants.userId, responseBody['user']?['id'] ?? '');
+        Get.toNamed(AppRoutes.otpScreen, arguments: 'registration');
+        cleanFieldRegister();
+      } else {
+        showToast(responseBody['message']);
+      }
+    } catch (e) {
+      showToast('Something went wrong. Please try again.');
+      if (kDebugMode) print('Register error: $e');
+    } finally {
+      isLoadingRegister = false;
+      update();
     }
-    isLoadingRegister = false;
-    update();
   }
 
   /// <======================= verifyOTP ===========================>
@@ -74,26 +80,32 @@ class AuthController extends GetxController {
     update();
 
     bool success = false;
-    String userID = await PrefsHelper.getString(AppConstants.userId);
-    final requestBody = {
-      "user_id": userID,
-      "otp": otpController.text.trim(),
-      "verification_type": verificationType,
-    };
 
-    final response = await ApiClient.postData(ApiUrls.verifyOtp, requestBody);
-    final responseBody = response.body;
+    try {
+      String userID = await PrefsHelper.getString(AppConstants.userId);
+      final requestBody = {
+        "user_id": userID,
+        "otp": otpController.text.trim(),
+        "verification_type": verificationType,
+      };
 
-    if (response.statusCode == 201) {
-      success = true;
+      final response = await ApiClient.postData(ApiUrls.verifyOtp, requestBody);
+      final responseBody = response.body;
 
-      otpController.clear();
-    } else {
-     showToast(responseBody['message']);
+      if (response.statusCode == 201) {
+        success = true;
+        otpController.clear();
+      } else {
+        showToast(responseBody['message']);
+      }
+    } catch (e) {
+      showToast('Something went wrong. Please try again.');
+      if (kDebugMode) print('VerifyOTP error: $e');
+    } finally {
+      isLoadingOtp = false;
+      update();
     }
 
-    isLoadingOtp = false;
-    update();
     return success;
   }
 
@@ -115,33 +127,33 @@ class AuthController extends GetxController {
     isLoadingLogin = true;
     update();
 
-    final requestBody = {
-      'email': loginEmailController.text.trim(),
-      'password': loginPasswordController.text,
-    };
+    try {
+      final requestBody = {
+        'email': loginEmailController.text.trim(),
+        'password': loginPasswordController.text,
+      };
 
-    final response = await ApiClient.postData(ApiUrls.login, requestBody,headers: {'Content-Type': 'application/json'});
-    final responseBody = response.body;
+      final response = await ApiClient.postData(
+        ApiUrls.login,
+        requestBody,
+        headers: {'Content-Type': 'application/json'},
+      );
+      final responseBody = response.body;
 
-    if (response.statusCode == 200) {
-      
-      final user = responseBody['data'];
-
-     // Get.find<UserController>().userData = user != null ? UserModelData.fromJson(user) : null;
-
-
-      Get.offAllNamed(AppRoutes.bottomNavBar);
-
-      await PrefsHelper.setString(AppConstants.bearerToken, responseBody['token'] ?? '');
-      await Get.find<UserController>().userGet();
-
-    } else {
-
-      showToast(responseBody['message']);
+      if (response.statusCode == 200) {
+        Get.offAllNamed(AppRoutes.bottomNavBar);
+        await PrefsHelper.setString(AppConstants.bearerToken, responseBody['token'] ?? '');
+        await Get.find<UserController>().userGet();
+      } else {
+        showToast(responseBody['message']);
+      }
+    } catch (e) {
+      showToast('Something went wrong. Please try again.');
+      if (kDebugMode) print('Login error: $e');
+    } finally {
+      isLoadingLogin = false;
+      update();
     }
-
-    isLoadingLogin = false;
-    update();
   }
 
   /// <======================= forgot ===========================>
@@ -156,34 +168,36 @@ class AuthController extends GetxController {
     isLoadingForgot = true;
     update();
 
-    final requestBody = {'email': forgotEmailController.text.trim()};
+    try {
+      final requestBody = {'email': forgotEmailController.text.trim()};
 
-    final response = await ApiClient.postData(
-      ApiUrls.forgetPassword,
-      requestBody,
-      headers: {'Content-Type': 'application/json'},
-    );
-    final responseBody = response.body;
+      final response = await ApiClient.postData(
+        ApiUrls.forgetPassword,
+        requestBody,
+        headers: {'Content-Type': 'application/json'},
+      );
+      final responseBody = response.body;
 
-    if (response.statusCode == 201) {
-      await PrefsHelper.setString(AppConstants.bearerToken, responseBody['token'] ?? '');
-
-      Get.toNamed(AppRoutes.otpScreen, arguments: 'forgot_password');
-      //showToast(responseBody['message']);
-      cleanFieldForgot();
-    } else {
-     showToast(responseBody['message']);
+      if (response.statusCode == 201) {
+        await PrefsHelper.setString(AppConstants.bearerToken, responseBody['token'] ?? '');
+        Get.toNamed(AppRoutes.otpScreen, arguments: 'forgot_password');
+        cleanFieldForgot();
+      } else {
+        showToast(responseBody['message']);
+      }
+    } catch (e) {
+      showToast('Something went wrong. Please try again.');
+      if (kDebugMode) print('Forgot error: $e');
+    } finally {
+      isLoadingForgot = false;
+      update();
     }
-
-    isLoadingForgot = false;
-    update();
   }
 
   /// <======================= reset Password ===========================>
   bool isLoadingReset = false;
   final TextEditingController resetPasswordController = TextEditingController();
-  final TextEditingController newResetPasswordController =
-  TextEditingController();
+  final TextEditingController newResetPasswordController = TextEditingController();
 
   void cleanFieldReset() async {
     resetPasswordController.clear();
@@ -195,33 +209,41 @@ class AuthController extends GetxController {
   Future<void> resetPassword() async {
     isLoadingReset = true;
     update();
-    final requestBody = {
-      'password': newResetPasswordController.text,
-      'passwordConfirm': newResetPasswordController.text
-    };
 
-    final response = await ApiClient.postData(
-      ApiUrls.resetPassword,
-      requestBody,
-    );
-    final responseBody = response.body;
+    try {
+      final requestBody = {
+        'password': newResetPasswordController.text,
+        'passwordConfirm': newResetPasswordController.text,
+      };
 
-    if (response.statusCode == 201) {
-      Get.offAllNamed(AppRoutes.logInScreen);
-      cleanFieldReset();
-    } else {
-      showToast(responseBody['message']);
+      final response = await ApiClient.postData(
+        ApiUrls.resetPassword,
+        requestBody,
+      );
+      final responseBody = response.body;
+
+      if (response.statusCode == 201) {
+        Get.offAllNamed(AppRoutes.logInScreen);
+        cleanFieldReset();
+      } else {
+        showToast(responseBody['message']);
+      }
+    } catch (e) {
+      showToast('Something went wrong. Please try again.');
+      if (kDebugMode) print('ResetPassword error: $e');
+    } finally {
+      isLoadingReset = false;
+      update();
     }
-
-    isLoadingReset = false;
-    update();
   }
 
-
-  /// <======================= Log out related work are here ===========================>
+  /// <======================= Log out ===========================>
   void logOut() async {
-    await PrefsHelper.remove(AppConstants.bearerToken);
-    Get.find<UserController>().userData = null;
+    try {
+      await PrefsHelper.remove(AppConstants.bearerToken);
+      Get.find<UserController>().userData = null;
+    } catch (e) {
+      if (kDebugMode) print('LogOut error: $e');
+    }
   }
-
 }
