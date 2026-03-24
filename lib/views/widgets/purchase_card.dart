@@ -47,7 +47,7 @@ class PurchaseCard extends StatelessWidget {
           onTap: onTap,
           child: Container(
            // height: 190.h,
-            height: 150.h,
+            height: 156.h,
             margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
             decoration: BoxDecoration(
               color: Colors.white,

@@ -43,7 +43,7 @@ class FavoritesCard extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap,
           child: Container(
-            height: 140.h,
+            height: 150.h,
             margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
             decoration: BoxDecoration(
               color: Colors.white,

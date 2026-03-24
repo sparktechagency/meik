@@ -1,6 +1,7 @@
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/helper/shimmer_helper.dart';
+import 'package:danceattix/views/screens/bottom_nav_bar/bottom_nav_controller.dart';
 import 'package:danceattix/views/widgets/cachanetwork_image.dart';
 import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_button.dart';
@@ -80,15 +81,96 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10.h),
 
-              GestureDetector(
-                //onTap: () => Get.find<BottomNavController>(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Assets.images.boostBanner.image(
-                    // height: 120.h,
-                    // width: double.infinity,
-                    // fit: BoxFit.cover,
-                  ),
+              // GestureDetector(
+              //   //onTap: () => Get.find<BottomNavController>(),
+              //   child: Padding(
+              //     padding: EdgeInsets.symmetric(horizontal: 16.w),
+              //     child: Assets.images.boostBanner.image(
+              //       // height: 120.h,
+              //       // width: double.infinity,
+              //       // fit: BoxFit.cover,
+              //     ),
+              //   ),
+              // ),
+
+              CustomContainer(
+                radiusAll: 20.r,
+                horizontalMargin: 16.w,
+                height: 164.h,
+                width: double.infinity,
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                clipBehavior: Clip.hardEdge,
+                linearColors: [
+                  Color(0xffCCE8E8),
+                  AppColors.primaryColor,
+                ],
+                child: Stack(
+                  clipBehavior: Clip.hardEdge,
+                  children: [
+                    Positioned(
+                      bottom: -95,
+                      right: -75,
+                      child: CustomContainer(
+                        color: Color(0xffCCE8E8),
+                        shape: BoxShape.circle,
+                        height: 218.r,
+                        width: 218.r,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 18.h,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(text:
+                              'Boost your products !!!',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                            ),
+                            SizedBox(height: 8.h),
+                            CustomText(text:
+                              'Boost your product visibility and sales with targeted\nstrategies, enhancing reach and customer engagement\neffectively.',
+                                fontSize: 10.sp,
+                              color: Color(0xff545454),
+                              textAlign: TextAlign.start,
+                            ),
+                            SizedBox(height: 14.h),
+                            CustomContainer(
+                              onTap: (){
+                                Get.find<BottomNavController>().onChange(3);
+                              },
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(2, 4),
+                                  color: Colors.black.withOpacity(0.15),
+                                  spreadRadius: 0,
+                                  blurRadius: 4,
+                                )
+                              ],
+                              borderWidth: 0.5,
+                              bordersColor: Colors.white,
+                              radiusAll: 100.r,
+                              color: AppColors.primaryColor,
+                              paddingHorizontal: 26.w,
+                              paddingVertical: 7.h,
+                              child: CustomText(text:
+                                'Boost now',
+                                  fontSize: 12.sp,
+                                  color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 10.h),
@@ -140,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 16.h),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 170.w / 240.h,
+                        childAspectRatio: 170.w / 245.h,
                         crossAxisSpacing: 10.w,
                         mainAxisSpacing: 0.h,
                       ),

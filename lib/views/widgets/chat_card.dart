@@ -126,6 +126,7 @@ class ChatBubbleMessage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               CustomText(
+                enableAutoTranslate: false,
                 maxline: 10,
                 fontSize: 14.sp,
                 textAlign: TextAlign.start,

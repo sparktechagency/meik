@@ -38,7 +38,7 @@ class CustomContainer extends StatelessWidget {
     this.paddingTop,
     this.paddingBottom,
     this.marginTop,
-    this.marginBottom, this.borderStyle, this.elevationColor,
+    this.marginBottom, this.borderStyle, this.elevationColor,  this.clipBehavior = Clip.none,
   });
 
   final Widget? child;
@@ -78,13 +78,15 @@ class CustomContainer extends StatelessWidget {
   final DecorationImage? image;
   final BorderStyle? borderStyle;
   final Color? elevationColor;
+  final Clip clipBehavior;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: height,
+        clipBehavior: clipBehavior, // এটা add করো
+      height: height,
         width: width,
         padding: paddingHorizontal != null || paddingVertical != null
             ? EdgeInsets.symmetric(

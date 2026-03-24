@@ -1,5 +1,7 @@
+import 'package:danceattix/views/screens/bottom_nav_bar/bottom_nav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../../../core/app_constants/app_colors.dart';
 import '../../../global/custom_assets/assets.gen.dart';
 import '../home/home_screen.dart';
@@ -22,15 +24,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const ProductScreen(),
   ];
 
-  int currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens,
+      body: GetBuilder<BottomNavController>(
+        builder: (controller) {
+          return IndexedStack(
+            index: controller.selectedIndex,
+            children: screens,
+          );
+        },
       ),
       bottomNavigationBar: Container(
         margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -61,64 +65,84 @@ class _BottomNavBarState extends State<BottomNavBar> {
   }
 
   Widget _buildNavItem(int index) {
-    bool isSelected = index == currentIndex;
+    return GetBuilder<BottomNavController>(
+      builder: (controller) {
+        bool isSelected = index == controller.selectedIndex;
 
-    Widget getIcon(int idx, bool selected) {
-      switch (idx) {
-        case 0:
-          return selected
-              ? Assets.icons.home.svg(
-                  width: 26.sp,
-                  height: 26.sp,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                )
-              : Assets.icons.home.svg(
-                  width: 26.sp,
-                  height: 26.sp,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                );
-        case 1:
-          return Assets.icons.plus.svg(
-            width: 26.sp,
-            height: 26.sp,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          );
-        case 2:
-          return Assets.icons.message.svg(
-            width: 26.sp,
-            height: 26.sp,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          );
-        case 3:
-          return  Assets.icons.profile.svg(
-                  width: 26.sp,
-                  height: 26.sp,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                );
-        default:
-          return Assets.icons.home.svg(
-            width: 26.sp,
-            height: 26.sp,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          );
-      }
-    }
+        Widget getIcon(int idx, bool selected) {
+          switch (idx) {
+            case 0:
+              return selected
+                  ? Assets.icons.home.svg(
+                      width: 26.sp,
+                      height: 26.sp,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    )
+                  : Assets.icons.home.svg(
+                      width: 26.sp,
+                      height: 26.sp,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    );
+            case 1:
+              return Assets.icons.plus.svg(
+                width: 26.sp,
+                height: 26.sp,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              );
+            case 2:
+              return Assets.icons.message.svg(
+                width: 26.sp,
+                height: 26.sp,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              );
+            case 3:
+              return Assets.icons.profile.svg(
+                width: 26.sp,
+                height: 26.sp,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              );
+            default:
+              return Assets.icons.home.svg(
+                width: 26.sp,
+                height: 26.sp,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              );
+          }
+        }
 
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          currentIndex = index;
-        });
+        return GestureDetector(
+          onTap: () => controller.onChange(index),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: EdgeInsets.all(12.r),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? Colors.black87.withOpacity(0.2)
+                  : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+            child: getIcon(index, isSelected),
+          ),
+        );
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.all(12.r),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.black87.withOpacity(0.2) : Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        child: getIcon(index, isSelected),
-      ),
     );
   }
 }

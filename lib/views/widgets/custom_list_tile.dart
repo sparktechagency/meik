@@ -52,6 +52,7 @@ class CustomListTile extends StatelessWidget {
         ],
       ),
       title: CustomText(
+        enableAutoTranslate: false,
         color: titleColor,
         textAlign: TextAlign.left,
         text: title ?? '',

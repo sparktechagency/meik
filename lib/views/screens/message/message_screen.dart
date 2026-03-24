@@ -69,9 +69,9 @@ class _MessageScreenState extends State<MessageScreen> {
 
                 if (messages == null || messages.isEmpty) {
                   return const Center(
-                    child: Text(
+                    child: CustomText(text:
                       'No messages yet',
-                      style: TextStyle(color: Colors.grey),
+                      color: Colors.grey,
                     ),
                   );
                 }

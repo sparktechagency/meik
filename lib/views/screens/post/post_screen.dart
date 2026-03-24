@@ -22,8 +22,7 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  final FvrtProductController _fvrtProductController =
-      Get.find<FvrtProductController>();
+  final FvrtProductController _fvrtProductController = Get.find<FvrtProductController>();
 
   // ScrollControllers for pagination
   final ScrollController _fvrtScrollController = ScrollController();
@@ -243,6 +242,9 @@ class _PostScreenState extends State<PostScreen> {
                                 await controller.fvrtGet();
                               },
                               child: ListView.builder(
+                                physics: AlwaysScrollableScrollPhysics(
+                                    parent: BouncingScrollPhysics()
+                                ),
                                 controller: _fvrtScrollController,
                                 itemCount:
                                     controller.fvrtData.length +
@@ -336,6 +338,9 @@ class _PostScreenState extends State<PostScreen> {
                                 await controller.phurcasesGet();
                               },
                               child: ListView.builder(
+                                physics: AlwaysScrollableScrollPhysics(
+                                  parent: BouncingScrollPhysics()
+                                ),
                                 controller: _purchasesScrollController,
                                 itemCount:
                                     controller.purchasesData.length +

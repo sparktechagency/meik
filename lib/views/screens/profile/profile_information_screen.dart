@@ -117,6 +117,7 @@ class _ProfileInformationScreenState extends State<ProfileInformationScreen> {
           child:
               valueWidget ??
               CustomText(
+                enableAutoTranslate: false,
                 text: value ?? '',
                 fontSize: 12.sp,
                 textAlign: TextAlign.start,
@@ -126,63 +127,4 @@ class _ProfileInformationScreenState extends State<ProfileInformationScreen> {
     );
   }
 
-  // ── File Chip ──────────────────────────────────────────────────────────────
-  Widget _buildFileChip(String filename) {
-    return Container(
-      padding:  EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-      decoration: BoxDecoration(
-        color: AppColors.primaryColor,
-        borderRadius: BorderRadius.circular(24.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-           Icon(
-            Icons.insert_drive_file_rounded,
-            size: 12.r,
-            color: Colors.white,
-          ),
-           SizedBox(width: 5.w),
-          CustomText(text:
-            filename,
-              color: Colors.white,
-              fontSize: 12.sp,
-            ),
-        ],
-      ),
-    );
-  }
-
-  // ── Upload Chip ────────────────────────────────────────────────────────────
-  Widget _buildUploadChip() {
-    return Container(
-      padding:  EdgeInsets.symmetric( vertical: 7.h,horizontal: 12.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(color: AppColors.primaryColor.withOpacity(0.4)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.cloud_upload_rounded,
-            size: 12.r,
-            color: AppColors.primaryColor,
-          ),
-           SizedBox(width: 5.h),
-          FittedBox(
-            child: CustomText(text:
-              'Upload now',
-                color: AppColors.primaryColor,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-              ),
-          ),
-
-        ],
-      ),
-    );
-  }
 }

@@ -5,6 +5,7 @@ import 'package:danceattix/views/widgets/cachanetwork_image.dart';
 import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_button.dart';
 import 'package:danceattix/views/widgets/custom_text.dart';
+import 'package:danceattix/views/widgets/custom_text_field.dart';
 import 'package:danceattix/views/widgets/custom_tost_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -614,38 +615,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     required String? value,
     required Function(String) onChanged,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          text: label,
-          fontWeight: FontWeight.w600,
-          fontSize: 13.sp,
-        ),
-        const SizedBox(height: 6),
-        TextField(
-          onChanged: onChanged,
-          controller: TextEditingController(text: value ?? ''),
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: TextStyle(color: Colors.grey.shade400),
-            contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-            ),
-          ),
-        ),
-      ],
+    return CustomTextField(
+      showShadow: false,
+      labelText: label,
+      hintText: hintText,
+      controller: TextEditingController(text: value ?? ''),
+      onChanged: onChanged,
     );
   }
 

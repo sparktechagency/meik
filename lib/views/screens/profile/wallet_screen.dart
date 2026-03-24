@@ -2,27 +2,14 @@ import 'package:danceattix/controllers/payment_controller.dart';
 import 'package:danceattix/controllers/wallet_controller.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/helper/time_format_helper.dart';
+import 'package:danceattix/views/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../../core/app_constants/app_colors.dart';
-import '../../../core/config/app_route.dart';
 import '../../widgets/cachanetwork_image.dart';
 import '../../widgets/custom_text.dart';
 
-import 'package:danceattix/controllers/payment_controller.dart';
-import 'package:danceattix/controllers/wallet_controller.dart';
-import 'package:danceattix/global/custom_assets/assets.gen.dart';
-import 'package:danceattix/helper/time_format_helper.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-
-import '../../../core/app_constants/app_colors.dart';
-import '../../../core/config/app_route.dart';
-import '../../widgets/cachanetwork_image.dart';
-import '../../widgets/custom_text.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -123,28 +110,14 @@ class _WalletScreenState extends State<WalletScreen> {
                 SizedBox(height: 20.h),
 
                 // History Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+
                     CustomText(
                       text: "History",
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.toNamed(AppRoutes.walletHistoryScreen);
-                      },
-                      child: CustomText(
-                        text: "More",
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ],
-                ),
+
 
                 SizedBox(height: 16.h),
 
@@ -158,10 +131,30 @@ class _WalletScreenState extends State<WalletScreen> {
 
                       if (controller.transactions.isEmpty) {
                         return Center(
-                          child: CustomText(
-                            text: "No transactions yet",
-                            fontSize: 14.sp,
-                            color: Colors.grey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Assets.lottie.emptyData.lottie(),
+                              CustomText(
+                                text: 'No Data Found',
+                                color: AppColors.hitTextColorA5A5A5,
+                                fontSize: 16.sp,
+                              ),
+                              SizedBox(height: 16.h),
+
+                              /// 🔄 Refresh Button
+                              CustomButton(
+                                fontSize: 14.sp,
+                                height: 34.h,
+                                width: 100.w,
+                                title: 'Refresh',
+                                onpress: () async {
+
+                                    await _walletController.balanceGet();
+                                    await _walletController.transactionGet();                                  }
+
+                              ),
+                            ],
                           ),
                         );
                       }
@@ -514,6 +507,7 @@ class _WalletScreenState extends State<WalletScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomText(
+                  enableAutoTranslate: false,
                   text: name,
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
