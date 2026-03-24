@@ -21,7 +21,6 @@ class WalletScreen extends StatefulWidget {
 class _WalletScreenState extends State<WalletScreen> {
   final WalletController _walletController = Get.find<WalletController>();
 
-  // ✅ ScrollController যোগ করা হয়েছে pagination-এর জন্য
   final ScrollController _scrollController = ScrollController();
 
   @override
