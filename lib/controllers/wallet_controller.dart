@@ -30,7 +30,7 @@ class WalletController extends GetxController {
       if (response.statusCode == 200) {
         balance = responseBody['data']['balance'].toStringAsFixed(2);
       } else {
-        showToast(responseBody['message']);
+        //showToast(responseBody['message']);
       }
     } catch (e) {
       debugPrint(e.toString());

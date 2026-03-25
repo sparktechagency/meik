@@ -1,13 +1,11 @@
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/helper/shimmer_helper.dart';
-import 'package:danceattix/models/product_model_data.dart';
 import 'package:danceattix/views/screens/bottom_nav_bar/bottom_nav_controller.dart';
 import 'package:danceattix/views/widgets/cachanetwork_image.dart';
 import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_button.dart';
 import 'package:danceattix/views/widgets/custom_container.dart';
-import 'package:danceattix/views/widgets/custom_text_field.dart';
 import 'package:danceattix/views/widgets/search_popup_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -299,7 +297,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                     CustomText(
-                      enableAutoTranslate: false,
                       text: "welcome to bazario",
                       fontSize: 12.sp,
                       color: Colors.grey,

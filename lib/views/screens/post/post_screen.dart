@@ -300,32 +300,6 @@ class _PostScreenState extends State<PostScreen> {
                                             arguments: product.id,
                                           );
                                         },
-                                        onFavoriteTap: () {
-                                          // Remove from favorites
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: AutoTranslate(
-                                                child: Text(
-                                                  'Removed from favorites',
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        onAddToCartTap: () {
-                                          // Add to cart
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: AutoTranslate(
-                                                child: Text('Added to cart'),
-                                              ),
-                                            ),
-                                          );
-                                        },
                                       ),
                                     ),
                                   );

@@ -23,7 +23,7 @@ class ProductDetailsController extends GetxController {
       final data = responseBody['data'];
       productDetailsData = ProductDetailsModelData.fromJson(data);
     } else {
-      showToast(responseBody['message']);
+     // showToast(responseBody['message']);
     }
 
     isLoadingDetails = false;

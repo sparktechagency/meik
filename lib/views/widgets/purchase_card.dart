@@ -46,8 +46,8 @@ class PurchaseCard extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap,
           child: Container(
-           // height: 190.h,
-            height: 156.h,
+            height: 216.h,
+           // height: 156.h,
             margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -158,19 +158,19 @@ class PurchaseCard extends StatelessWidget {
                           ],
                         ),
 
-                        // Received Button (only show if pending and payment completed)
-                        // if (status?.toLowerCase() == 'pending' &&
-                        //     paymentStatus?.toLowerCase() == 'completed') ...[
-                        //   SizedBox(height: 10.h),
-                        //   SizedBox(
-                        //     width: double.infinity,
-                        //     height: 36.h,
-                        //     child: CustomButton(
-                        //       title: 'Mark as Received',
-                        //       onpress: onCompleted ?? () {},
-                        //     ),
-                        //   ),
-                        // ],
+                       // Received Button (only show if pending and payment completed)
+                        if (status?.toLowerCase() == 'pending' &&
+                            paymentStatus?.toLowerCase() == 'completed') ...[
+                          SizedBox(height: 20.h),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 36.h,
+                            child: CustomButton(
+                              title: 'Mark as Received',
+                              onpress: onCompleted ?? () {},
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

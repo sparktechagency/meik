@@ -25,12 +25,12 @@ class BoostController extends GetxController {
       final responseBody = response.body;
 
       if (response.statusCode == 200) {
+        showToast(responseBody['message'] ?? 'Post boosted successfully!');
         // Clear selected pricing after successful boost
         selectedPricingIndex = null;
         boostPricingData.clear();
 
         Get.back(); // Close the dialog
-        showToast(responseBody['message'] ?? 'Post boosted successfully!');
       } else {
         showToast(
           responseBody['message'] ?? 'Failed to boost post. Please try again.',

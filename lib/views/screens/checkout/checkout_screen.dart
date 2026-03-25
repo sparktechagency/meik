@@ -199,12 +199,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomText(
+                        enableAutoTranslate: false,
                         text:
                         '${product.user?.firstName ?? ''} ${product.user?.lastName ?? ''}',
                         fontWeight: FontWeight.w600,
                         fontSize: 14.sp,
                       ),
                       CustomText(
+                        enableAutoTranslate: false,
                         text: product.user?.address ?? 'Location not available',
                         color: Colors.grey.shade600,
                         fontSize: 12.sp,
@@ -270,6 +272,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
               if (c.selectedColorId != null)
                 CustomText(
+                  enableAutoTranslate: false,
                   text: _getColorName(c),
                   color: Colors.grey.shade600,
                   fontSize: 12.sp,
@@ -380,6 +383,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
               if (c.selectedSizeId != null)
                 CustomText(
+                  enableAutoTranslate: false,
                   text: _getSizeName(c),
                   color: Colors.grey.shade600,
                   fontSize: 12.sp,
@@ -436,6 +440,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ],
                         ),
                         child: CustomText(
+                          enableAutoTranslate: false,
                           text: size?.name ?? 'Unknown',
                           color: isSelected ? Colors.white : Colors.black,
                           fontWeight: isSelected
@@ -522,6 +527,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14),
                   child: CustomText(
+                    enableAutoTranslate: false,
                     text: '${c.quantity}',
                     fontWeight: FontWeight.w600,
                     fontSize: 15.sp,
@@ -564,8 +570,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           _buildAddressTextField(
             label: 'Address',
             hintText: 'Enter street address',
-            value: c.address,
-            onChanged: c.setAddress,
+            controller: c.addressController,
           ),
           const SizedBox(height: 12),
 
@@ -573,8 +578,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           _buildAddressTextField(
             label: 'House Number',
             hintText: 'Enter house number',
-            value: c.houseNumber,
-            onChanged: c.setHouseNumber,
+            controller: c.houseNumberController,
           ),
           const SizedBox(height: 12),
 
@@ -582,8 +586,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           _buildAddressTextField(
             label: 'City',
             hintText: 'Enter city',
-            value: c.city,
-            onChanged: c.setCity,
+            controller: c.cityController,
           ),
           const SizedBox(height: 12),
 
@@ -591,8 +594,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           _buildAddressTextField(
             label: 'Country',
             hintText: 'Enter country',
-            value: c.country,
-            onChanged: c.setCountry,
+            controller: c.countryController,
           ),
           const SizedBox(height: 12),
 
@@ -600,8 +602,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           _buildAddressTextField(
             label: 'Postal Code',
             hintText: 'Enter postal code',
-            value: c.postalCode,
-            onChanged: c.setPostalCode,
+            controller: c.postalCodeController,
           ),
         ],
       ),
@@ -612,15 +613,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget _buildAddressTextField({
     required String label,
     required String hintText,
-    required String? value,
-    required Function(String) onChanged,
+    required TextEditingController controller,
   }) {
     return CustomTextField(
       showShadow: false,
       labelText: label,
       hintText: hintText,
-      controller: TextEditingController(text: value ?? ''),
-      onChanged: onChanged,
+      controller: controller,
     );
   }
 
@@ -704,6 +703,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           fontSize: fontSize ?? 14.sp,
         ),
         CustomText(
+          enableAutoTranslate: false,
           text: controller.formatPrice(value),
           fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
           fontSize: fontSize ?? 14.sp,
@@ -748,6 +748,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
               const SizedBox(height: 4),
               CustomText(
+                enableAutoTranslate: false,
                 text: controller.formatPrice(total),
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,

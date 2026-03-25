@@ -3,6 +3,7 @@ import 'package:danceattix/models/checkout_model_data.dart';
 import 'package:danceattix/services/api_client.dart';
 import 'package:danceattix/services/api_urls.dart';
 import 'package:danceattix/views/widgets/custom_tost_message.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class CheckoutController extends GetxController {
@@ -24,11 +25,12 @@ class CheckoutController extends GetxController {
   int? selectedSizeId;
 
   // ==================== Address State ====================
-  String? address;
-  String? city;
-  String? country;
-  String? postalCode;
-  String? houseNumber;
+
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+  final TextEditingController postalCodeController = TextEditingController();
+  final TextEditingController houseNumberController = TextEditingController();
 
   // ==================== Getters ====================
 
@@ -38,8 +40,9 @@ class CheckoutController extends GetxController {
 
     if (selectedColorId == null || selectedSizeId == null) return null;
 
-    final match = variants.firstWhereOrNull((v) =>
-    v.colorId == selectedColorId && v.sizeId == selectedSizeId);
+    final match = variants.firstWhereOrNull(
+      (v) => v.colorId == selectedColorId && v.sizeId == selectedSizeId,
+    );
 
     return match?.id;
   }
@@ -105,13 +108,15 @@ class CheckoutController extends GetxController {
 
   /// Check if color is available for current size selection
   bool isColorAvailable(int colorId) {
-    if (selectedSizeId == null) return true; // All colors available if size not selected
+    if (selectedSizeId == null)
+      return true; // All colors available if size not selected
     return availableColorsForSize.contains(colorId);
   }
 
   /// Check if size is available for current color selection
   bool isSizeAvailable(int sizeId) {
-    if (selectedColorId == null) return true; // All sizes available if color not selected
+    if (selectedColorId == null)
+      return true; // All sizes available if color not selected
     return availableSizesForColor.contains(sizeId);
   }
 
@@ -123,10 +128,11 @@ class CheckoutController extends GetxController {
   }
 
   bool get isAddressValid {
-    return address != null && address!.isNotEmpty &&
-        city != null && city!.isNotEmpty &&
-        country != null && country!.isNotEmpty &&
-        postalCode != null && postalCode!.isNotEmpty;
+    return addressController.text.isNotEmpty &&
+        cityController.text.isNotEmpty &&
+        countryController.text.isNotEmpty &&
+        postalCodeController.text.isNotEmpty &&
+        houseNumberController.text.isNotEmpty;
   }
 
   String? get validationError {
@@ -137,42 +143,37 @@ class CheckoutController extends GetxController {
 
   // ==================== Checkout =================
   Future<void> checkout(int productId) async {
-    checkoutError = null;
-    isLoadingCheckout = true;
-    update();
-
     try {
+      checkoutError = null;
+      isLoadingCheckout = true;
+      update();
+
       final res = await ApiClient.getData(ApiUrls.checkout(productId));
 
       if (res.statusCode == 200) {
         checkoutData = CheckoutModelData.fromJson(res.body['data']);
-        checkoutError = null;
 
-        // Auto-select single color if only one exists
-        if (colors.length == 1 && selectedColorId == null) {
-          selectedColorId = colors.first?.id;
+        if (colors.length == 1) {
+          selectedColorId ??= colors.first?.id;
         }
 
-        // Auto-select single size if only one exists
-        if (sizes.length == 1 && selectedSizeId == null) {
-          selectedSizeId = sizes.first?.id;
+        if (sizes.length == 1) {
+          selectedSizeId ??= sizes.first?.id;
         }
 
-        // If both color and size are auto-selected, fetch preview after a short delay
         if (isVariantSelected) {
           Future.delayed(const Duration(milliseconds: 500), () => preNext());
         }
       } else {
-        checkoutError = res.body['message'] ?? 'Failed to load checkout data';
-        showToast(checkoutError!);
+        throw res.body['message'] ?? 'Failed to load checkout data';
       }
     } catch (e) {
-      checkoutError = 'Network error. Please try again.';
+      checkoutError = e.toString();
       showToast(checkoutError!);
+    } finally {
+      isLoadingCheckout = false;
+      update();
     }
-
-    isLoadingCheckout = false;
-    update();
   }
 
   /// Retry checkout
@@ -219,7 +220,7 @@ class CheckoutController extends GetxController {
       preNext();
       update();
     } else {
-      showToast("Maximum quantity (${maxQuantity}) reached");
+      showToast("Maximum quantity ($maxQuantity) reached");
     }
   }
 
@@ -239,46 +240,44 @@ class CheckoutController extends GetxController {
 
   // ==================== Address Methods =================
 
-  void setAddress(String value) {
-    address = value;
-    update();
-  }
-
-  void setCity(String value) {
-    city = value;
-    update();
-  }
-
-  void setCountry(String value) {
-    country = value;
-    update();
-  }
-
-  void setPostalCode(String value) {
-    postalCode = value;
-    update();
-  }
-
-  void setHouseNumber(String value) {
-    houseNumber = value;
-    update();
-  }
+  // void setAddress(String value) {
+  //   address = value;
+  //   update();
+  // }
+  //
+  // void setCity(String value) {
+  //   city = value;
+  //   update();
+  // }
+  //
+  // void setCountry(String value) {
+  //   country = value;
+  //   update();
+  // }
+  //
+  // void setPostalCode(String value) {
+  //   postalCode = value;
+  //   update();
+  // }
+  //
+  // void setHouseNumber(String value) {
+  //   houseNumber = value;
+  //   update();
+  // }
 
   // ==================== Preview/Next =================
 
   /// ✅ FIXED: Capture sessionId from API response
   Future<void> preNext() async {
-    final product = checkoutData?.product;
-
-    if (product == null || !isVariantSelected) {
-      return;
-    }
-
-    previewError = null;
-    isLoadingPreNext = true;
-    update();
-
     try {
+      final product = checkoutData?.product;
+
+      if (product == null || !isVariantSelected) return;
+
+      previewError = null;
+      isLoadingPreNext = true;
+      update();
+
       final body = {
         "productId": product.id,
         "variantId": selectedVariantId,
@@ -290,55 +289,42 @@ class CheckoutController extends GetxController {
       if (res.statusCode == 201) {
         previewData = CheckoutPreviewModel.fromJson(res.body['data']);
 
-        // ✅ CAPTURE sessionId from API response
-        if (res.body['data']['sessionId'] != null) {
-          sessionId = res.body['data']['sessionId'];
-          print('✅ SessionId captured: $sessionId');
-        }
-
-        previewError = null;
+        sessionId = res.body['data']['sessionId'];
       } else {
-        previewError = res.body['message'] ?? 'Failed to calculate price';
-        showToast(previewError!);
+        throw res.body['message'] ?? 'Failed to calculate price';
       }
     } catch (e) {
-      previewError = 'Network error calculating price';
+      previewError = e.toString();
       showToast(previewError!);
+    } finally {
+      isLoadingPreNext = false;
+      update();
     }
-
-    isLoadingPreNext = false;
-    update();
   }
 
   /// ✅ FIXED: Use captured sessionId instead of hardcoded value
   Future<void> proceedToPayment() async {
-    final error = validationError;
-
-    if (error != null) {
-      showToast(error);
-      return;
-    }
-
-    // ✅ Validate sessionId exists
-    if (sessionId == null || sessionId!.isEmpty) {
-      showToast('Session not initialized. Please try again.');
-      return;
-    }
-
-    isLoadingCheck = true;
-    update();
-
     try {
+      final error = validationError;
+      if (error != null) throw error;
+
+      if (sessionId == null || sessionId!.isEmpty) {
+        throw 'Session not initialized. Please try again.';
+      }
+
+      isLoadingCheck = true;
+      update();
+
       final body = {
-        "sessionId": sessionId, // ✅ USE CAPTURED sessionId
+        "sessionId": sessionId,
         "newAddress": {
-          "address": address,
-          "city": city,
-          "country": country,
-          "postal_code": postalCode,
-          "house_number": houseNumber ?? ""
+          "address": addressController.text.trim(),
+          "city": cityController.text.trim(),
+          "country": countryController.text.trim(),
+          "postal_code": postalCodeController.text.trim(),
+          "house_number": houseNumberController.text.trim(),
         },
-        "paymentMethod": "wallet"
+        "paymentMethod": "wallet",
       };
 
       final res = await ApiClient.postData(ApiUrls.checkoutExecute, body);
@@ -346,18 +332,16 @@ class CheckoutController extends GetxController {
       if (res.statusCode == 201) {
         Get.offNamed(AppRoutes.bottomNavBar);
         showToast(res.body['message']);
-        previewError = null;
       } else {
-        previewError = res.body['message'] ?? 'Failed to process payment';
-        showToast(previewError!);
+        throw res.body['message'] ?? 'Failed to process payment';
       }
     } catch (e) {
-      previewError = 'Network error. Please try again.';
+      previewError = e.toString();
       showToast(previewError!);
+    } finally {
+      isLoadingCheck = false;
+      update();
     }
-
-    isLoadingCheck = false;
-    update();
   }
 
   // ==================== Helpers =================
@@ -399,7 +383,7 @@ class CheckoutController extends GetxController {
     if (price is int) value = price.toDouble();
     if (price is String) value = double.tryParse(price) ?? 0;
 
-    return '\$${value.toStringAsFixed(2)}';
+    return value.toStringAsFixed(2);
   }
 
   // ==================== Cleanup =================
@@ -409,11 +393,6 @@ class CheckoutController extends GetxController {
     selectedColorId = null;
     selectedSizeId = null;
     quantity = 1;
-    address = null;
-    city = null;
-    country = null;
-    postalCode = null;
-    houseNumber = null;
     checkoutData = null;
     previewData = null;
     checkoutError = null;
