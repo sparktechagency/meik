@@ -45,7 +45,7 @@ class ApiUrls {
   static String transections({int page = 1, int limit = 10}) => '/transections?page=$page&limit=$limit';
   static String salesProduct({int page = 1, int limit = 10}) => '/orders/sales?page=$page&limit=$limit';
   static String notification({int page = 1, int limit = 10}) => '/notifications?page=$page&limit=$limit';
-  static String conversations({int page = 1, int limit = 50}) => '/conversations?page=$page&limit=$limit';
+  static String conversations({int page = 1, int limit = 50, String term = ''}) => '/conversations?term=$term&page=$page&limit=$limit';
   static String inbox({String conID = '',int page = 1, int limit = 50}) => '/messages/$conID?page=$page&limit=$limit';
   static const String productsAdd = '/products';
   static const String balance = '/wallets/balance';

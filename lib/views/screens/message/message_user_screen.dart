@@ -2,6 +2,7 @@ import 'package:danceattix/controllers/chat_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/helper/time_format_helper.dart';
+import 'package:danceattix/views/widgets/search_popup_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -44,28 +45,42 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
       appBar: CustomAppBar(title: "Messages"),
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: CustomTextField(
-              hintextSize: 16.sp,
-              borderRadio: 50.r,
-              contentPaddingVertical: 0,
-              borderColor: Colors.transparent,
-              validator: (_) => null,
-              hintText: 'Search ny name',
-              suffixIcon: CustomContainer(
-                marginAll: 2.r,
-                paddingAll: 8.r,
-                shape: BoxShape.circle,
-                color: AppColors.primaryColor,
-                child: Icon(
-                  Icons.search,
-                  //size: 20.sp,
-                  color: Colors.white,
+          GlobalSearchField(
+            hintText: 'Search by products name',
+            primaryColor: AppColors.primaryColor,
+            onSearch: (term) async {
+              await _controller.conversationGet(term: term);
+              return _controller.conversationsData
+                  .map((e) => SearchItem(
+                id: e.id ?? 0,
+                name: e.name ?? '',
+                image: e.image,
+                subtitle: e.lastmsg?.msg ?? '',
+              ))
+                  .toList();
+            },
+            cardBuilder: (item, onTap) {
+              return ListTile(
+                onTap: (){
+                  Get.toNamed(AppRoutes.messageScreen,arguments: "${item.id}" ?? '');
+                },
+                leading: CustomNetworkImage(
+                  boxShape: BoxShape.circle,
+                  imageUrl: item.image ?? '',
+                  height: 40.h,
+                  width: 40.w,
                 ),
-              ),
-              controller: searchCtrl,
-            ),
+                title: CustomText(
+                  enableAutoTranslate: false,
+                    textAlign: TextAlign.start,
+                    text:  item.name ?? ''),
+                subtitle: CustomText(
+                  enableAutoTranslate: false,
+                    textAlign: TextAlign.start,
+                    fontSize: 12.sp,
+                    text:  item.subtitle ?? 'N/A'),
+              );
+            },
           ),
 
           Expanded(

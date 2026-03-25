@@ -27,11 +27,11 @@ class _AllProductScreenState extends State<AllProductScreen> {
 
   @override
   void initState() {
+    super.initState();
     _addScrollListener();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _productController.productsGet();
     });
-    super.initState();
   }
 
   @override
@@ -58,48 +58,49 @@ class _AllProductScreenState extends State<AllProductScreen> {
       ),
       body: RefreshIndicator(
         elevation: 0,
-        onRefresh: () async {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _productController.productsGet();
-          });
-        },
+        onRefresh: () => _productController.productsGet(),
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(
+            //parent: BouncingScrollPhysics(),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 12.h),
               GlobalSearchField(
-                hintText: 'Search by products name',
                 primaryColor: AppColors.primaryColor,
                 onSearch: (term) async {
                   await _productController.productsGet(term: term);
                   return _productController.searchResults
-                      .map((e) => SearchItem(
-                    id: e.id?.toString() ?? '',
-                    name: e.productName ?? '',
-                    image: e.image,
-                    subtitle: e.price ?? '',
-                  ))
+                      .map(
+                        (e) => SearchItem(
+                      id: e.id ?? 0,
+                      name: e.productName ?? '',
+                      image: e.image,
+                      subtitle: e.price ?? '',
+                    ),
+                  )
                       .toList();
                 },
                 cardBuilder: (item, onTap) {
-                  final product = item;
                   return ListTile(
                     onTap: onTap,
                     leading: CustomNetworkImage(
                       borderRadius: BorderRadius.circular(10.r),
-                      imageUrl: product.image ?? '',
+                      imageUrl: item.image ?? '',
                       height: 40.h,
                       width: 40.w,
                     ),
                     title: CustomText(
-                        textAlign: TextAlign.start,
-                        text:  product.name ?? ''),
+                      textAlign: TextAlign.start,
+                      text: item.name,
+                    ),
                     subtitle: CustomText(
-                        textAlign: TextAlign.start,
-                        fontSize: 12.sp,
-                        text:  'price: ${product.subtitle}'),
+                      textAlign: TextAlign.start,
+                      fontSize: 12.sp,
+                      text: 'price: ${item.subtitle}',
+                    ),
                   );
                 },
               ),
@@ -117,13 +118,14 @@ class _AllProductScreenState extends State<AllProductScreen> {
                 },
               ),
               SizedBox(height: 12.h),
-
               AnimationLimiter(
                 child: GetBuilder<ProductController>(
                   builder: (controller) {
                     if (controller.isLoadingProduct) {
                       return ShimmerHelper.instance.showProductShimmer();
-                    } else if (controller.productsData.isEmpty) {
+                    }
+
+                    if (controller.productsData.isEmpty) {
                       return Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -135,44 +137,37 @@ class _AllProductScreenState extends State<AllProductScreen> {
                               fontSize: 16.sp,
                             ),
                             SizedBox(height: 16.h),
-
-                            /// 🔄 Refresh Button
                             CustomButton(
                               fontSize: 14.sp,
                               height: 34.h,
                               width: 100.w,
                               title: 'Refresh',
-                              onpress: () async {
-                                WidgetsBinding.instance.addPostFrameCallback((
-                                  _,
-                                ) {
-                                  controller.productsGet();
-                                });
-                              },
+                              onpress: () => controller.productsGet(),
                             ),
                           ],
                         ),
                       );
                     }
+
                     return GridView.builder(
-                      controller: _scrollController,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(horizontal: 16.h),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 170.w / 245.h,
                         crossAxisSpacing: 10.w,
                         mainAxisSpacing: 0.h,
                       ),
-                      itemCount:
-                          controller.productsData.length +
+                      itemCount: controller.productsData.length +
                           (controller.isLoadingProductMore ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == controller.productsData.length) {
                           return Padding(
                             padding: EdgeInsets.all(16.r),
-                            child: Center(child: CupertinoActivityIndicator()),
+                            child: const Center(
+                              child: CupertinoActivityIndicator(),
+                            ),
                           );
                         }
                         final product = controller.productsData[index];
@@ -186,14 +181,10 @@ class _AllProductScreenState extends State<AllProductScreen> {
                                 productID: product.id ?? 0,
                                 title: product.productName ?? 'N/A',
                                 description: product.description ?? 'N/A',
-                                price: product.price.toString() ?? '',
+                                price: product.price.toString(),
                                 rating: product.rating?.toDouble() ?? 0.0,
-                                reviews: product.reviewCount.toString() ?? '0',
+                                reviews: product.reviewCount.toString(),
                                 image: product.image,
-                                onFavoriteTap: () {},
-                                onBuyNowTap: () {},
-                                onOfferTap: () {},
-                                onMessageTap: () {},
                               ),
                             ),
                           ),
@@ -212,10 +203,9 @@ class _AllProductScreenState extends State<AllProductScreen> {
 
   void _addScrollListener() {
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _productController.productsGet();
-        debugPrint("load more true");
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        _productController.productsMore('');
       }
     });
   }

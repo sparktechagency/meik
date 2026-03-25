@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   await _productController.productsGet(term: term);
                   return _productController.searchResults
                       .map((e) => SearchItem(
-                    id: e.id?.toString() ?? '',
+                    id: e.id ?? 0,
                     name: e.productName ?? '',
                     image: e.image,
                     subtitle: e.price ?? '',
@@ -75,7 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 cardBuilder: (item, onTap) {
                   final product = item;
                   return ListTile(
-                    onTap: onTap,
+                    onTap: (){
+                      Get.toNamed(AppRoutes.productDetailsScreen,arguments: item.id);
+                    },
                     leading: CustomNetworkImage(
                       borderRadius: BorderRadius.circular(10.r),
                       imageUrl: product.image ?? '',
@@ -358,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
     VoidCallback? onSeeAllTap,
   }) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 0.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -366,7 +368,12 @@ class _HomeScreenState extends State<HomeScreen> {
           if (onSeeAllTap != null)
             GestureDetector(
               onTap: onSeeAllTap,
-              child: CustomText(text: "See all", fontSize: 10.sp),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 0,horizontal: 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                  onPressed: onSeeAllTap, child: CustomText(text: 'See all', fontSize: 14.sp)),
             ),
         ],
       ),

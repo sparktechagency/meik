@@ -55,10 +55,12 @@ class ProductController extends GetxController {
     String status = '',
     bool isInitialLoad = true,
   }) async {
+    final bool isSearch = term.isNotEmpty;
+
     try {
       if (isInitialLoad) {
-        // term থাকলে শুধু searchResults clear — isLoadingProduct touch করবো না
-        if (term.isNotEmpty) {
+        if (isSearch) {
+          // Search: only clear searchResults, no loading spinner
           searchResults.clear();
         } else if (status == 'available') {
           listedProductsData.clear();
@@ -97,13 +99,13 @@ class ProductController extends GetxController {
         ),
       );
 
-      final responseBody = response.body;
-
       if (response.statusCode == 200) {
+        final responseBody = response.body;
         final List data = responseBody['data'] ?? [];
-        final products = data.map((json) => ProductModelData.fromJson(json)).toList();
+        final products =
+        data.map((json) => ProductModelData.fromJson(json)).toList();
 
-        if (term.isNotEmpty) {
+        if (isSearch) {
           searchResults.addAll(products);
         } else if (status == 'available') {
           listedProductsData.addAll(products);
@@ -113,13 +115,18 @@ class ProductController extends GetxController {
           productsData.addAll(products);
         }
 
-        productTotalPage = responseBody['pagination']?['totalPages'] ?? productTotalPage;
-        totalProduct = responseBody['pagination']?['total'] ?? totalProduct;
+        // FIX: only update pagination when not a search call
+        if (!isSearch) {
+          productTotalPage =
+              responseBody['pagination']?['totalPages'] ?? productTotalPage;
+          totalProduct =
+              responseBody['pagination']?['total'] ?? totalProduct;
+        }
       }
     } catch (e) {
       debugPrint('productsGet error: $e');
     } finally {
-      if (term.isEmpty) {
+      if (!isSearch) {
         isLoadingProduct = false;
         isLoadingProductMore = false;
       }
@@ -127,7 +134,8 @@ class ProductController extends GetxController {
     }
   }
 
-  void productsMore(String type) async {
+  // FIX: accept status so pagination works correctly for all list types
+  Future<void> productsMore(String type, {String status = ''}) async {
     debugPrint('============> Page $productPage');
 
     if (productPage < productTotalPage && !isLoadingProductMore) {
@@ -135,7 +143,8 @@ class ProductController extends GetxController {
       isLoadingProductMore = true;
       update();
 
-      await productsGet(type: type, isInitialLoad: false);
+      await productsGet(type: type, status: status, isInitialLoad: false);
+
       debugPrint(
         '============> Page++ $productPage \n=============> totalPage $productTotalPage',
       );

@@ -21,7 +21,7 @@ class ChatsController extends GetxController {
   int conTotalPage = -1;
   List<ConversationsModelData> conversationsData = [];
 
-  Future<void> conversationGet({bool isInitialLoad = true}) async {
+  Future<void> conversationGet({bool isInitialLoad = true,term = ''}) async {
     if (isInitialLoad) {
       conversationsData.clear();
       conPage = 1;
@@ -32,7 +32,7 @@ class ChatsController extends GetxController {
     }
 
     final response = await ApiClient.getData(
-      ApiUrls.conversations(page: conPage, limit: conLimit),
+      ApiUrls.conversations(page: conPage, limit: conLimit,term: term),
     );
     final responseBody = response.body;
 

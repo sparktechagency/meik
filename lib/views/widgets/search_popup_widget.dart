@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ── Model ────────────────────────────────────────────────────────────────────
 
 class SearchItem {
-  final String id;
+  final int id;
   final String name;
   final String? image;
   final String? subtitle;
