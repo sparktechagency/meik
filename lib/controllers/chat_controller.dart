@@ -47,7 +47,6 @@ class ChatsController extends GetxController {
 
       conTotalPage = responseBody['pagination']?['totalPages'] ?? conTotalPage;
     } else {
-      //showToast(responseBody['message']);
     }
 
     isLoadingCon = false;

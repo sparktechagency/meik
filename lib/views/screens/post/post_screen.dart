@@ -36,11 +36,6 @@ class _PostScreenState extends State<PostScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_fvrtProductController.fvrtData.isEmpty) {
-        _fvrtProductController.fvrtGet();
-      }
-    });
 
     // Pagination listeners
     _fvrtScrollController.addListener(() {

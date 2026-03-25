@@ -71,6 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             GetBuilder<UserController>(
               builder: (controller) {
                 return CustomText(
+                  enableAutoTranslate: false,
                   text: controller.userData?.fullName ?? 'N/A',
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w600,
@@ -112,13 +113,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
 
-            _buildMenuItem(
-              icon: Icons.headset_mic_outlined,
-              title: "Admin Support",
-              onTap: () {
-                // Navigate to admin support
-              },
-            ),
+            // _buildMenuItem(
+            //   icon: Icons.headset_mic_outlined,
+            //   title: "Admin Support",
+            //   onTap: () {
+            //     // Navigate to admin support
+            //   },
+            // ),
 
             _buildMenuItem(
               icon: Icons.settings_outlined,

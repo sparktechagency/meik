@@ -5,6 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProductController extends GetxController {
+  @override
+  void onInit() {
+    super.onInit();
+    productsGet();
+    productsGet(type: 'own', status: 'available');
+    productsGet(type: 'own', status: 'pending');
+  }
+
   /// <======================= products ===========================>
 
   bool isLoadingProduct = false;
@@ -62,14 +70,14 @@ class ProductController extends GetxController {
         if (isSearch) {
           // Search: only clear searchResults, no loading spinner
           searchResults.clear();
-        } else if (status == 'available') {
+        } else if (status == 'available' && type == 'own') {
           listedProductsData.clear();
           isLoadingProduct = true;
           isLoadingProductMore = false;
           productPage = 1;
           productTotalPage = -1;
           update();
-        } else if (status == 'pending') {
+        } else if (status == 'pending' && type == 'own') {
           pendingProductsData.clear();
           isLoadingProduct = true;
           isLoadingProductMore = false;
@@ -102,8 +110,9 @@ class ProductController extends GetxController {
       if (response.statusCode == 200) {
         final responseBody = response.body;
         final List data = responseBody['data'] ?? [];
-        final products =
-        data.map((json) => ProductModelData.fromJson(json)).toList();
+        final products = data
+            .map((json) => ProductModelData.fromJson(json))
+            .toList();
 
         if (isSearch) {
           searchResults.addAll(products);
@@ -119,8 +128,7 @@ class ProductController extends GetxController {
         if (!isSearch) {
           productTotalPage =
               responseBody['pagination']?['totalPages'] ?? productTotalPage;
-          totalProduct =
-              responseBody['pagination']?['total'] ?? totalProduct;
+          totalProduct = responseBody['pagination']?['total'] ?? totalProduct;
         }
       }
     } catch (e) {

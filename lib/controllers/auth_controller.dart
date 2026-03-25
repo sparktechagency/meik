@@ -237,13 +237,5 @@ class AuthController extends GetxController {
     }
   }
 
-  /// <======================= Log out ===========================>
-  void logOut() async {
-    try {
-      await PrefsHelper.remove(AppConstants.bearerToken);
-      Get.find<UserController>().userData = null;
-    } catch (e) {
-      if (kDebugMode) print('LogOut error: $e');
-    }
-  }
+
 }

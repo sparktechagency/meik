@@ -21,15 +21,6 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   final ProductController _controller = Get.find<ProductController>();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_controller.listedProductsData.isEmpty) {
-        _controller.productsGet(type: 'own', status: 'available');
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

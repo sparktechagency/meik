@@ -5,6 +5,15 @@ import 'package:danceattix/views/widgets/custom_tost_message.dart';
 import 'package:get/get.dart';
 
 class FvrtProductController extends GetxController {
+
+
+  @override
+  void onInit() {
+    super.onInit();
+    fvrtGet();
+    phurcasesGet();
+    salesGet();
+  }
   /// <======================= Favourite ===========================>
 
   bool isLoading = false;
