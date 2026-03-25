@@ -1,12 +1,14 @@
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/helper/shimmer_helper.dart';
+import 'package:danceattix/models/product_model_data.dart';
 import 'package:danceattix/views/screens/bottom_nav_bar/bottom_nav_controller.dart';
 import 'package:danceattix/views/widgets/cachanetwork_image.dart';
 import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_button.dart';
 import 'package:danceattix/views/widgets/custom_container.dart';
 import 'package:danceattix/views/widgets/custom_text_field.dart';
+import 'package:danceattix/views/widgets/search_popup_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -56,43 +58,41 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 10.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: CustomTextField(
-                  hintextSize: 16.sp,
-                  borderRadio: 50.r,
-                 contentPaddingVertical: 0,
-                  borderColor: Colors.transparent,
-                  validator: (_) => null,
-                  hintText: 'Search by products name',
-                  suffixIcon: CustomContainer(
-                    marginAll: 2.r,
-                    paddingAll: 8.r,
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryColor,
-                    child: Icon(
-                      Icons.search,
-                      //size: 20.sp,
-                      color: Colors.white,
+              GlobalSearchField(
+                hintText: 'Search by products name',
+                primaryColor: AppColors.primaryColor,
+                onSearch: (term) async {
+                  await _productController.productsGet(term: term);
+                  return _productController.searchResults
+                      .map((e) => SearchItem(
+                    id: e.id?.toString() ?? '',
+                    name: e.productName ?? '',
+                    image: e.image,
+                    subtitle: e.price ?? '',
+                  ))
+                      .toList();
+                },
+                cardBuilder: (item, onTap) {
+                  final product = item;
+                  return ListTile(
+                    onTap: onTap,
+                    leading: CustomNetworkImage(
+                      borderRadius: BorderRadius.circular(10.r),
+                      imageUrl: product.image ?? '',
+                      height: 40.h,
+                      width: 40.w,
                     ),
-                  ),
-                  controller: searchCtrl,
-                ),
+                    title: CustomText(
+                      textAlign: TextAlign.start,
+                        text:  product.name ?? ''),
+                    subtitle: CustomText(
+                        textAlign: TextAlign.start,
+                        fontSize: 12.sp,
+                        text:  'price: ${product.subtitle}'),
+                  );
+                },
               ),
               SizedBox(height: 10.h),
-
-              // GestureDetector(
-              //   //onTap: () => Get.find<BottomNavController>(),
-              //   child: Padding(
-              //     padding: EdgeInsets.symmetric(horizontal: 16.w),
-              //     child: Assets.images.boostBanner.image(
-              //       // height: 120.h,
-              //       // width: double.infinity,
-              //       // fit: BoxFit.cover,
-              //     ),
-              //   ),
-              // ),
-
               CustomContainer(
                 radiusAll: 20.r,
                 horizontalMargin: 16.w,
@@ -244,9 +244,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 rating: product.rating?.toDouble() ?? 0.0,
                                 reviews: product.reviewCount.toString() ?? '0',
                                 image: product.image,
-                                onBuyNowTap: () {},
-                                onOfferTap: () {},
-                                onMessageTap: () {},
                               ),
                             ),
                           ),

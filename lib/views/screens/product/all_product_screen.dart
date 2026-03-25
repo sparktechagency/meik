@@ -3,6 +3,7 @@ import 'package:danceattix/core/app_constants/app_colors.dart';
 import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/helper/shimmer_helper.dart';
 import 'package:danceattix/views/screens/drawer/drawer_screen.dart';
+import 'package:danceattix/views/widgets/search_popup_widget.dart';
 import 'package:danceattix/views/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -68,28 +69,39 @@ class _AllProductScreenState extends State<AllProductScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 12.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: CustomTextField(
-                  hintextSize: 16.sp,
-                  borderRadio: 50.r,
-                  contentPaddingVertical: 0,
-                  borderColor: Colors.transparent,
-                  validator: (_) => null,
-                  hintText: 'Search by products name',
-                  suffixIcon: CustomContainer(
-                    marginAll: 2.r,
-                    paddingAll: 8.r,
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryColor,
-                    child: Icon(
-                      Icons.search,
-                      //size: 20.sp,
-                      color: Colors.white,
+              GlobalSearchField(
+                hintText: 'Search by products name',
+                primaryColor: AppColors.primaryColor,
+                onSearch: (term) async {
+                  await _productController.productsGet(term: term);
+                  return _productController.searchResults
+                      .map((e) => SearchItem(
+                    id: e.id?.toString() ?? '',
+                    name: e.productName ?? '',
+                    image: e.image,
+                    subtitle: e.price ?? '',
+                  ))
+                      .toList();
+                },
+                cardBuilder: (item, onTap) {
+                  final product = item;
+                  return ListTile(
+                    onTap: onTap,
+                    leading: CustomNetworkImage(
+                      borderRadius: BorderRadius.circular(10.r),
+                      imageUrl: product.image ?? '',
+                      height: 40.h,
+                      width: 40.w,
                     ),
-                  ),
-                  controller: searchCtrl,
-                ),
+                    title: CustomText(
+                        textAlign: TextAlign.start,
+                        text:  product.name ?? ''),
+                    subtitle: CustomText(
+                        textAlign: TextAlign.start,
+                        fontSize: 12.sp,
+                        text:  'price: ${product.subtitle}'),
+                  );
+                },
               ),
               GetBuilder<ProductController>(
                 builder: (controller) {

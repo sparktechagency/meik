@@ -144,11 +144,13 @@ class _MessageUserScreenState extends State<MessageUserScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       CustomText(
+                                        enableAutoTranslate: false,
                                           text: data.name ?? 'N/A',
                                           color: Colors.black,
                                           fontWeight: FontWeight.w500,
                                           bottom: 6.h),
                                       CustomText(
+                                        enableAutoTranslate: false,
                                         maxline: 1,
                                         textOverflow: TextOverflow.ellipsis,
                                           text: data.lastmsg?.msg ?? 'N/A', fontSize: 12.h),

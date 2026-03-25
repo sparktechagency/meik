@@ -10,7 +10,6 @@ import '../../../core/app_constants/app_colors.dart';
 import '../../widgets/cachanetwork_image.dart';
 import '../../widgets/custom_text.dart';
 
-
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
 
@@ -109,14 +108,12 @@ class _WalletScreenState extends State<WalletScreen> {
                 SizedBox(height: 20.h),
 
                 // History Header
-
-                    CustomText(
-                      text: "History",
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-
+                CustomText(
+                  text: "History",
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
 
                 SizedBox(height: 16.h),
 
@@ -148,10 +145,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                 width: 100.w,
                                 title: 'Refresh',
                                 onpress: () async {
-
-                                    await _walletController.balanceGet();
-                                    await _walletController.transactionGet();                                  }
-
+                                  await _walletController.balanceGet();
+                                  await _walletController.transactionGet();
+                                },
                               ),
                             ],
                           ),
@@ -163,7 +159,8 @@ class _WalletScreenState extends State<WalletScreen> {
                         padding: EdgeInsets.only(bottom: 20.h),
 
                         // ✅ Load more indicator-এর জন্য +1
-                        itemCount: controller.transactions.length +
+                        itemCount:
+                            controller.transactions.length +
                             (controller.isTransactionLoadingMore ? 1 : 0),
 
                         itemBuilder: (context, index) {
@@ -239,26 +236,26 @@ class _WalletScreenState extends State<WalletScreen> {
                       // FIX 6: Show shimmer placeholder while loading
                       controller.isLoading
                           ? Padding(
-                        padding: EdgeInsets.only(top: 8.h),
-                        child: SizedBox(
-                          width: 80.w,
-                          height: 32.h,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.white24,
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                          ),
-                        ),
-                      )
+                              padding: EdgeInsets.only(top: 8.h),
+                              child: SizedBox(
+                                width: 80.w,
+                                height: 32.h,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white24,
+                                    borderRadius: BorderRadius.circular(6.r),
+                                  ),
+                                ),
+                              ),
+                            )
                           : FittedBox(
-                            child: CustomText(
-                                                    text: controller.balance,
-                                                    fontSize: 36.sp,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Colors.white,
-                                                  ),
-                          ),
+                              child: CustomText(
+                                text: controller.balance,
+                                fontSize: 36.sp,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
                     ],
                   ),
                 ],
@@ -355,7 +352,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
               TextField(
                 controller: amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
@@ -371,8 +370,10 @@ class _WalletScreenState extends State<WalletScreen> {
                       color: Colors.black54,
                     ),
                   ),
-                  prefixIconConstraints:
-                  const BoxConstraints(minWidth: 0, minHeight: 0),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 0,
+                    minHeight: 0,
+                  ),
                   hintText: "Enter amount",
                   hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
                   filled: true,
@@ -405,7 +406,9 @@ class _WalletScreenState extends State<WalletScreen> {
                     onTap: () => amountController.text = amount.toString(),
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 14.w, vertical: 8.h),
+                        horizontal: 14.w,
+                        vertical: 8.h,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(20.r),
@@ -486,10 +489,7 @@ class _WalletScreenState extends State<WalletScreen> {
             padding: EdgeInsets.all(2.r),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.primaryColor,
-                width: 2.w,
-              ),
+              border: Border.all(color: AppColors.primaryColor, width: 2.w),
             ),
             child: CustomNetworkImage(
               imageUrl: imageUrl,

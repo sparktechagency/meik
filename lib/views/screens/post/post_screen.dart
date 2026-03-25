@@ -1,7 +1,10 @@
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:danceattix/controllers/fvrt_product_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
+import 'package:danceattix/global/custom_assets/assets.gen.dart';
 import 'package:danceattix/helper/shimmer_helper.dart';
+import 'package:danceattix/views/widgets/custom_button.dart';
+import 'package:danceattix/views/widgets/custom_text.dart';
 import 'package:danceattix/views/widgets/fvrt_card.dart';
 import 'package:danceattix/views/widgets/purchase_card.dart';
 import 'package:danceattix/views/widgets/sales_card.dart';
@@ -22,7 +25,8 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  final FvrtProductController _fvrtProductController = Get.find<FvrtProductController>();
+  final FvrtProductController _fvrtProductController =
+      Get.find<FvrtProductController>();
 
   // ScrollControllers for pagination
   final ScrollController _fvrtScrollController = ScrollController();
@@ -128,7 +132,10 @@ class _PostScreenState extends State<PostScreen> {
               AutoTranslate(
                 child: Text(
                   "Give Feedback",
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               SizedBox(height: 20.h),
@@ -171,7 +178,9 @@ class _PostScreenState extends State<PostScreen> {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: AutoTranslate(child: Text('Feedback submitted successfully')),
+                            content: AutoTranslate(
+                              child: Text('Feedback submitted successfully'),
+                            ),
                           ),
                         );
                       },
@@ -233,9 +242,9 @@ class _PostScreenState extends State<PostScreen> {
                     controller.isLoading
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.fvrtData.isEmpty
-                        ? const Center(
-                            child: AutoTranslate(child: Text('No favourite products found.')),
-                          )
+                        ? _emptyWidget(
+                            () => controller.fvrtGet(),
+                    )
                         : AnimationLimiter(
                             child: RefreshIndicator(
                               onRefresh: () async {
@@ -243,7 +252,7 @@ class _PostScreenState extends State<PostScreen> {
                               },
                               child: ListView.builder(
                                 physics: AlwaysScrollableScrollPhysics(
-                                    parent: BouncingScrollPhysics()
+                                  parent: BouncingScrollPhysics(),
                                 ),
                                 controller: _fvrtScrollController,
                                 itemCount:
@@ -311,7 +320,9 @@ class _PostScreenState extends State<PostScreen> {
                                             context,
                                           ).showSnackBar(
                                             SnackBar(
-                                              content: AutoTranslate(child: Text('Added to cart')),
+                                              content: AutoTranslate(
+                                                child: Text('Added to cart'),
+                                              ),
                                             ),
                                           );
                                         },
@@ -329,9 +340,9 @@ class _PostScreenState extends State<PostScreen> {
                     controller.isPurchasesLoading
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.purchasesData.isEmpty
-                        ? const Center(
-                            child: AutoTranslate(child: Text('No purchased products found.')),
-                          )
+                        ? _emptyWidget(
+                            () => controller.phurcasesGet(),
+                    )
                         : AnimationLimiter(
                             child: RefreshIndicator(
                               onRefresh: () async {
@@ -339,7 +350,7 @@ class _PostScreenState extends State<PostScreen> {
                               },
                               child: ListView.builder(
                                 physics: AlwaysScrollableScrollPhysics(
-                                  parent: BouncingScrollPhysics()
+                                  parent: BouncingScrollPhysics(),
                                 ),
                                 controller: _purchasesScrollController,
                                 itemCount:
@@ -432,7 +443,9 @@ class _PostScreenState extends State<PostScreen> {
                     controller.isSalesLoading
                         ? ShimmerHelper.instance.showMyProductShimmer()
                         : controller.salesData.isEmpty
-                        ? const Center(child: AutoTranslate(child: Text('No sales history found.')))
+                        ?  _emptyWidget(
+                            () => controller.salesGet(),
+                    )
                         : AnimationLimiter(
                             child: RefreshIndicator(
                               onRefresh: () async {
@@ -509,7 +522,9 @@ class _PostScreenState extends State<PostScreen> {
                                             context,
                                           ).showSnackBar(
                                             SnackBar(
-                                              content: AutoTranslate(child: Text('Sale confirmed!')),
+                                              content: AutoTranslate(
+                                                child: Text('Sale confirmed!'),
+                                              ),
                                             ),
                                           );
                                         },
@@ -527,6 +542,32 @@ class _PostScreenState extends State<PostScreen> {
             ),
           ),
           SizedBox(height: 80.h),
+        ],
+      ),
+    );
+  }
+
+  Widget _emptyWidget(VoidCallback onTap) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Assets.lottie.emptyData.lottie(),
+          CustomText(
+            text: 'No Data Found',
+            color: AppColors.hitTextColorA5A5A5,
+            fontSize: 16.sp,
+          ),
+          SizedBox(height: 16.h),
+
+          /// 🔄 Refresh Button
+          CustomButton(
+            fontSize: 14.sp,
+            height: 34.h,
+            width: 100.w,
+            title: 'Refresh',
+            onpress: onTap,
+          ),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:danceattix/views/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -65,9 +66,9 @@ class MenuShowHelper {
             height: 28.h,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(
+              child: CustomText(text:
                 option,
-                style: TextStyle(fontSize: 12.sp, color: Colors.black),
+                fontSize: 12.sp, color: Colors.black,
               ),
             ),
           ),
