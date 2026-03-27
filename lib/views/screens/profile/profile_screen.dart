@@ -21,10 +21,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final UserController controller = Get.find<UserController>();
 
-  // Change this to test verified/unverified state
   @override
   Widget build(BuildContext context) {
-    final bool isVerified = controller.userData?.isActive == true;
 
     return CustomScaffold(
       appBar: CustomAppBar(),
