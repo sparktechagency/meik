@@ -1,15 +1,11 @@
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/core/app_constants/app_colors.dart';
-import 'package:danceattix/core/app_constants/app_constants.dart';
-import 'package:danceattix/helper/prefs_helper.dart';
 import 'package:danceattix/views/widgets/custom_app_bar.dart';
 import 'package:danceattix/views/widgets/custom_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../../core/config/app_route.dart';
-import '../../../global/custom_assets/assets.gen.dart';
 import '../../widgets/cachanetwork_image.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text.dart';
