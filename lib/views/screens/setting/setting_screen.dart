@@ -65,17 +65,6 @@ class SettingScreen extends StatelessWidget {
 
 
 
-            _customCartItem(
-                title: "Buyer protection",
-                icon: Assets.icons.buyerProtection.svg(),
-                onTap: () {
-                  Get.toNamed(AppRoutes.privacyPolicyAllScreen, arguments: {
-                    "title" : "Buyer protection",
-                  });
-                }),
-
-
-
             Spacer(),
 
 

@@ -1,36 +1,44 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../services/api_client.dart';
 import '../services/api_urls.dart';
 
+enum ContentType { termsAndCondition, privacyPolicy, aboutUs }
+
 class TermsAndConditionController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString content = ''.obs;
-  final RxString errorMessage = ''.obs;
 
-  Future<void> fetchTermsAndCondition() async {
+  Future<void> fetchContent(ContentType type) async {
     try {
       isLoading.value = true;
-      errorMessage.value = '';
 
-      final response = await ApiClient.getData(ApiUrls.termsAndCondition);
+      String endpoint;
+      switch (type) {
+        case ContentType.termsAndCondition:
+          endpoint = ApiUrls.termsAndCondition;
+          break;
+        case ContentType.privacyPolicy:
+          endpoint = ApiUrls.privacyPolicy;
+          break;
+        case ContentType.aboutUs:
+          endpoint = ApiUrls.aboutUs;
+          break;
+      }
+
+      final response = await ApiClient.getData(endpoint);
 
       if (response.statusCode == 200) {
-        if (response.body != null && response.body is Map) {
-          content.value = response.body['data']?['content'] ?? 
-                         response.body['content'] ?? 
-                         response.body['data']?.toString() ?? 
-                         response.body.toString();
-          errorMessage.value = '';
-        } else {
-          content.value = response.bodyString ?? '';
-        }
+        content.value = response.body['content'] ?? '';
       } else {
-        errorMessage.value = response.statusText ?? 'Failed to load terms and conditions';
+        content.value = '';
       }
     } catch (e) {
-      errorMessage.value = 'Something went wrong. Please try again.';
+      debugPrint('Error fetching content: $e');
+      content.value = '';
     } finally {
       isLoading.value = false;
     }
   }
 }
+

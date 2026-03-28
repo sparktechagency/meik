@@ -10,6 +10,7 @@ import 'package:danceattix/controllers/payment_controller.dart';
 import 'package:danceattix/controllers/product_controller.dart';
 import 'package:danceattix/controllers/product_details_controller.dart';
 import 'package:danceattix/controllers/socket_chat_controller.dart';
+import 'package:danceattix/controllers/terms_and_condition_controller.dart';
 import 'package:danceattix/controllers/user_controller.dart';
 import 'package:danceattix/controllers/wallet_controller.dart';
 import 'package:danceattix/views/screens/bottom_nav_bar/bottom_nav_controller.dart';
@@ -32,6 +33,7 @@ class DependencyInjection implements Bindings {
     Get.put(CheckoutController());
     Get.put(BoostController());
     Get.put(BottomNavController());
+    Get.put(TermsAndConditionController());
 
 
   }}

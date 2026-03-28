@@ -237,5 +237,55 @@ class AuthController extends GetxController {
     }
   }
 
+  /// <======================= change Password ===========================>
+  bool isLoadingChangePassword = false;
+  final TextEditingController currentPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
+  void cleanFieldChangePassword() {
+    currentPasswordController.clear();
+    newPasswordController.clear();
+    confirmPasswordController.clear();
+  }
+
+  Future<void> changePassword() async {
+    if (newPasswordController.text != confirmPasswordController.text) {
+      showToast('New password and confirm password do not match');
+      return;
+    }
+
+    isLoadingChangePassword = true;
+    update();
+
+    try {
+      final requestBody = {
+        'passwordCurrent': currentPasswordController.text,
+        'password': newPasswordController.text,
+        'passwordConfirm': confirmPasswordController.text,
+      };
+
+      final response = await ApiClient.postData(
+        ApiUrls.updatePassword,
+        requestBody,
+      );
+      final responseBody = response.body;
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showToast('Password changed successfully');
+        cleanFieldChangePassword();
+        Get.back();
+      } else {
+        showToast(responseBody['message'] ?? 'Failed to change password');
+      }
+    } catch (e) {
+      showToast('Something went wrong. Please try again.');
+      if (kDebugMode) print('ChangePassword error: $e');
+    } finally {
+      isLoadingChangePassword = false;
+      update();
+    }
+  }
+
 
 }

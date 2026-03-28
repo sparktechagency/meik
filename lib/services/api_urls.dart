@@ -10,6 +10,7 @@ class ApiUrls {
   static const String verifyOtp = '/auth/verify-otp';
   static const String login = '/auth/login';
   static const String resetPassword = '/auth/reset-password';
+  static const String updatePassword = '/auth/update-password';
   static const String forgetPassword = '/auth/forgot-password';
   static const String userMe = '/users/me';
   static const String userUpdate = '/users/profile';
@@ -61,4 +62,6 @@ class ApiUrls {
   
   /// ================= settings ===========>>>
   static const String termsAndCondition = '/settings/terms_and_condition';
+  static const String privacyPolicy = '/settings/privacy_policy';
+  static const String aboutUs = '/settings/about_us';
 }
